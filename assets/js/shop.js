@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
     });
     
     // Favorite heart functionality (works with both custom and WooCommerce templates)
-    $(document).on('click', '.favorite-heart', function(e) {
+    $(document).on('click', '.favorite-heart, .deva-favorite-heart', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -142,6 +142,91 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // DEVA Add to Cart functionality
+    $(document).on('click', '.deva-add-to-cart-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        var $button = $(this);
+        var productId = $button.data('product-id');
+        
+        if ($button.hasClass('loading')) {
+            return false;
+        }
+        
+        $button.addClass('loading').text('Adding...');
+        
+        // Use WooCommerce AJAX add to cart
+        $.ajax({
+            url: wc_add_to_cart_params ? wc_add_to_cart_params.ajax_url : ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'woocommerce_add_to_cart',
+                product_id: productId,
+                quantity: 1,
+                security: wc_add_to_cart_params ? wc_add_to_cart_params.wc_ajax_nonce : ''
+            },
+            success: function(response) {
+                if (response.error) {
+                    alert('Error: ' + response.error);
+                    $button.removeClass('loading').text('Buy Now');
+                } else {
+                    $button.removeClass('loading').text('Added!');
+                    
+                    // Update cart fragments if available
+                    if (response.fragments) {
+                        $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
+                    }
+                    
+                    // Show success message
+                    showSuccessMessage('Product added to cart!');
+                    
+                    // Reset button text after 2 seconds
+                    setTimeout(function() {
+                        $button.text('Buy Now');
+                    }, 2000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', status, error);
+                $button.removeClass('loading').text('Buy Now');
+                alert('Error adding product to cart. Please try again.');
+            }
+        });
+    });
+    
+    // Success message function
+    function showSuccessMessage(message) {
+        // Remove any existing success messages
+        $('.deva-success-message').remove();
+        
+        var $message = $('<div class="deva-success-message">' + message + '</div>');
+        $message.css({
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#48733d',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '6px',
+            zIndex: 9999,
+            fontWeight: '600',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+        });
+        
+        $('body').append($message);
+        
+        // Fade in
+        $message.fadeIn(300);
+        
+        // Auto remove after 3 seconds
+        setTimeout(function() {
+            $message.fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 3000);
+    }
 
     // Smooth scroll for pagination
     $(document).on('click', '.woocommerce-pagination a', function(e) {

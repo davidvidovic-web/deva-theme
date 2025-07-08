@@ -126,7 +126,7 @@ function deva_category_display_shortcode($atts) {
             </div>
 
             <!-- Navigation -->
-            <nav class="woocommerce-pagination">
+            <nav class="deva-pagination">
                 <ul>
                     <?php if ($prev_url) : ?>
                         <li class="prev">

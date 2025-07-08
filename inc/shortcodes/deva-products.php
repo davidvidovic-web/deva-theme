@@ -77,7 +77,7 @@ function deva_get_products_html($atts, $paged = 1) {
     $products = new WP_Query($args);
 
     if ($products->have_posts()) :
-        echo '<ul class="products columns-' . esc_attr($atts['columns']) . '">';
+        echo '<ul class="deva-products-grid columns-' . esc_attr($atts['columns']) . '">';
 
         while ($products->have_posts()) :
             $products->the_post();
@@ -85,34 +85,40 @@ function deva_get_products_html($atts, $paged = 1) {
             
             // Custom product card HTML with column layout
             ?>
-            <li <?php wc_product_class('deva-product-card', $product); ?>>
-                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="product-link">
-                    <div class="product-image-wrapper">
-                        <?php echo woocommerce_get_product_thumbnail(); ?>
+            <li class="deva-product-card" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-product-link">
+                    <div class="deva-product-image-wrapper">
+                        <?php 
+                        if (has_post_thumbnail($product->get_id())) {
+                            echo get_the_post_thumbnail($product->get_id(), 'woocommerce_thumbnail', array('class' => 'deva-product-image'));
+                        } else {
+                            echo '<div class="deva-product-placeholder">No Image</div>';
+                        }
+                        ?>
                         
                         <!-- Like/Favorite Heart Button - Top Left -->
-                        <div class="favorite-heart" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                        <div class="deva-favorite-heart" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </div>
 
                         <!-- Price Bubble - Top Right -->
-                        <div class="price-overlay">
+                        <div class="deva-price-overlay">
                             <?php echo $product->get_price_html(); ?>
                         </div>
 
                         <!-- Sale Badge - Bottom Left -->
                         <?php if ($product->is_on_sale()) : ?>
-                            <span class="onsale"><?php esc_html_e('Sale!', 'woocommerce'); ?></span>
+                            <span class="deva-sale-badge">Sale!</span>
                         <?php endif; ?>
                     </div>
                 </a>
 
-                <div class="product-info-wrapper">
-                    <div class="product-content">
+                <div class="deva-product-info-wrapper">
+                    <div class="deva-product-content">
                         <!-- Product Title -->
-                        <h2 class="woocommerce-loop-product__title">
+                        <h2 class="deva-product-title">
                             <a href="<?php echo esc_url($product->get_permalink()); ?>">
                                 <?php echo $product->get_name(); ?>
                             </a>
@@ -141,14 +147,13 @@ function deva_get_products_html($atts, $paged = 1) {
                         <?php endif; ?>
 
                         <!-- Action Buttons -->
-                        <div class="product-actions">
+                        <div class="deva-product-actions">
                             <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
-                                <?php
-                                // Use WooCommerce's add to cart button but with our custom classes
-                                woocommerce_template_loop_add_to_cart();
-                                ?>
+                                <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                    Buy Now
+                                </button>
                             <?php else : ?>
-                                <span class="out-of-stock">Out of Stock</span>
+                                <span class="deva-out-of-stock">Out of Stock</span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -162,7 +167,7 @@ function deva_get_products_html($atts, $paged = 1) {
 
         // Add pagination if enabled
         if ($atts['pagination'] === 'true' && $products->max_num_pages > 1) :
-            echo '<nav class="woocommerce-pagination">';
+            echo '<nav class="deva-pagination">';
             
             // Generate pagination with proper base URL
             $big = 999999999; // need an unlikely integer

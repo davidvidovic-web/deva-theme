@@ -183,40 +183,46 @@ function deva_product_search_shortcode($atts) {
             <!-- Products Container -->
             <div class="deva-products-container" data-shortcode-atts="<?php echo esc_attr(json_encode($atts)); ?>">
                 <?php if ($products->have_posts()) : ?>
-                    <?php woocommerce_product_loop_start(); ?>
+                    <ul class="deva-products-grid">
                         <?php while ($products->have_posts()) : $products->the_post(); ?>
                             <?php
                             global $product;
                             // Use custom product template for search shortcode
                             ?>
-                            <li <?php wc_product_class('deva-product-card deva-search-product', $product); ?>>
-                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="product-link">
-                                    <div class="product-image-wrapper">
-                                        <?php echo woocommerce_get_product_thumbnail(); ?>
+                            <li class="deva-product-card deva-search-product" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-product-link">
+                                    <div class="deva-product-image-wrapper">
+                                        <?php 
+                                        if (has_post_thumbnail($product->get_id())) {
+                                            echo get_the_post_thumbnail($product->get_id(), 'woocommerce_thumbnail', array('class' => 'deva-product-image'));
+                                        } else {
+                                            echo '<div class="deva-product-placeholder">No Image</div>';
+                                        }
+                                        ?>
                                         
                                         <!-- Like/Favorite Heart Button - Top Left -->
-                                        <div class="favorite-heart" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                        <div class="deva-favorite-heart" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                             </svg>
                                         </div>
 
                                         <!-- Price Bubble - Top Right -->
-                                        <div class="price-overlay">
+                                        <div class="deva-price-overlay">
                                             <?php echo $product->get_price_html(); ?>
                                         </div>
 
                                         <!-- Sale Badge - Bottom Left -->
                                         <?php if ($product->is_on_sale()) : ?>
-                                            <span class="onsale"><?php esc_html_e('Sale!', 'woocommerce'); ?></span>
+                                            <span class="deva-sale-badge">Sale!</span>
                                         <?php endif; ?>
                                     </div>
                                 </a>
 
-                                <div class="product-info-wrapper">
-                                    <div class="product-content">
+                                <div class="deva-product-info-wrapper">
+                                    <div class="deva-product-content">
                                         <!-- Product Name -->
-                                        <h2 class="woocommerce-loop-product__title">
+                                        <h2 class="deva-product-title">
                                             <a href="<?php echo esc_url($product->get_permalink()); ?>">
                                                 <?php echo $product->get_name(); ?>
                                             </a>
@@ -244,24 +250,24 @@ function deva_product_search_shortcode($atts) {
                                         <?php endif; ?>
 
                                         <!-- Action Buttons -->
-                                        <div class="product-actions">
+                                        <div class="deva-product-actions">
                                             <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                <button class="add-to-cart-btn button" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                                    Add to Cart
+                                                <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                                    Buy Now
                                                 </button>
                                             <?php else : ?>
-                                                <span class="out-of-stock">Out of Stock</span>
+                                                <span class="deva-out-of-stock">Out of Stock</span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                             </li>
                         <?php endwhile; ?>
-                    <?php woocommerce_product_loop_end(); ?>
+                    </ul>
 
                     <!-- Pagination -->
                     <?php if ($atts['pagination'] === 'true' && $products->max_num_pages > 1) : ?>
-                        <nav class="woocommerce-pagination">
+                        <nav class="deva-pagination">
                             <?php
                             $base_url = remove_query_arg('paged');
                             echo paginate_links(array(
