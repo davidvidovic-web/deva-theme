@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DEVA Products Shortcode
  * 
@@ -12,7 +13,8 @@ if (!defined('ABSPATH')) {
 /**
  * DEVA Products Grid Shortcode
  */
-function deva_products_shortcode($atts) {
+function deva_products_shortcode($atts)
+{
     $atts = shortcode_atts(array(
         'per_page' => 12,
         'columns' => 3,
@@ -28,20 +30,20 @@ function deva_products_shortcode($atts) {
 
     // Generate unique shortcode ID for AJAX
     $shortcode_id = 'deva_products_' . wp_rand(1000, 9999);
-    
+
     // Get current page for pagination
     $paged = 1;
-    if (isset($_GET['deva_page'])) {
-        $paged = intval($_GET['deva_page']);
+    if (isset($_GET['paged'])) {
+        $paged = intval($_GET['paged']);
     }
-    
+
     // Handle AJAX requests
     if (defined('DOING_AJAX') && DOING_AJAX) {
         $shortcode_atts = json_decode(stripslashes($_POST['shortcode_atts']), true);
         if ($shortcode_atts) {
             $atts = array_merge($atts, $shortcode_atts);
         }
-        
+
         if (isset($_POST['page'])) {
             $paged = intval($_POST['page']);
         }
@@ -56,16 +58,17 @@ function deva_products_shortcode($atts) {
             </div>
         </div>
     </section>
-<?php
+    <?php
     return ob_get_clean();
 }
 
 /**
  * Get products HTML for AJAX and initial load
  */
-function deva_get_products_html($atts, $paged = 1) {
+function deva_get_products_html($atts, $paged = 1)
+{
     ob_start();
-    
+
     // Set up the WooCommerce query with pagination
     $args = array(
         'post_type' => 'product',
@@ -82,30 +85,42 @@ function deva_get_products_html($atts, $paged = 1) {
         while ($products->have_posts()) :
             $products->the_post();
             global $product;
-            
+
             // Custom product card HTML with column layout
-            ?>
+    ?>
             <li class="deva-product-card" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                 <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-product-link">
                     <div class="deva-product-image-wrapper">
-                        <?php 
+                        <?php
                         if (has_post_thumbnail($product->get_id())) {
                             echo get_the_post_thumbnail($product->get_id(), 'woocommerce_thumbnail', array('class' => 'deva-product-image'));
                         } else {
                             echo '<div class="deva-product-placeholder">No Image</div>';
                         }
                         ?>
-                        
+
                         <!-- Like/Favorite Heart Button - Top Left -->
                         <div class="deva-favorite-heart" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="2">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </div>
 
-                        <!-- Price Bubble - Top Right -->
+                        <!-- Price Bubble - Top Right (Current Price Only) -->
                         <div class="deva-price-overlay">
-                            <?php echo $product->get_price_html(); ?>
+                            <?php
+                            // Display only current price, not both original and discounted
+                            $current_price = $product->get_price();
+                            $currency_symbol = get_woocommerce_currency_symbol();
+
+                            // Validate price is numeric and not empty
+                            if (is_numeric($current_price) && $current_price > 0) {
+                                echo $currency_symbol . number_format((float)$current_price, 2);
+                            } else {
+                                // Fallback for products without valid price
+                                echo $currency_symbol . '0.00';
+                            }
+                            ?>
                         </div>
 
                         <!-- Sale Badge - Bottom Left -->
@@ -117,46 +132,44 @@ function deva_get_products_html($atts, $paged = 1) {
 
                 <div class="deva-product-info-wrapper">
                     <div class="deva-product-content">
-                        <!-- Product Title -->
-                        <h2 class="deva-product-title">
-                            <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                <?php echo $product->get_name(); ?>
-                            </a>
-                        </h2>
+                        <div class="deva-product-header">
+                            <!-- Product Title -->
+                            <h2 class="deva-product-title">
+                                <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                    <?php echo $product->get_name(); ?>
+                                </a>
+                            </h2>
+                            <?php
+                            $rating = $product->get_average_rating();
+                            $rating_count = $product->get_rating_count();
+
+                            if ($rating_count > 0) : ?>
+                                <div class="deva-single-star-rating">
+                                    <span class="star-icon">★</span>
+                                    <span class="rating-score"><?php echo number_format($rating, 1); ?></span>
+                                    <span class="rating-count">(<?php echo $rating_count; ?>)</span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
                         <!-- Product Description -->
-                        <?php 
-                        $short_description = $product->get_short_description();
-                        if ($short_description) : ?>
-                            <div class="product-excerpt">
-                                <?php echo wp_trim_words($short_description, 15, '...'); ?>
+                        <?php
+                        $product_excerpt = deva_get_product_excerpt($product, 15);
+                        if ($product_excerpt && $product_excerpt !== 'No description available.') : ?>
+                            <div class="deva-product-excerpt">
+                                <?php echo esc_html($product_excerpt); ?>
                             </div>
                         <?php endif; ?>
 
                         <!-- Custom single star rating display -->
-                        <?php
-                        $rating = $product->get_average_rating();
-                        $rating_count = $product->get_rating_count();
-                        
-                        if ($rating_count > 0) : ?>
-                            <div class="deva-single-star-rating">
-                                <span class="star-icon">★</span>
-                                <span class="rating-score"><?php echo number_format($rating, 1); ?></span>
-                                <span class="rating-count">(<?php echo $rating_count; ?>)</span>
-                            </div>
-                        <?php endif; ?>
+
 
                         <!-- Action Buttons -->
                         <div class="deva-product-actions">
                             <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
-                                <div class="deva-button-row">
-                                    <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                        Add to Cart
-                                    </button>
-                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-buy-now-btn">
-                                        Buy Now
-                                    </a>
-                                </div>
+                                <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                    Buy Now
+                                </button>
                             <?php else : ?>
                                 <span class="deva-out-of-stock">Out of Stock</span>
                             <?php endif; ?>
@@ -164,7 +177,7 @@ function deva_get_products_html($atts, $paged = 1) {
                     </div>
                 </div>
             </li>
-            <?php
+<?php
         endwhile;
 
         echo '</ul>';
@@ -173,46 +186,45 @@ function deva_get_products_html($atts, $paged = 1) {
         // Add pagination if enabled
         if ($atts['pagination'] === 'true' && $products->max_num_pages > 1) :
             echo '<nav class="deva-pagination">';
-            
-            // Generate pagination with proper base URL
-            $big = 999999999; // need an unlikely integer
-            $current_url = home_url(add_query_arg(array()));
-            
+
+            // Generate pagination with current page URL as base (same as category shortcode)
+            $base_url = remove_query_arg('paged');
+
             echo paginate_links(array(
-                'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
-                'format' => '?paged=%#%',
+                'base' => add_query_arg('paged', '%#%', $base_url),
+                'format' => '',
                 'current' => max(1, $paged),
                 'total' => $products->max_num_pages,
                 'prev_text' => '&laquo;',
                 'next_text' => '&raquo;',
                 'type' => 'list',
                 'end_size' => 3,
-                'mid_size' => 3,
-                'add_args' => array('deva_page' => '%#%') // Custom parameter for our shortcode
+                'mid_size' => 3
             ));
             echo '</nav>';
         endif;
     else :
         do_action('woocommerce_no_products_found');
     endif;
-    
+
     return ob_get_clean();
 }
 
 /**
  * AJAX handler for loading products
  */
-function deva_ajax_load_products() {
+function deva_ajax_load_products()
+{
     // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'deva_products_nonce')) {
         wp_die('Security check failed');
     }
-    
+
     $paged = intval($_POST['paged']);
     $atts = $_POST['shortcode_atts'];
-    
+
     $html = deva_get_products_html($atts, $paged);
-    
+
     wp_send_json_success($html);
 }
 add_action('wp_ajax_deva_load_products', 'deva_ajax_load_products');

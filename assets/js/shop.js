@@ -150,6 +150,7 @@ jQuery(document).ready(function($) {
         
         var $button = $(this);
         var productId = $button.data('product-id');
+        var $productActions = $button.closest('.deva-product-actions');
         
         if ($button.hasClass('loading')) {
             return false;
@@ -172,8 +173,6 @@ jQuery(document).ready(function($) {
                     alert('Error: ' + response.error);
                     $button.removeClass('loading').text('Buy Now');
                 } else {
-                    $button.removeClass('loading').text('Added!');
-                    
                     // Update cart fragments if available
                     if (response.fragments) {
                         $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
@@ -182,10 +181,26 @@ jQuery(document).ready(function($) {
                     // Show success message
                     showSuccessMessage('Product added to cart!');
                     
-                    // Reset button text after 2 seconds
+                    // Create and show the View Cart link with exact same styling
+                    $button.removeClass('loading').text('Added!');
+                    
+                    // Wait a moment, then replace with View Cart button
                     setTimeout(function() {
-                        $button.text('Buy Now');
-                    }, 2000);
+                        var cartUrl = wc_add_to_cart_params && wc_add_to_cart_params.cart_url ? wc_add_to_cart_params.cart_url : '/cart/';
+                        
+                        // Create a View Cart link that looks exactly like the Buy Now button
+                        var $viewCartLink = $('<a>', {
+                            href: cartUrl,
+                            class: 'deva-add-to-cart-btn deva-view-cart-btn',
+                            text: 'View Cart'
+                        });
+                        
+                        // Replace the button with the link
+                        $button.replaceWith($viewCartLink);
+                        
+                        // Mark the container as having item in cart
+                        $productActions.addClass('cart-added');
+                    }, 1500);
                 }
             },
             error: function(xhr, status, error) {
@@ -244,7 +259,7 @@ jQuery(document).ready(function($) {
     });
     
     // AJAX Pagination for DEVA Products Shortcode
-    $(document).on('click', '.deva-shop-section[data-ajax="true"] .woocommerce-pagination a', function(e) {
+    $(document).on('click', '.deva-shop-section[data-ajax="true"] .deva-pagination a', function(e) {
         e.preventDefault();
         
         var $container = $(this).closest('.deva-shop-section').find('.deva-products-container');
@@ -273,13 +288,13 @@ jQuery(document).ready(function($) {
             var linkText = $(this).text().trim();
             if (linkText === '»' || linkText === 'Next') {
                 // Get current page from pagination and add 1
-                var $current = $(this).closest('.woocommerce-pagination').find('.current');
+                var $current = $(this).closest('.deva-pagination').find('.current');
                 if ($current.length) {
                     page = parseInt($current.text()) + 1;
                 }
             } else if (linkText === '«' || linkText === 'Previous') {
                 // Get current page from pagination and subtract 1
-                var $current = $(this).closest('.woocommerce-pagination').find('.current');
+                var $current = $(this).closest('.deva-pagination').find('.current');
                 if ($current.length) {
                     page = Math.max(1, parseInt($current.text()) - 1);
                 }
@@ -320,5 +335,40 @@ jQuery(document).ready(function($) {
             $container.removeClass('loading');
             $container.find('.deva-loading').remove();
         });
+    });
+    
+    // Handle WooCommerce's default added_to_cart links if they appear
+    $(document).on('DOMNodeInserted', function(e) {
+        var $target = $(e.target);
+        
+        // Check if a WooCommerce added_to_cart link was inserted
+        if ($target.hasClass('added_to_cart') && $target.hasClass('wc-forward')) {
+            var $productActions = $target.closest('.deva-product-actions');
+            if ($productActions.length) {
+                // Hide the default link and show our custom styling
+                $target.hide();
+                $productActions.addClass('cart-added');
+                
+                // Find the original button and replace it
+                var $originalButton = $productActions.find('.deva-add-to-cart-btn');
+                if ($originalButton.length) {
+                    var cartUrl = $target.attr('href') || (wc_add_to_cart_params && wc_add_to_cart_params.cart_url ? wc_add_to_cart_params.cart_url : '/cart/');
+                    
+                    var $viewCartLink = $('<a>', {
+                        href: cartUrl,
+                        class: 'deva-add-to-cart-btn deva-view-cart-btn',
+                        text: 'View Cart'
+                    });
+                    
+                    $originalButton.replaceWith($viewCartLink);
+                }
+            }
+        }
+    });
+    
+    // Prevent clicks on View Cart buttons from triggering add to cart
+    $(document).on('click', '.deva-view-cart-btn', function(e) {
+        // Allow default behavior (navigate to cart)
+        return true;
     });
 });

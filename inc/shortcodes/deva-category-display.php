@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DEVA Category Display Shortcode
  * 
@@ -12,7 +13,8 @@ if (!defined('ABSPATH')) {
 /**
  * DEVA Category Display 50/50 Shortcode
  */
-function deva_category_display_shortcode($atts) {
+function deva_category_display_shortcode($atts)
+{
     $atts = shortcode_atts(array(
         'hide_empty' => true,
         'current_page' => 1,
@@ -30,11 +32,11 @@ function deva_category_display_shortcode($atts) {
 
     ob_start();
 
-    // Get WooCommerce product categories ordered by ID (creation order)
+    // Get WooCommerce product categories ordered consistently
     $categories = get_terms(array(
         'taxonomy' => 'product_cat',
         'hide_empty' => $atts['hide_empty'],
-        'orderby' => 'term_id',
+        'orderby' => 'name', // Changed from term_id to name for consistent ordering
         'order' => 'ASC',
         'exclude' => array(get_option('default_product_cat')) // Exclude uncategorized
     ));
@@ -48,10 +50,10 @@ function deva_category_display_shortcode($atts) {
         $categories = get_terms(array(
             'taxonomy' => 'product_cat',
             'hide_empty' => $atts['hide_empty'],
-            'orderby' => 'term_id',
+            'orderby' => 'name', // Changed from term_id to name for consistent ordering
             'order' => 'ASC'
         ));
-        
+
         if (empty($categories)) {
             return '<div class="deva-category-display-section"><div class="elementor-container"><p style="text-align: center; padding: 40px; color: #666;">No product categories found. Please create some product categories in WooCommerce.</p></div></div>';
         }
@@ -60,7 +62,12 @@ function deva_category_display_shortcode($atts) {
     // Re-index the array to ensure numerical indices starting from 0
     $categories = array_values($categories);
     $total_categories = count($categories);
-    
+
+    // Handle edge case where no categories exist
+    if ($total_categories === 0) {
+        return '<div class="deva-category-display-section"><div class="elementor-container"><p style="text-align: center; padding: 40px; color: #666;">No product categories found. Please create some product categories in WooCommerce.</p></div></div>';
+    }
+
     // Ensure current page is within valid range and get the current category
     if ($current_page < 1) {
         $current_page = 1;
@@ -72,7 +79,7 @@ function deva_category_display_shortcode($atts) {
     // Get the current category (0-based index)
     $category_index = $current_page - 1;
     $current_category = $categories[$category_index];
-    
+
     // Get category image
     $category_image_id = get_term_meta($current_category->term_id, 'thumbnail_id', true);
     $category_image_url = '';
@@ -87,11 +94,24 @@ function deva_category_display_shortcode($atts) {
         'status' => 'publish'
     ));
 
-    // Navigation URLs
-    $current_url = remove_query_arg('cat_page');
-    $prev_url = $current_page > 1 ? add_query_arg('cat_page', $current_page - 1, $current_url) : '';
-    $next_url = $current_page < $total_categories ? add_query_arg('cat_page', $current_page + 1, $current_url) : '';
-    ?>
+    // Navigation URLs - use category path structure
+    $base_url = home_url('/product-category/');
+    $prev_url = '';
+    $next_url = '';
+    
+    if ($current_page > 1) {
+        $prev_category = $categories[$current_page - 2]; // Get previous category
+        $prev_url = $base_url . $prev_category->slug . '/?cat_page=' . ($current_page - 1);
+    }
+    
+    if ($current_page < $total_categories) {
+        $next_category = $categories[$current_page]; // Get next category (0-based index)
+        $next_url = $base_url . $next_category->slug . '/?cat_page=' . ($current_page + 1);
+    }
+    
+    // Current category URL for JavaScript update
+    $current_category_url = $base_url . $current_category->slug . '/?cat_page=' . $current_page;
+?>
     <section class="deva-category-display-section <?php echo esc_attr($atts['class']); ?>">
         <div class="elementor-container">
             <div class="category-display-content">
@@ -130,11 +150,11 @@ function deva_category_display_shortcode($atts) {
                 <ul>
                     <?php if ($prev_url) : ?>
                         <li class="prev">
-                            <a href="<?php echo esc_url($prev_url); ?>">Previous</a>
+                            <a href="<?php echo esc_url($prev_url); ?>">←</a>
                         </li>
                     <?php else : ?>
                         <li class="prev">
-                            <span class="disabled">Previous</span>
+                            <span class="disabled">←</span>
                         </li>
                     <?php endif; ?>
 
@@ -143,22 +163,33 @@ function deva_category_display_shortcode($atts) {
                     </li>
 
                     <li>
-                        <span class="page-info">/ <?php echo $total_categories; ?></span>
+                        <span class="page-info"><?php echo $total_categories; ?></span>
                     </li>
 
                     <?php if ($next_url) : ?>
                         <li class="next">
-                            <a href="<?php echo esc_url($next_url); ?>">Next</a>
+                            <a href="<?php echo esc_url($next_url); ?>">→</a>
                         </li>
                     <?php else : ?>
                         <li class="next">
-                            <span class="disabled">Next</span>
+                            <span class="disabled">→</span>
                         </li>
                     <?php endif; ?>
                 </ul>
             </nav>
         </div>
     </section>
+
+    <!-- Update browser URL to reflect current category -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update the browser URL to the clean category path structure
+        if (window.history && window.history.replaceState) {
+            const newUrl = '<?php echo esc_js($current_category_url); ?>';
+            window.history.replaceState({}, '', newUrl);
+        }
+    });
+    </script>
 <?php
     return ob_get_clean();
 }

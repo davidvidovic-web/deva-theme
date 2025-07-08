@@ -1,0 +1,290 @@
+/* =============================================================================
+   DEVA REVIEWS SECTION STYLES
+   ============================================================================= */
+
+/* Reviews Section */
+.deva-reviews-section {
+  padding: 80px 20px;
+}
+
+.reviews-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Reviews Header */
+.reviews-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 60px;
+  gap: 40px;
+}
+
+.reviews-text {
+  flex: 1;
+  max-width: 100%;
+  margin-right: 40px;
+}
+
+.reviews-text h2 {
+  color: #202f19;
+  font-size: 2em;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.reviews-text p {
+  color: #202f19;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Reviews Buttons */
+.reviews-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.review-btn {
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 180px;
+  box-sizing: border-box;
+}
+
+.read-all-btn {
+  background: #48733d;
+  color: white;
+  border: 2px solid #48733d;
+}
+
+.read-all-btn:hover {
+  background: #3d6234;
+  border-color: #3d6234;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 115, 61, 0.3);
+}
+
+.write-review-btn {
+  background: white;
+  color: #48733d;
+  border: 2px solid #48733d;
+}
+
+.write-review-btn:hover {
+  background: #f8f9fa;
+  color: #3d6234;
+  border-color: #3d6234;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 115, 61, 0.2);
+}
+
+/* Reviews Slider Container */
+.reviews-slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.reviews-slider.swiper {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.review-card.swiper-slide {
+  height: auto;
+}
+
+/* Fade gradient on the right side */
+.reviews-slider-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(
+    to left,
+    #ebf3e8 0%,
+    rgba(235, 243, 232, 0.8) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Review Cards */
+.review-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.3s ease;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Review Stars */
+.review-stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 10px;
+  align-self: flex-start;
+}
+
+.review-stars .star {
+  font-size: 14px;
+  color: #ddd;
+  transition: color 0.3s ease;
+}
+
+.review-stars .star.filled {
+  color: #ffd700;
+}
+
+/* Review Text */
+.review-text {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #333;
+  margin-bottom: 12px;
+  font-style: italic;
+  text-align: left;
+  align-self: flex-start;
+  width: 100%;
+}
+
+/* Review Author */
+.review-author {
+  margin-top: auto;
+  align-self: flex-start;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.author-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #202f19;
+  margin-bottom: 2px;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.author-position {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: left;
+  align-self: flex-start;
+}
+
+/* Overflow Effect - Show partial cards on the right */
+/* Handled by Swiper configuration */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .reviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+  }
+
+  .reviews-text h2 {
+    font-size: 2rem;
+  }
+
+  .reviews-text p {
+    font-size: 1.1rem;
+  }
+
+  .reviews-buttons {
+    flex-direction: row;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .review-btn {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9rem;
+    padding: 12px 20px;
+  }
+
+  .review-card {
+    min-height: 140px;
+    padding: 12px;
+  }
+
+  .review-text {
+    font-size: 1rem;
+  }
+
+  .author-name {
+    font-size: 1rem;
+  }
+
+  .author-position {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .deva-reviews-section {
+    padding: 60px 20px;
+  }
+
+  .reviews-text h2 {
+    font-size: 1.8rem;
+  }
+
+  .reviews-text p {
+    font-size: 1rem;
+  }
+  .review-card {
+    padding: 10px;
+    min-height: 120px;
+  }
+
+  .review-text {
+    font-size: 0.9rem;
+  }
+
+  .author-name {
+    font-size: 0.85rem;
+  }
+
+  .author-position {
+    font-size: 0.75rem;
+  }
+}

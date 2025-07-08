@@ -1,0 +1,100 @@
+/* =============================================================================
+   HERO SECTION STYLES
+   ============================================================================= */
+
+/* Hero Section - 50vh height, left-aligned, vertically centered */
+.deva-hero-section {
+  background-color: #ebf3e8;
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  width: 100%;
+}
+
+.deva-hero-section .elementor-container {
+  width: 100%;
+}
+
+.hero-content {
+  width: 100%;
+  margin: 0;
+  padding-left: var(--container-padding, 20px);
+  padding-right: var(--container-padding, 20px);
+  text-align: left;
+}
+
+.deva-hero-section h1.elementor-heading-title {
+  color: #202f19;
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.deva-hero-section p {
+  color: #202f19;
+  font-size: 1.3rem;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 600px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  padding: 15px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-btn.search-btn {
+  background: #48733d;
+  color: white;
+}
+
+.hero-btn.search-btn:hover {
+  background: #3d6234;
+  transform: translateY(-2px);
+}
+
+.hero-btn.category-btn {
+  background: #fff;
+  color: #48733d;
+  border: 1px solid #48733d;
+}
+
+.hero-btn.category-btn:hover {
+  background: #48733d;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deva-hero-section h1.elementor-heading-title {
+    font-size: 2.5rem;
+  }
+
+  .deva-hero-section p {
+    font-size: 1.1rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+}

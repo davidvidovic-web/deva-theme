@@ -1,0 +1,129 @@
+/* =============================================================================
+   BASE STYLES - Core layout and container styles
+   ============================================================================= */
+
+/* Elementor Container Styles (using global CSS variables) */
+.elementor-container {
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+  max-width: var(--container-max-width, 1140px);
+  padding-left: var(--container-padding, 20px);
+  padding-right: var(--container-padding, 20px);
+}
+
+/* Responsive container adjustments using Elementor's breakpoints */
+@media (max-width: 767px) {
+  .elementor-container {
+    max-width: var(--container-max-width-mobile, 100%);
+    padding-left: var(
+      --container-padding-mobile,
+      var(--container-padding, 20px)
+    );
+    padding-right: var(
+      --container-padding-mobile,
+      var(--container-padding, 20px)
+    );
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .elementor-container {
+    max-width: var(
+      --container-max-width-tablet,
+      var(--container-max-width, 1140px)
+    );
+    padding-left: var(
+      --container-padding-tablet,
+      var(--container-padding, 20px)
+    );
+    padding-right: var(
+      --container-padding-tablet,
+      var(--container-padding, 20px)
+    );
+  }
+}
+
+@media (min-width: 1025px) {
+  .elementor-container {
+    max-width: var(
+      --container-max-width-desktop,
+      var(--container-max-width, 1140px)
+    );
+    padding-left: var(
+      --container-padding-desktop,
+      var(--container-padding, 20px)
+    );
+    padding-right: var(
+      --container-padding-desktop,
+      var(--container-padding, 20px)
+    );
+  }
+}
+
+/* Column gap using Elementor's gap variables */
+.elementor-column-gap-default > .elementor-container {
+  margin-left: calc(var(--grid-column-gap, 20px) / -2);
+  margin-right: calc(var(--grid-column-gap, 20px) / -2);
+}
+
+.elementor-column-gap-default > .elementor-container > .elementor-column {
+  padding-left: calc(var(--grid-column-gap, 20px) / 2);
+  padding-right: calc(var(--grid-column-gap, 20px) / 2);
+}
+
+/* Make all headings bold */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.deva-shop-page h1,
+.deva-shop-page h2,
+.deva-shop-page h3,
+.deva-shop-page h4,
+.deva-shop-page h5,
+.deva-shop-page h6 {
+  font-weight: 700 !important;
+}
+
+/* DEVA Shop Page Layout */
+.deva-shop-page {
+  margin: 0;
+  padding: 0;
+}
+
+/* Override default WordPress/theme styles for custom shop page */
+.deva-custom-shop .site-header {
+  position: relative;
+}
+
+.deva-custom-shop .entry-content,
+.deva-custom_shop .content-area {
+  margin: 0;
+  padding: 0;
+}
+
+.deva-custom-shop #primary,
+.deva-custom_shop #main {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* WooCommerce specific overrides */
+.deva-custom-shop .woocommerce-breadcrumb {
+  display: none;
+}
+
+.deva-custom-shop .woocommerce-result-count,
+.deva_custom_shop .woocommerce-ordering {
+  margin-bottom: 20px;
+}
+
+.deva-custom-shop .woocommerce-notices-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}

@@ -132,9 +132,9 @@ function deva_product_category_shortcode($atts) {
             
             <!-- Header Bar with Category, Count, and Sort -->
             <div class="search-header-bar">
-                <div class="current-category">
+                <h3 class="current-category">
                     <?php echo esc_html($current_category_name); ?>
-                </div>
+                </h3>
                 <div class="product-count">
                     <?php 
                     $start = (($current_page - 1) * $atts['per_page']) + 1;
@@ -201,14 +201,26 @@ function deva_product_category_shortcode($atts) {
                                         
                                         <!-- Like/Favorite Heart Button - Top Left -->
                                         <div class="deva-favorite-heart" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="2">
                                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                             </svg>
                                         </div>
 
-                                        <!-- Price Bubble - Top Right -->
+                                        <!-- Price Bubble - Top Right (Current Price Only) -->
                                         <div class="deva-price-overlay">
-                                            <?php echo $product->get_price_html(); ?>
+                                            <?php 
+                                            // Display only current price, not both original and discounted
+                                            $current_price = $product->get_price();
+                                            $currency_symbol = get_woocommerce_currency_symbol();
+                                            
+                                            // Validate price is numeric and not empty
+                                            if (is_numeric($current_price) && $current_price > 0) {
+                                                echo $currency_symbol . number_format((float)$current_price, 2);
+                                            } else {
+                                                // Fallback for products without valid price
+                                                echo $currency_symbol . '0.00';
+                                            }
+                                            ?>
                                         </div>
 
                                         <!-- Sale Badge - Bottom Left -->
@@ -228,12 +240,13 @@ function deva_product_category_shortcode($atts) {
                                         </h2>
                                         
                                         <!-- Product Description -->
-                                        <div class="product-excerpt">
-                                            <?php 
-                                            $excerpt = wp_trim_words($product->get_short_description() ?: $product->get_description(), 15, '...');
-                                            echo $excerpt;
-                                            ?>
-                                        </div>
+                                        <?php 
+                                        $product_excerpt = deva_get_product_excerpt($product, 15);
+                                        if ($product_excerpt && $product_excerpt !== 'No description available.') : ?>
+                                            <div class="deva-product-excerpt">
+                                                <?php echo esc_html($product_excerpt); ?>
+                                            </div>
+                                        <?php endif; ?>
 
                                         <!-- Single Star Rating with Reviews -->
                                         <?php

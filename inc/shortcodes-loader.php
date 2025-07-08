@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DEVA Shortcodes Loader
  * 
@@ -13,5 +14,6 @@ if (!defined('ABSPATH')) {
 require_once get_stylesheet_directory() . '/inc/shortcodes/deva-categories.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes/deva-products.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes/deva-category-display.php';
-require_once get_stylesheet_directory() . '/inc/shortcodes/deva-product-search.php';
-require_once get_stylesheet_directory() . '/inc/shortcodes/deva-search-modal.php';
+require_once get_stylesheet_directory() . '/inc/shortcodes/deva-product-category.php';
+require_once get_stylesheet_directory() . '/inc/shortcodes/deva-reviews.php';
+require_once get_stylesheet_directory() . '/inc/shortcodes/deva-single-product.php';
