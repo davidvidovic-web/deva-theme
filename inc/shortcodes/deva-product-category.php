@@ -1,6 +1,6 @@
 <?php
 /**
- * DEVA Product Search Shortcode
+ * DEVA Product Category Shortcode
  * 
  * @package HelloElementorChild
  */
@@ -10,9 +10,9 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * DEVA Comprehensive Product Search and Filter Shortcode
+ * DEVA Comprehensive Product Category and Filter Shortcode
  */
-function deva_product_search_shortcode($atts) {
+function deva_product_category_shortcode($atts) {
     $atts = shortcode_atts(array(
         'category' => '',
         'per_page' => 12,
@@ -125,8 +125,7 @@ function deva_product_search_shortcode($atts) {
     ));
 
     ob_start();
-    ?>
-    <section class="deva-shop-section deva-product-search-section <?php echo esc_attr($atts['class']); ?>" 
+    ?>    <section class="deva-shop-section deva-product-category-section <?php echo esc_attr($atts['class']); ?>"
              data-ajax="<?php echo esc_attr($atts['ajax']); ?>"
              data-current-category="<?php echo esc_attr($current_category_context); ?>">
         <div class="elementor-container elementor-column-gap-default">
@@ -157,7 +156,7 @@ function deva_product_search_shortcode($atts) {
 
             <!-- Search and Filter Bar -->
             <div class="search-filter-bar">
-                <form method="get" class="product-search-form">
+                <form method="get" class="product-category-form">
                     <div class="search-input-wrapper">
                         <input type="text" name="product_search" placeholder="Search by title, keywords..." value="<?php echo esc_attr($search_query); ?>" />
                     </div>
@@ -252,9 +251,14 @@ function deva_product_search_shortcode($atts) {
                                         <!-- Action Buttons -->
                                         <div class="deva-product-actions">
                                             <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                                    Buy Now
-                                                </button>
+                                                <div class="deva-button-row">
+                                                    <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                                        Add to Cart
+                                                    </button>
+                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-buy-now-btn">
+                                                        Buy Now
+                                                    </a>
+                                                </div>
                                             <?php else : ?>
                                                 <span class="deva-out-of-stock">Out of Stock</span>
                                             <?php endif; ?>
@@ -315,7 +319,7 @@ function deva_product_search_shortcode($atts) {
         });
 
         // Enhance form submission to preserve category context
-        $('.product-search-form').on('submit', function() {
+        $('.product-category-form').on('submit', function() {
             if (currentCategory && !$('input[name="current_category"]').val()) {
                 $(this).append('<input type="hidden" name="current_category" value="' + currentCategory + '" />');
             }
@@ -363,4 +367,4 @@ function deva_product_search_shortcode($atts) {
     wp_reset_postdata();
     return ob_get_clean();
 }
-add_shortcode('deva_product_search', 'deva_product_search_shortcode');
+add_shortcode('deva_product_category', 'deva_product_category_shortcode');

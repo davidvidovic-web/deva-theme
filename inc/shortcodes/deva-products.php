@@ -149,9 +149,14 @@ function deva_get_products_html($atts, $paged = 1) {
                         <!-- Action Buttons -->
                         <div class="deva-product-actions">
                             <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
-                                <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                    Buy Now
-                                </button>
+                                <div class="deva-button-row">
+                                    <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                        Add to Cart
+                                    </button>
+                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-buy-now-btn">
+                                        Buy Now
+                                    </a>
+                                </div>
                             <?php else : ?>
                                 <span class="deva-out-of-stock">Out of Stock</span>
                             <?php endif; ?>
