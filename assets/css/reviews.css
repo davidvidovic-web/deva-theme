@@ -140,7 +140,6 @@
   transition: transform 0.3s ease;
   min-height: 160px;
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   text-align: left;
   width: 100%;

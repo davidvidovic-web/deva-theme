@@ -149,16 +149,39 @@
   transform: scale(1.1);
 }
 
+.deva-favorite-heart.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  animation: pulse 1.5s infinite;
+}
+
+.deva-favorite-heart.active {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
 .deva-favorite-heart svg {
   width: 16px;
   height: 16px;
   fill: #ffffff;
   transition: fill 0.3s ease;
+  stroke: #666;
+  stroke-width: 1;
 }
 
-.deva-favorite-heart.active svg,
+.deva-favorite-heart.active svg {
+  fill: #e74c3c;
+  stroke: #e74c3c;
+}
+
 .deva-favorite-heart:hover svg {
   fill: #e74c3c;
+  stroke: #e74c3c;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 /* DEVA Price Overlay - Current Price Only */
@@ -265,6 +288,9 @@
 .deva-product-actions {
   margin-top: auto;
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .deva-add-to-cart-btn {
@@ -287,6 +313,35 @@
   box-sizing: border-box;
   background: #48733d;
   color: #fff;
+}
+
+/* Buy Now button enhanced styling */
+.deva-add-to-cart-btn {
+  background: linear-gradient(135deg, #48733d 0%, #3d6234 100%);
+  box-shadow: 0 2px 8px rgba(72, 115, 61, 0.2);
+}
+
+.deva-add-to-cart-btn:hover {
+  background: linear-gradient(135deg, #3d6234 0%, #325028 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(72, 115, 61, 0.3);
+}
+
+/* Loading state for buy now */
+.deva-add-to-cart-btn.loading {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Success state (briefly shown before redirect) */
+.deva-add-to-cart-btn.added {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.deva-add-to-cart-btn:focus {
+  outline: 2px solid #48733d;
+  outline-offset: 2px;
 }
 
 .deva-add-to-cart-btn:hover {
@@ -451,6 +506,24 @@
     letter-spacing: 0.3px;
     width: 100%;
   }
+  
+  .deva-view-cart-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+  
+  /* Stack buttons on very small screens */
+  .deva-product-actions.inline-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .deva-product-actions.inline-buttons .deva-add-to-cart-btn,
+  .deva-product-actions.inline-buttons .deva-view-cart-btn {
+    flex: none;
+    width: 100%;
+  }
 }
 
 /* Tablet adjustments */
@@ -458,6 +531,17 @@
   .deva-add-to-cart-btn {
     font-size: 13px;
     padding: 11px 14px;
+  }
+  
+  .deva-view-cart-btn {
+    font-size: 13px;
+    padding: 11px 14px;
+  }
+  
+  /* Keep buttons inline on tablets if there's enough space */
+  .deva-product-actions.inline-buttons {
+    flex-direction: row;
+    gap: 8px;
   }
 }
 
@@ -906,4 +990,281 @@
     padding: 10px 12px;
     letter-spacing: 0.3px;
   }
+}
+
+/* Wishlist Display Styles */
+.deva-wishlist-display {
+    padding: 20px 0;
+}
+
+.deva-wishlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #b5d1a7;
+}
+
+.deva-wishlist-header h2 {
+    margin: 0;
+    color: #48733d;
+    font-size: 2rem;
+}
+
+.wishlist-count-display {
+    color: #666;
+    font-size: 1rem;
+}
+
+.deva-wishlist-count {
+    font-weight: 600;
+    color: #48733d;
+}
+
+.deva-wishlist-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #b5d1a7;
+}
+
+.deva-wishlist-empty p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.continue-shopping-btn {
+    display: inline-block;
+    background: #48733d;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.3s ease;
+}
+
+.continue-shopping-btn:hover {
+    background: #3d6234;
+    color: white;
+}
+
+/* Wishlist specific product grid */
+.deva-wishlist-display .deva-products-grid {
+    margin-top: 20px;
+}
+
+/* Loading state for wishlist */
+.deva-wishlist-products.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.deva-wishlist-products.loading::before {
+    content: 'Loading wishlist...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .deva-wishlist-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .deva-wishlist-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===================================
+   CART NOTIFICATION SYSTEM
+   =================================== */
+
+.deva-cart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ffffff;
+    border: 2px solid #48733d;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(72, 115, 61, 0.2);
+    padding: 16px 20px;
+    max-width: 350px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.deva-cart-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.deva-cart-notification .notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.deva-cart-notification .notification-icon {
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.deva-cart-notification .cart-icon {
+    color: #48733d;
+    flex-shrink: 0;
+}
+
+.deva-cart-notification .notification-text {
+    flex: 1;
+    color: #374151;
+    font-size: 14px;
+    line-height: 1.4;
+    min-width: 0; /* Allow text to wrap */
+}
+
+.deva-cart-notification .notification-text strong {
+    color: #48733d;
+    font-weight: 600;
+}
+
+.deva-cart-notification .product-name {
+    color: #6b7280;
+    font-size: 13px;
+    display: block;
+    margin-top: 2px;
+}
+
+.deva-cart-notification .notification-text small {
+    color: #9ca3af;
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+}
+
+.deva-cart-notification .view-cart-link {
+    background: #48733d;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+}
+
+.deva-cart-notification .view-cart-link:hover {
+    background: #3d6234;
+}
+
+/* Buy Now specific notification styling */
+.deva-cart-notification.buy-now-notification {
+    background: linear-gradient(135deg, #48733d 0%, #3d6234 100%);
+    color: #ffffff;
+    border: none;
+}
+
+.deva-cart-notification.buy-now-notification .cart-icon {
+    color: #ffffff;
+}
+
+.deva-cart-notification.buy-now-notification .notification-text {
+    color: #ffffff;
+}
+
+.deva-cart-notification.buy-now-notification .notification-text strong {
+    color: #ffffff;
+}
+
+.deva-cart-notification.buy-now-notification .product-name {
+    color: #e5f3e8;
+}
+
+.deva-cart-notification.buy-now-notification .notification-text small {
+    color: #d4e5ce;
+    font-weight: 500;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .deva-cart-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        margin: 0 10px;
+    }
+    
+    .deva-cart-notification .notification-content {
+        gap: 10px;
+    }
+    
+    .deva-cart-notification .notification-text {
+        font-size: 13px;
+    }
+    
+    .deva-cart-notification .view-cart-link {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ===================================
+   VIEW CART BUTTON STYLING (Legacy - for other uses)
+   =================================== */
+
+.deva-view-cart-btn {
+  display: none;
+  width: 100%;
+  padding: 12px 15px;
+  background: #ffffff;
+  color: #48733d;
+  border: 2px solid #48733d;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.deva-view-cart-btn:hover {
+  background: #48733d;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(72, 115, 61, 0.3);
+}
+
+.deva-view-cart-btn:focus {
+  outline: 2px solid #48733d;
+  outline-offset: 2px;
+}
+
+/* Show view cart button when it has the show class */
+.deva-view-cart-btn.show {
+  display: flex !important;
 }

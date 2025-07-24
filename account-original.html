@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile Page</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Breadcrumb -->
+      <div class="row">
+        <div class="col-xs-12">
+          <nav class="breadcrumb">
+            <a href="#">Home</a> > <span>Profile</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Top Section -->
+      <div class="row top-section">
+        <!-- Profile Info -->
+        <div class="col-xs-12 col-md-6">
+          <div class="box profile-card">
+            <img
+              src="https://via.placeholder.com/100"
+              class="avatar"
+              alt="Avatar"
+            />
+            <h2>Hi Emma</h2>
+            <p class="email">Emma@gmail.com</p>
+            <p class="description">
+              Your journey, Your story<br />
+              This is your space! Add your health goals, track progress, and
+              stay motivated. You can update this anytime in Settings.
+            </p>
+          </div>
+        </div>
+
+        <!-- My Program + Menu -->
+        <div class="col-xs-12 col-md-6">
+          <div class="box program-section">
+            <h3>My program</h3>
+            <div class="program-box">
+              <img src="https://via.placeholder.com/60" class="program-image" />
+              <div class="program-info">
+                <strong>TPM Program</strong>
+                <p>Traditional Persian Medicine</p>
+                <small>Ancient healing for balance.</small>
+              </div>
+              <div class="program-price">$120</div>
+            </div>
+
+            <ul class="menu-list">
+              <li><span>Wishlist</span><span class="icon">🤍</span></li>
+              <li><span>Shopping cart</span><span class="icon">🛒</span></li>
+              <li><span>Billing history</span><span class="icon">🧾</span></li>
+              <li><span>Saved Blogs</span><span class="icon">🔖</span></li>
+              <li><span>Setting</span><span class="icon">⚙️</span></li>
+              <li><span>Sign out</span><span class="icon">⏏️</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Section -->
+      <div class="row schedule-section">
+        <div class="col-xs-12">
+          <h3>My schedule</h3>
+        </div>
+
+        <!-- First Session -->
+        <div class="col-xs-12 col-md-6">
+          <div class="box session-card">
+            <h4>First session</h4>
+            <p>⏰ Time: 1:00–1:30 (GMT+0:00) <span class="edit">✏️</span></p>
+            <p>📅 Date: 13th JUN <span class="edit">✏️</span></p>
+            <p>🔖 Save it to my calendar <span class="icon">🔔</span></p>
+            <button class="call-button">Call 📹</button>
+          </div>
+        </div>
+
+        <!-- Second Session -->
+        <div class="col-xs-12 col-md-6">
+          <div class="box session-card">
+            <h4>Second session</h4>
+            <p>⏰ Time: 1:00–1:30 (GMT+0:00) <span class="edit">✏️</span></p>
+            <p>📅 Date: 13th JUN <span class="edit">✏️</span></p>
+            <p>🔖 Save it to my calendar <span class="icon">🔔</span></p>
+            <button class="call-button disabled" disabled>Call 📹</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Button -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="footer">
+            <button class="schedule-next">Schedule Your Next Session</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    font-family: sans-serif;
+    background: #f7fdf6;
+    color: #111;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .box {
+    background: #eaf2e5;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .profile-card {
+    text-align: center;
+  }
+
+  .avatar {
+    width: 100px;
+    border-radius: 50%;
+  }
+
+  .email {
+    font-weight: bold;
+  }
+
+  .description {
+    font-size: 14px;
+    color: #444;
+  }
+
+  .program-section h3 {
+    margin-top: 0;
+  }
+
+  .program-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #eaf2e5;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .program-image {
+    width: 60px;
+    border-radius: 6px;
+  }
+
+  .program-info {
+    flex-grow: 1;
+  }
+
+  .program-price {
+    font-weight: bold;
+  }
+
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .menu-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+  }
+
+  .schedule-section h3 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
+  .session-card h4 {
+    margin-top: 0;
+  }
+
+  .session-card p {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .edit {
+    cursor: pointer;
+  }
+
+  .call-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #3c5f37;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .call-button.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .schedule-next {
+    background: #3c5f37;
+    color: white;
+    padding: 14px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+</style>

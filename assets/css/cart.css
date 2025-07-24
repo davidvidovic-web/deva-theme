@@ -1,0 +1,1124 @@
+/* ===================================
+   DEVA Cart Page Styles
+   =================================== */
+
+.deva-cart-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+/* Cart Navigation Tabs - Pagination Style */
+.deva-cart-navigation {
+  margin-bottom: 2rem;
+  border-bottom: none;
+}
+
+.deva-cart-navigation .deva-pagination {
+  margin: 0 auto 2rem;
+}
+
+.deva-cart-navigation .deva-pagination ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.deva-cart-navigation .deva-pagination li {
+  margin: 0;
+}
+
+.deva-cart-navigation .deva-pagination li.cart-tab,
+.deva-cart-navigation .deva-pagination li.wishlist-tab {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Tab styles moved to cart header section */
+
+/* Old tab styles removed */
+
+/* Responsive Design for Cart Navigation */
+@media (max-width: 768px) {
+  .deva-cart-navigation .deva-pagination ul {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .deva-cart-navigation .deva-pagination li.cart-tab,
+  .deva-cart-navigation .deva-pagination li.wishlist-tab {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .deva-tab {
+    padding: 1rem 1.5rem;
+    min-height: 50px;
+  }
+}
+
+/* Responsive Design for Cart Header */
+@media (max-width: 768px) {
+  .deva-cart-header {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .deva-cart-header .deva-tab {
+    padding: 14px 24px;
+    font-size: 0.9rem;
+    gap: 6px;
+  }
+  
+  .deva-cart-header .deva-tab svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .deva-cart-header .deva-tab {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+  
+  .deva-cart-header .deva-tab svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Tab Content */
+.deva-tab-content {
+  display: none;
+}
+
+.deva-tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cart Header */
+.deva-cart-header {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.deva-cart-header .deva-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: #EBF3E8;
+  color: #48733D;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 1rem;
+  flex: 1;
+  text-align: center;
+}
+
+.deva-cart-header .deva-tab:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.deva-cart-header .deva-tab:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.deva-cart-header .deva-tab.active {
+  background: #48733D;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.deva-cart-header .deva-tab:hover:not(.active) {
+  background: #d4e5ce;
+}
+
+.deva-cart-header .deva-tab svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  transition: all 0.3s ease;
+}
+
+.deva-cart-items {
+  margin-bottom: 2rem;
+}
+
+.deva-cart-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  background: #ebf3e8;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.deva-cart-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.deva-cart-item:last-child {
+  margin-bottom: 0;
+}
+
+.deva-item-image {
+  flex-shrink: 0;
+  width: 130px;
+  height: 130px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.deva-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.deva-item-image:hover img {
+  transform: scale(1.05);
+}
+
+.deva-item-details {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+}
+
+.deva-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-right: 140px;
+}
+
+.deva-item-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.deva-item-name a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.deva-item-name a:hover {
+  color: #3b82f6;
+}
+
+.deva-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.deva-item-meta p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.deva-item-attribute {
+  font-weight: 500;
+  color: #374151 !important;
+}
+
+/* Cart Item Attributes Styling */
+.deva-item-attributes {
+  margin: 0.5rem 0;
+}
+
+.deva-item-attributes p {
+  margin: 0.25rem 0 !important;
+  font-size: 0.875rem !important;
+  color: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.deva-item-attributes strong {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+.deva-item-attributes .variation {
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0.125rem 0;
+  border-left: 3px solid #3b82f6;
+}
+
+.deva-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 6px;
+  padding: 0.25rem;
+}
+
+.qty-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border: 2px solid #1f2937 !important;
+  background: transparent !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.qty-btn:hover {
+  background: #e5e7eb !important;
+  color: #1f2937 !important;
+}
+
+.deva-quantity-input {
+  width: 50px !important;
+  height: 28px;
+  border: none !important;
+  background: transparent;
+  text-align: center;
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.deva-item-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 120px;
+  pointer-events: none;
+}
+
+.deva-item-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  pointer-events: auto;
+}
+
+.deva-item-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-top: auto;
+  pointer-events: auto;
+}
+
+.unit-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+}
+
+.total-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.price-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-amount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.subtotal-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Responsive Design for Item Prices */
+@media (max-width: 768px) {
+  .deva-item-price {
+    gap: 0.375rem;
+  }
+  
+  .unit-price .price-amount,
+  .total-price .price-amount {
+    font-size: 0.9rem;
+  }
+  
+  .subtotal-amount {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .deva-item-price {
+    gap: 0.25rem;
+  }
+  
+  .unit-price .price-amount {
+    font-size: 0.85rem;
+  }
+  
+  .subtotal-amount {
+    font-size: 1rem;
+  }
+}
+
+/* Buttons - High Priority Styling to Override Elementor */
+.deva-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  border: 2px solid transparent !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.deva-button-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+}
+
+.deva-button-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+  color: white !important;
+}
+
+.deva-button-outline {
+  background: transparent !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+}
+
+.deva-button-outline:hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px) !important;
+}
+
+.deva-remove-item {
+  background: transparent !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+}
+
+.deva-remove-item:hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px) !important;
+}
+
+.deva-wishlist-item {
+  background: transparent !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+}
+
+.deva-wishlist-item:hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Cart Actions */
+.deva-cart-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.deva-cart-actions .deva-button {
+  min-width: 150px;
+  align-self: flex-start;
+}
+
+/* =============================================================================
+   COMPREHENSIVE CART BUTTON STYLING
+   Ensures ALL cart-related buttons use DEVA green outline styling
+   ============================================================================= */
+
+/* WooCommerce Cart Form Buttons */
+.woocommerce-cart-form input[type="submit"],
+.woocommerce-cart-form button[type="submit"],
+.woocommerce-cart-form .button,
+.cart-collaterals input[type="submit"],
+.cart-collaterals button[type="submit"],
+.cart-collaterals .button:not(.checkout-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #304624 !important;
+  background: transparent !important;
+  color: #304624 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.woocommerce-cart-form input[type="submit"]:hover,
+.woocommerce-cart-form button[type="submit"]:hover,
+.woocommerce-cart-form .button:hover,
+.cart-collaterals input[type="submit"]:hover,
+.cart-collaterals button[type="submit"]:hover,
+.cart-collaterals .button:not(.checkout-button):hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px);
+}
+
+/* Coupon Form Styling */
+.deva-cart-actions .coupon {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+}
+
+.deva-cart-actions .coupon label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.deva-cart-actions .coupon .form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.deva-cart-actions .coupon input[type="text"] {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: border-color 0.3s ease;
+}
+
+.deva-cart-actions .coupon input[type="text"]:focus {
+  outline: none;
+  border-color: #304624;
+  box-shadow: 0 0 0 3px rgba(48, 70, 36, 0.1);
+}
+
+.deva-cart-actions .coupon input[type="submit"],
+.deva-cart-actions .coupon button[type="submit"] {
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+/* Cross-sells section buttons */
+.cross-sells .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #304624 !important;
+  background: transparent !important;
+  color: #304624 !important;
+}
+
+.cross-sells .button:hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+}
+
+/* Ensure quantity update buttons maintain green outline */
+input[name="update_cart"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #304624 !important;
+  background: transparent !important;
+  color: #304624 !important;
+  min-width: 150px;
+}
+
+input[name="update_cart"]:hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px);
+}
+
+/* Any other potential WooCommerce buttons */
+.woocommerce-cart .actions .button,
+.woocommerce-cart .wc-proceed-to-checkout .button:not(.checkout-button),
+.cart_totals .button:not(.checkout-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #304624 !important;
+  background: transparent !important;
+  color: #304624 !important;
+}
+
+.woocommerce-cart .actions .button:hover,
+.woocommerce-cart .wc-proceed-to-checkout .button:not(.checkout-button):hover,
+.cart_totals .button:not(.checkout-button):hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px);
+}
+
+/* Cart Totals - High Priority to Override Elementor */
+.cart-collaterals {
+  margin-top: 2rem !important;
+}
+
+.cart_totals {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  padding: 1.5rem !important;
+}
+
+.cart_totals h2 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+  margin-bottom: 1rem !important;
+  text-align: center !important;
+}
+
+.cart_totals table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+.cart_totals td,
+.cart_totals th {
+  padding: 0.75rem 0 !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  text-align: left !important;
+}
+
+.cart_totals th {
+  font-weight: 500 !important;
+  color: #6b7280 !important;
+}
+
+.cart_totals .order-total th,
+.cart_totals .order-total td {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  border-top: 2px solid #e5e7eb !important;
+  padding-top: 1rem !important;
+}
+
+.wc-proceed-to-checkout {
+  text-align: center !important;
+  margin-top: 1.5rem !important;
+}
+
+.wc-proceed-to-checkout .checkout-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem 2rem !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  min-width: 200px !important;
+}
+
+.wc-proceed-to-checkout .checkout-button:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+  color: white !important;
+}
+
+/* Empty Cart */
+.deva-cart-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.deva-cart-empty h2 {
+  font-size: 1.5rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.deva-cart-empty p {
+  color: #9ca3af;
+  margin-bottom: 2rem;
+}
+
+/* Wishlist Content */
+.deva-wishlist-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.deva-wishlist-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .deva-checkout-container {
+    padding: 1rem;
+    margin: 0 1rem;
+  }
+
+  .deva-checkout-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .deva-checkout-title {
+    font-size: 1.5rem;
+  }
+
+  .deva-cart-item {
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+  }
+
+  .deva-item-image {
+    width: 60px;
+    height: 60px;
+    align-self: center;
+  }
+
+  .deva-item-details {
+    flex-direction: column;
+    gap: 1rem;
+    position: static;
+  }
+
+  .deva-item-info {
+    padding-right: 0;
+  }
+
+  .deva-item-actions {
+    position: static;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    height: auto;
+    width: 100%;
+  }
+
+  .deva-item-buttons {
+    flex-direction: row;
+    width: auto;
+  }
+
+  .deva-item-price {
+    margin-top: 0;
+  }
+
+  .deva-customer-details {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .deva-tabs {
+    max-width: 100%;
+  }
+
+  .deva-tab {
+    padding: 0.5rem 1rem;
+  }
+
+  .tab-label {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .deva-item-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .deva-button {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+
+  .deva-place-order-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* =============================================================================
+   ELEMENTOR OVERRIDE - MAXIMUM PRIORITY CART BUTTON STYLING
+   ============================================================================= */
+
+/* Super specific selectors to override any Elementor styling */
+body.woocommerce-cart .deva-cart-container .deva-button,
+body.woocommerce-cart .deva-cart-container button,
+body.woocommerce-cart .deva-cart-container input[type="submit"],
+body.woocommerce-cart .deva-cart-container .deva-button-outline,
+body.woocommerce-cart .deva-cart-container .deva-remove-item,
+body.woocommerce-cart .deva-cart-container .deva-wishlist-item,
+body.woocommerce-cart .woocommerce-cart-form .deva-button,
+body.woocommerce-cart .woocommerce-cart-form button,
+body.woocommerce-cart .woocommerce-cart-form input[type="submit"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  border: 2px solid #304624 !important;
+  background: transparent !important;
+  color: #304624 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  line-height: normal !important;
+}
+
+/* Hover states with maximum specificity */
+body.woocommerce-cart .deva-cart-container .deva-button:hover,
+body.woocommerce-cart .deva-cart-container button:hover,
+body.woocommerce-cart .deva-cart-container input[type="submit"]:hover,
+body.woocommerce-cart .deva-cart-container .deva-button-outline:hover,
+body.woocommerce-cart .deva-cart-container .deva-remove-item:hover,
+body.woocommerce-cart .deva-cart-container .deva-wishlist-item:hover,
+body.woocommerce-cart .woocommerce-cart-form .deva-button:hover,
+body.woocommerce-cart .woocommerce-cart-form button:hover,
+body.woocommerce-cart .woocommerce-cart-form input[type="submit"]:hover {
+  background: rgba(48, 70, 36, 0.05) !important;
+  color: #304624 !important;
+  border-color: #304624 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Exclude checkout button from green outline styling */
+body.woocommerce-cart .checkout-button,
+body.woocommerce-cart .deva-button-primary {
+  border: 2px solid #3b82f6 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: white !important;
+}
+
+body.woocommerce-cart .checkout-button:hover,
+body.woocommerce-cart .deva-button-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+  color: white !important;
+  border-color: #1d4ed8 !important;
+}
+
+/* Quantity buttons with maximum specificity */
+body.woocommerce-cart .deva-cart-container .qty-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border: 1px solid #374151 !important;
+  background: transparent !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+}
+
+.deva-cart-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.deva-cart-footer .deva-button {
+  width: 250px !important;
+  height: 56px !important;
+  background: #304624 !important;
+  color: #ffffff !important;
+  border: 2px solid #304624 !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  padding: 0 1.5rem !important;
+}
+
+.deva-cart-footer .deva-button:hover {
+  background: #243518 !important;
+  border-color: #243518 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Cart Bottom Navigation - Identical to Category Display Pagination */
+.deva-cart-container .deva-pagination {
+  text-align: center;
+  margin-top: 50px;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.deva-cart-container .deva-pagination ul {
+  display: inline-flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  list-style: none;
+}
+
+.deva-cart-container .deva-pagination ul li {
+  list-style: none;
+}
+
+.deva-cart-container .deva-pagination ul li button,
+.deva-cart-container .deva-pagination ul li span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #48733d;
+  border-radius: 8px;
+  color: #48733d;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.deva-cart-container .deva-pagination ul li button:hover,
+.deva-cart-container .deva-pagination ul li span.current {
+  background: #48733d;
+  color: white;
+}
+
+.deva-cart-container .deva-pagination ul li.prev button,
+.deva-cart-container .deva-pagination ul li.next button {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  position: relative;
+}
+
+.deva-cart-container .deva-pagination ul li span.disabled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: #999;
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Active state for current tab indicators */
+.deva-cart-container .deva-pagination ul li span.active {
+  background: #48733d;
+  color: white;
+}
+
+/* Specific styling for tab indicators to ensure only active is green filled */
+.deva-cart-container .deva-pagination ul li.cart-indicator span,
+.deva-cart-container .deva-pagination ul li.wishlist-indicator span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #48733d;
+  border-radius: 8px;
+  color: #48733d;
+  background: #ffffff;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Active state - green background, white text */
+.deva-cart-container .deva-pagination ul li.cart-indicator span.active,
+.deva-cart-container .deva-pagination ul li.wishlist-indicator span.active {
+  background: #48733d;
+  color: #ffffff;
+  border-color: #48733d;
+}
+
+/* Ensure inactive indicators maintain outline style */
+.deva-cart-container .deva-pagination ul li.cart-indicator span:not(.active),
+.deva-cart-container .deva-pagination ul li.wishlist-indicator span:not(.active) {
+  background: #ffffff;
+  color: #48733d;
+  border-color: #48733d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deva-cart-container .deva-pagination {
+    margin-top: 30px;
+  }
+  
+  .deva-cart-container .deva-pagination ul {
+    gap: 8px;
+  }
+  
+  .deva-cart-container .deva-pagination ul li button,
+  .deva-cart-container .deva-pagination ul li span {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+}

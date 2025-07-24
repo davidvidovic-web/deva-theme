@@ -122,9 +122,12 @@ function deva_single_product_shortcode($atts)
                             <div class="attribute-selection">
                                 <?php
                                 $values = explode(', ', $attribute_values);
+                                $values = array_map('trim', $values); // Remove any extra whitespace
+                                $values = deva_sort_attribute_values($values); // Sort properly
+                                
                                 foreach ($values as $index => $value) :
                                 ?>
-                                    <div class="attribute-option <?php echo $index === 0 ? 'active' : ''; ?>" data-value="<?php echo esc_attr($value); ?>">
+                                    <div class="attribute-option <?php echo $index === 0 ? 'active' : ''; ?>" data-value="<?php echo esc_attr($value); ?>" data-attribute="<?php echo esc_attr($attribute_name); ?>">
                                         <?php echo esc_html($value); ?>
                                     </div>
                                 <?php endforeach; ?>
@@ -229,7 +232,7 @@ function deva_single_product_shortcode($atts)
                 </div>
 
                 <!-- Quantity and Add to Cart -->
-                <div class="product-actions">
+                <div class="product-actions" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                     <div class="quantity-selector">
                         <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
                         <input type="number" class="quantity-input" value="1" min="1" id="quantity-input">
@@ -368,8 +371,7 @@ function deva_single_product_shortcode($atts)
 
         <!-- Related Products -->
         <div class="related-products">
-            <h2 class="related-products-title">Related Products</h2>
-            <?php echo do_shortcode('[deva_products limit="4" columns="4"]'); ?>
+            <?php echo do_shortcode('[deva_products_slider related_to="' . $product->get_id() . '" limit="10" title="Related Products" slides_per_view="4"]'); ?>
         </div>
     </div>
 
@@ -456,14 +458,370 @@ function deva_single_product_shortcode($atts)
 
         function addToCart() {
             const quantity = document.getElementById('quantity-input').value;
-            // TODO: Implement add to cart functionality
-            alert('Added ' + quantity + ' item(s) to cart!');
+            const productForm = document.querySelector('.product-actions');
+            const productId = productForm.getAttribute('data-product-id');
+            const addToCartBtn = document.querySelector('.add-to-cart-btn');
+            
+            // Collect selected attributes
+            const selectedAttributes = {};
+            document.querySelectorAll('.attribute-option.active').forEach(option => {
+                const attributeName = option.getAttribute('data-attribute');
+                const attributeValue = option.getAttribute('data-value');
+                selectedAttributes[attributeName] = attributeValue;
+            });
+            
+            // Show loading state
+            const originalText = addToCartBtn.textContent;
+            addToCartBtn.textContent = 'Adding...';
+            addToCartBtn.disabled = true;
+            addToCartBtn.classList.add('loading');
+            
+            // Prepare data for AJAX request
+            const formData = {
+                action: 'woocommerce_add_to_cart',
+                product_id: productId,
+                quantity: quantity
+            };
+            
+            // Add attributes to form data
+            Object.keys(selectedAttributes).forEach(attr => {
+                formData[`attribute_${attr}`] = selectedAttributes[attr];
+            });
+            
+            // Check if we have WooCommerce AJAX available
+            const ajaxUrl = (typeof deva_wc_params !== 'undefined' && deva_wc_params.ajax_url) 
+                ? deva_wc_params.ajax_url 
+                : '/wp-admin/admin-ajax.php';
+            
+            // Use jQuery if available, otherwise fallback
+            if (typeof jQuery !== 'undefined') {
+                jQuery.ajax({
+                    url: ajaxUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        handleAddToCartSuccess(response, addToCartBtn, originalText, quantity);
+                    },
+                    error: function(xhr, status, error) {
+                        handleAddToCartError(addToCartBtn, originalText);
+                    }
+                });
+            } else {
+                // Fallback using fetch API
+                const formBody = Object.keys(formData).map(key => 
+                    encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])
+                ).join('&');
+                
+                fetch(ajaxUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formBody
+                })
+                .then(response => response.json())
+                .then(data => {
+                    handleAddToCartSuccess(data, addToCartBtn, originalText, quantity);
+                })
+                .catch(error => {
+                    handleAddToCartError(addToCartBtn, originalText);
+                });
+            }
+        }
+        
+        function handleAddToCartSuccess(response, button, originalText, quantity) {
+            if (response.error) {
+                alert('Error: ' + response.error);
+                resetButton(button, originalText);
+            } else {
+                // Update cart count if exists and jQuery is available
+                if (typeof jQuery !== 'undefined' && response.fragments) {
+                    jQuery(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, jQuery(button)]);
+                }
+                
+                // Show success state
+                button.textContent = 'Added!';
+                button.style.background = '#28a745';
+                
+                // Show success message
+                showSuccessMessage(`Added ${quantity} item(s) to cart!`);
+                
+                // Reset button after 2 seconds
+                setTimeout(function() {
+                    resetButton(button, originalText);
+                }, 2000);
+            }
+        }
+        
+        function handleAddToCartError(button, originalText) {
+            console.error('Error adding product to cart');
+            alert('Error adding product to cart. Please try again.');
+            resetButton(button, originalText);
+        }
+        
+        function resetButton(button, originalText) {
+            button.textContent = originalText;
+            button.style.background = '';
+            button.disabled = false;
+            button.classList.remove('loading');
         }
 
         function buyNow() {
             const quantity = document.getElementById('quantity-input').value;
-            // TODO: Implement buy now functionality
-            alert('Proceeding to checkout with ' + quantity + ' item(s)!');
+            const productForm = document.querySelector('.product-actions');
+            const productId = productForm.getAttribute('data-product-id');
+            const buyNowBtn = document.querySelector('.buy-now-btn');
+            
+            // Collect selected attributes
+            const selectedAttributes = {};
+            document.querySelectorAll('.attribute-option.active').forEach(option => {
+                const attributeName = option.getAttribute('data-attribute');
+                const attributeValue = option.getAttribute('data-value');
+                selectedAttributes[attributeName] = attributeValue;
+            });
+            
+            // Show loading state
+            const originalText = buyNowBtn.textContent;
+            buyNowBtn.textContent = 'Processing...';
+            buyNowBtn.disabled = true;
+            buyNowBtn.classList.add('loading');
+            
+            // Prepare data for AJAX request
+            const formData = {
+                action: 'woocommerce_add_to_cart',
+                product_id: productId,
+                quantity: quantity
+            };
+            
+            // Add attributes to form data
+            Object.keys(selectedAttributes).forEach(attr => {
+                formData[`attribute_${attr}`] = selectedAttributes[attr];
+            });
+            
+            // Check if we have WooCommerce AJAX available
+            const ajaxUrl = (typeof deva_wc_params !== 'undefined' && deva_wc_params.ajax_url) 
+                ? deva_wc_params.ajax_url 
+                : '/wp-admin/admin-ajax.php';
+            
+            // Use jQuery if available, otherwise fallback
+            if (typeof jQuery !== 'undefined') {
+                jQuery.ajax({
+                    url: ajaxUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        handleBuyNowSuccess(response, buyNowBtn, originalText);
+                    },
+                    error: function(xhr, status, error) {
+                        handleBuyNowError(buyNowBtn, originalText);
+                    }
+                });
+            } else {
+                // Fallback using fetch API
+                const formBody = Object.keys(formData).map(key => 
+                    encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])
+                ).join('&');
+                
+                fetch(ajaxUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formBody
+                })
+                .then(response => response.json())
+                .then(data => {
+                    handleBuyNowSuccess(data, buyNowBtn, originalText);
+                })
+                .catch(error => {
+                    handleBuyNowError(buyNowBtn, originalText);
+                });
+            }
+        }
+        
+        function handleBuyNowSuccess(response, button, originalText) {
+            if (response.error) {
+                alert('Error: ' + response.error);
+                resetButton(button, originalText);
+            } else {
+                // Update cart count if exists and jQuery is available
+                if (typeof jQuery !== 'undefined' && response.fragments) {
+                    jQuery(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, jQuery(button)]);
+                }
+                
+                // Show "Redirecting..." message and redirect to checkout
+                button.textContent = 'Redirecting...';
+                
+                // Get checkout URL with multiple fallbacks
+                let checkoutUrl = '/checkout/';
+                if (typeof deva_wc_params !== 'undefined' && deva_wc_params.checkout_url) {
+                    checkoutUrl = deva_wc_params.checkout_url;
+                } else if (typeof wc_add_to_cart_params !== 'undefined' && wc_add_to_cart_params.checkout_url) {
+                    checkoutUrl = wc_add_to_cart_params.checkout_url;
+                } else if (typeof woocommerce_params !== 'undefined' && woocommerce_params.checkout_url) {
+                    checkoutUrl = woocommerce_params.checkout_url;
+                }
+                
+                // Show notification
+                showBuyNowNotification();
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = checkoutUrl;
+                }, 800);
+            }
+        }
+        
+        function handleBuyNowError(button, originalText) {
+            console.error('Error processing order');
+            alert('Error processing order. Please try again.');
+            resetButton(button, originalText);
+        }
+        
+        // Buy Now notification function
+        function showBuyNowNotification() {
+            // Create notification element
+            let notificationEl = document.querySelector('.deva-buy-now-notification');
+            if (notificationEl) {
+                notificationEl.remove();
+            }
+            
+            notificationEl = document.createElement('div');
+            notificationEl.className = 'deva-buy-now-notification';
+            notificationEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #48733d 0%, #5a8a4a 100%);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(72, 115, 61, 0.3);
+                z-index: 9999;
+                font-size: 14px;
+                font-weight: 600;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+                max-width: calc(100vw - 40px);
+                word-wrap: break-word;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+            
+            notificationEl.innerHTML = `
+                <span class="dashicons dashicons-cart" style="font-size: 18px;"></span>
+                <div>
+                    <strong>Product Added!</strong><br>
+                    <small>Redirecting to checkout...</small>
+                </div>
+            `;
+            
+            // Mobile responsive positioning
+            if (window.innerWidth <= 480) {
+                notificationEl.style.cssText += `
+                    top: 10px;
+                    right: 10px;
+                    left: 10px;
+                    transform: translateY(-100%);
+                    font-size: 12px;
+                    padding: 12px 15px;
+                `;
+            }
+            
+            document.body.appendChild(notificationEl);
+            
+            // Animate in
+            setTimeout(() => {
+                notificationEl.style.opacity = '1';
+                notificationEl.style.transform = window.innerWidth <= 480 ? 'translateY(0)' : 'translateX(0)';
+            }, 10);
+            
+            // Auto-hide after 1 second
+            setTimeout(() => {
+                if (notificationEl && notificationEl.parentNode) {
+                    notificationEl.style.opacity = '0';
+                    notificationEl.style.transform = window.innerWidth <= 480 ? 'translateY(-100%)' : 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notificationEl && notificationEl.parentNode) {
+                            notificationEl.remove();
+                        }
+                    }, 300);
+                }
+            }, 1000);
+        }
+        
+        // Success message function (for Add to Cart)
+        function showSuccessMessage(message) {
+            // Create success message element
+            let messageEl = document.querySelector('.deva-success-message');
+            if (!messageEl) {
+                messageEl = document.createElement('div');
+                messageEl.className = 'deva-success-message';
+                messageEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #28a745;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+                    z-index: 9999;
+                    font-size: 14px;
+                    font-weight: 600;
+                    opacity: 0;
+                    transform: translateX(100%);
+                    transition: all 0.3s ease;
+                    max-width: calc(100vw - 40px);
+                    word-wrap: break-word;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                `;
+                
+                // Mobile responsive positioning
+                if (window.innerWidth <= 480) {
+                    messageEl.style.cssText += `
+                        top: 10px;
+                        right: 10px;
+                        left: 10px;
+                        transform: translateY(-100%);
+                        font-size: 12px;
+                        padding: 12px 15px;
+                    `;
+                }
+                
+                document.body.appendChild(messageEl);
+            }
+            
+            messageEl.innerHTML = `
+                <span class="dashicons dashicons-yes" style="font-size: 18px;"></span>
+                <div>${message}</div>
+            `;
+            
+            // Show message
+            setTimeout(() => {
+                messageEl.style.opacity = '1';
+                if (window.innerWidth <= 480) {
+                    messageEl.style.transform = 'translateY(0)';
+                    messageEl.classList.add('show');
+                } else {
+                    messageEl.style.transform = 'translateX(0)';
+                }
+            }, 100);
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                if (window.innerWidth <= 480) {
+                    messageEl.style.transform = 'translateY(-100%)';
+                    messageEl.classList.remove('show');
+                } else {
+                    messageEl.style.transform = 'translateX(100%)';
+                }
+            }, 3000);
         }
 
         // Navigation button active state and smooth scrolling
@@ -519,6 +877,112 @@ function deva_single_product_shortcode($atts)
                 this.classList.add('active');
             });
         });
+
+        // Attribute selection functionality
+        document.querySelectorAll('.attribute-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Get the attribute name to only affect options within the same attribute group
+                const attributeName = this.getAttribute('data-attribute');
+                
+                // Add visual feedback
+                this.classList.add('selecting');
+                
+                // Remove active class from all options in the same attribute group
+                document.querySelectorAll(`.attribute-option[data-attribute="${attributeName}"]`).forEach(opt => {
+                    opt.classList.remove('active', 'selected-feedback');
+                });
+                
+                // Add active class to clicked option with slight delay for visual effect
+                setTimeout(() => {
+                    this.classList.remove('selecting');
+                    this.classList.add('active', 'selected-feedback');
+                    
+                    // Remove the feedback class after animation
+                    setTimeout(() => {
+                        this.classList.remove('selected-feedback');
+                    }, 300);
+                }, 100);
+                
+                // Log the selected value for debugging
+                console.log(`Selected ${attributeName}: ${this.getAttribute('data-value')}`);
+                
+                // Update product selection
+                updateProductSelection();
+            });
+            
+            // Add keyboard support for accessibility
+            option.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+            
+            // Make focusable for keyboard navigation
+            option.setAttribute('tabindex', '0');
+        });
+
+        // Function to handle product selection updates
+        function updateProductSelection() {
+            const selectedAttributes = {};
+            
+            // Collect all selected attributes
+            document.querySelectorAll('.attribute-option.active').forEach(option => {
+                const attributeName = option.getAttribute('data-attribute');
+                const attributeValue = option.getAttribute('data-value');
+                selectedAttributes[attributeName] = attributeValue;
+            });
+            
+            // Log selected attributes for debugging
+            console.log('Selected attributes:', selectedAttributes);
+            
+            // Update the product form or data attributes for cart functionality
+            const productForm = document.querySelector('.product-actions');
+            if (productForm) {
+                // Store selected attributes as data attributes for add to cart functionality
+                Object.keys(selectedAttributes).forEach(attr => {
+                    productForm.setAttribute(`data-${attr}`, selectedAttributes[attr]);
+                });
+            }
+            
+            // Update any display elements that show current selection
+            updateSelectionDisplay(selectedAttributes);
+            
+            // Here you can implement additional logic to:
+            // - Update product price based on variations
+            // - Update product images based on color selection
+            // - Update availability status
+            // - Update SKU or product code display
+        }
+        
+        // Function to update visual display of current selections
+        function updateSelectionDisplay(selectedAttributes) {
+            // Create or update a selection summary
+            let summaryElement = document.querySelector('.selection-summary');
+            if (!summaryElement) {
+                summaryElement = document.createElement('div');
+                summaryElement.className = 'selection-summary';
+                summaryElement.style.cssText = 'margin: 10px 0; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 0.7rem; color: #666;';
+                
+                // Insert after the last attribute selection
+                const lastAttributeSelection = document.querySelector('.attribute-selection:last-of-type');
+                if (lastAttributeSelection) {
+                    lastAttributeSelection.parentNode.insertBefore(summaryElement, lastAttributeSelection.nextSibling);
+                }
+            }
+            
+            // Update summary content
+            const selections = Object.entries(selectedAttributes).map(([attr, value]) => {
+                return `${attr.replace(/^pa_/, '').replace(/_/g, ' ')}: ${value}`;
+            });
+            
+            if (selections.length > 0) {
+                summaryElement.innerHTML = '<strong>Selected:</strong> ' + selections.join(', ');
+                summaryElement.style.display = 'block';
+            } else {
+                summaryElement.style.display = 'none';
+            }
+        }
 
         // Thumbnail image switching
         document.querySelectorAll('.product-thumbnail').forEach(thumbnail => {

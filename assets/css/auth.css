@@ -1,0 +1,657 @@
+/* ===================================
+   DEVA Login/Registration Form Styles
+   =================================== */
+
+.deva-auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: #f7fdf6;
+  background-image: radial-gradient(
+      circle at 20% 50%,
+      rgba(72, 115, 61, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(235, 243, 232, 0.3) 0%,
+      transparent 50%
+    );
+}
+
+.deva-auth-form-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 0 10px 25px rgba(72, 115, 61, 0.1);
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid #d4e5ce;
+}
+
+/* Header */
+.deva-auth-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.deva-auth-header h2 {
+  color: #48733d;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.deva-auth-header p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Form Toggle */
+.deva-form-toggle {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
+  gap: 10px;
+}
+
+.deva-toggle-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  color: #48733d !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(72, 115, 61, 0.05) !important;
+}
+
+.deva-toggle-btn.active {
+  background: #48733d !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(72, 115, 61, 0.2);
+}
+
+.deva-toggle-btn:hover:not(.active) {
+  color: #fff;
+  background: #48733d;
+}
+
+/* Messages */
+.deva-auth-messages {
+  margin-bottom: 1.5rem;
+}
+
+.deva-message {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.deva-message.deva-error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.deva-message.deva-success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+/* Form Groups */
+.deva-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.deva-form-group label {
+  display: block;
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.deva-form-group .required {
+  color: #dc2626;
+}
+
+/* Input Fields */
+.deva-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #d4e5ce;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #374151;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.deva-input:focus {
+  outline: none;
+  border-color: #48733d;
+  box-shadow: 0 0 0 3px rgba(72, 115, 61, 0.1);
+}
+
+.deva-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Password Field */
+.deva-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.deva-password-wrapper .deva-input {
+  padding-right: 3.5rem;
+}
+
+.deva-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  background: none !important;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: 400;
+  padding: 0.375rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.deva-password-toggle:hover {
+  color: #48733d;
+  background: rgba(72, 115, 61, 0.05);
+}
+
+/* Eye icon styles using WordPress Dashicons */
+.deva-password-toggle .show-text.dashicons,
+.deva-password-toggle .hide-text.dashicons {
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+/* Ensure only one icon shows at a time */
+.deva-password-toggle .hide-text.dashicons {
+  display: none;
+}
+
+/* Override default dashicons font family to ensure proper loading */
+.deva-password-toggle .dashicons {
+  font-family: dashicons;
+  font-style: normal;
+  font-weight: 400;
+  speak: never;
+  text-decoration: inherit;
+  text-transform: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: top;
+}
+
+/* Enhanced hover effects for icons */
+.deva-password-toggle:hover .show-text.dashicons,
+.deva-password-toggle:hover .hide-text.dashicons {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Focus state for accessibility */
+.deva-password-toggle:focus {
+  outline: 2px solid #48733d;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Checkbox */
+.deva-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.deva-checkbox-wrapper input[type="checkbox"] {
+  display: none;
+}
+
+.deva-checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d4e5ce;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  position: relative;
+  padding: 2px 9px;
+  transition: all 0.3s ease;
+}
+
+.deva-checkbox-wrapper input[type="checkbox"]:checked + .deva-checkbox-custom {
+  background: #48733d;
+  border-color: #48733d;
+}
+
+.deva-checkbox-wrapper
+  input[type="checkbox"]:checked
+  + .deva-checkbox-custom::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.deva-checkbox-text {
+  line-height: 1.4;
+}
+
+/* Submit Button */
+.deva-submit-btn {
+  width: 100%;
+  padding: 0.875rem 2rem;
+  background: #48733d;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(72, 115, 61, 0.2);
+}
+
+.deva-submit-btn:hover:not(:disabled) {
+  background: #3a5c2f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(72, 115, 61, 0.3);
+}
+
+.deva-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(72, 115, 61, 0.2);
+}
+
+.deva-submit-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Form Footer */
+.deva-form-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.deva-forgot-password {
+  color: #48733d;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.deva-forgot-password:hover {
+  color: #3a5c2f;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deva-auth-container {
+    padding: 1rem;
+  }
+
+  .deva-auth-form-wrapper {
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+  }
+
+  .deva-auth-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .deva-form-toggle {
+    margin-bottom: 1.5rem;
+  }
+
+  .deva-toggle-btn {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .deva-auth-container {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .deva-auth-form-wrapper {
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .deva-auth-header {
+    margin-bottom: 2rem;
+  }
+
+  .deva-auth-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .deva-auth-header p {
+    font-size: 0.875rem;
+  }
+
+  .deva-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .deva-password-wrapper .deva-input {
+    padding-right: 3rem;
+  }
+
+  .deva-password-toggle {
+    right: 0.625rem;
+    font-size: 1rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0.25rem;
+  }
+
+  .deva-password-toggle .show-text.dashicons,
+  .deva-password-toggle .hide-text.dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Ensure mobile icons follow the same display rules */
+  .deva-password-toggle .hide-text.dashicons {
+    display: none;
+  }
+
+  .deva-submit-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Animation for field transitions */
+.deva-register-field,
+.deva-login-field {
+  transition: all 0.3s ease;
+}
+
+/* Loading state for submit button */
+.deva-submit-btn .loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deva-submit-btn .loading-text::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Focus improvements for accessibility */
+.deva-toggle-btn:focus,
+.deva-input:focus,
+.deva-submit-btn:focus,
+.deva-forgot-password:focus {
+  outline: 2px solid #48733d;
+  outline-offset: 2px;
+}
+
+.deva-checkbox-wrapper:focus-within .deva-checkbox-custom {
+  box-shadow: 0 0 0 3px rgba(72, 115, 61, 0.1);
+}
+
+/* Error state for inputs */
+.deva-input.error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.deva-input.error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* ===================================
+   Lost Password Page Specific Styles
+   =================================== */
+
+/* Field help text */
+.deva-field-help {
+  display: block;
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Back link styling */
+.deva-back-link {
+  color: #48733d;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.deva-back-link:hover {
+  color: #3a5c2f;
+  text-decoration: underline;
+}
+
+/* Help text section */
+.deva-help-text {
+  margin-top: 1rem;
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.deva-help-text p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.deva-signin-link {
+  color: #48733d;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.deva-signin-link:hover {
+  color: #3a5c2f;
+  text-decoration: underline;
+}
+
+/* Password strength indicator */
+.deva-password-strength {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  min-height: 1rem;
+  line-height: 1.4;
+}
+
+/* Reset form specific adjustments */
+.deva-reset-form .deva-form-group:last-of-type {
+  margin-bottom: 2rem;
+}
+
+/* Enhanced message styling for lost password */
+.deva-message.deva-info {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+/* Loading states for different buttons */
+.deva-submit-btn#deva-lost-password-submit .loading-text::after,
+.deva-submit-btn#deva-reset-submit .loading-text::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+}
+
+/* Form footer adjustments for lost password */
+.deva-form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Mobile specific adjustments for lost password */
+@media (max-width: 480px) {
+  .deva-help-text {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+  }
+
+  .deva-form-footer {
+    gap: 0.75rem;
+  }
+
+  .deva-back-link {
+    font-size: 0.8125rem;
+  }
+
+  .deva-help-text p {
+    font-size: 0.8125rem;
+  }
+
+  .deva-field-help {
+    font-size: 0.6875rem;
+  }
+
+  .deva-password-strength {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Focus improvements for lost password elements */
+.deva-back-link:focus,
+.deva-signin-link:focus {
+  outline: 2px solid #48733d;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Enhanced form validation styling */
+.deva-input:valid {
+  border-color: #d4e5ce;
+}
+
+.deva-input:invalid:not(:placeholder-shown) {
+  border-color: #fca5a5;
+}
+
+/* Success state for inputs */
+.deva-input.success {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Enhanced password field styling */
+.deva-password-wrapper {
+  position: relative;
+}
+
+.deva-password-wrapper .deva-input:focus + .deva-password-toggle {
+  color: #48733d;
+}
+
+/* Improved form transitions */
+.deva-lost-password-form,
+.deva-reset-form {
+  transition: all 0.3s ease;
+}
+
+/* Better spacing for form elements */
+.deva-form-group .required {
+  margin-left: 2px;
+}
+
+/* Custom styling for specific form states */
+.deva-auth-form.deva-lost-password-form .deva-submit-btn {
+  background: linear-gradient(135deg, #48733d 0%, #3a5c2f 100%);
+}
+
+.deva-auth-form.deva-reset-form .deva-submit-btn {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+}
+
+.deva-auth-form.deva-lost-password-form .deva-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3a5c2f 0%, #2f4f28 100%);
+}
+
+.deva-auth-form.deva-reset-form .deva-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+}

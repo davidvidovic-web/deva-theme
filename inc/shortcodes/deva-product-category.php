@@ -266,11 +266,8 @@ function deva_product_category_shortcode($atts) {
                                             <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
                                                 <div class="deva-button-row">
                                                     <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                                        Add to Cart
+                                                        <span class="button-text">Buy Now</span>
                                                     </button>
-                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-buy-now-btn">
-                                                        Buy Now
-                                                    </a>
                                                 </div>
                                             <?php else : ?>
                                                 <span class="deva-out-of-stock">Out of Stock</span>
@@ -357,18 +354,31 @@ function deva_product_category_shortcode($atts) {
                 success: function(response) {
                     if (response.error) {
                         alert('Error: ' + response.error);
+                        $button.removeClass('loading').text('Buy Now');
                     } else {
-                        $button.removeClass('loading').text('Added!');
+                        $button.removeClass('loading').text('Redirecting...');
+                        
+                        // Get checkout URL with fallbacks
+                        var checkoutUrl = '/checkout/';
+                        if (typeof deva_wc_params !== 'undefined' && deva_wc_params.checkout_url) {
+                            checkoutUrl = deva_wc_params.checkout_url;
+                        } else if (typeof wc_add_to_cart_params !== 'undefined' && wc_add_to_cart_params.checkout_url) {
+                            checkoutUrl = wc_add_to_cart_params.checkout_url;
+                        } else if (typeof woocommerce_params !== 'undefined' && woocommerce_params.checkout_url) {
+                            checkoutUrl = woocommerce_params.checkout_url;
+                        }
+                        
                         // Update cart fragments if available
                         $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
                         
+                        // Redirect to checkout after short delay
                         setTimeout(function() {
-                            $button.text('Add to Cart');
-                        }, 2000);
+                            window.location.href = checkoutUrl;
+                        }, 800);
                     }
                 },
                 error: function() {
-                    $button.removeClass('loading').text('Add to Cart');
+                    $button.removeClass('loading').text('Buy Now');
                     alert('Error adding product to cart');
                 }
             });

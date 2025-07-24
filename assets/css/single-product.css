@@ -131,19 +131,93 @@
 .attribute-option {
   padding: 8px 12px;
   background: white;
-  border: 1px solid #48733d;
+  border: 2px solid #48733d;
   border-radius: 8px;
   color: #48733d;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.64rem;
+  user-select: none;
+  position: relative;
+  min-width: 40px;
+  text-align: center;
 }
 
-.attribute-option:hover,
+.attribute-option:hover {
+  background: #f8f9fa;
+  border-color: #3d6234;
+  color: #3d6234;
+  transform: translateY(-1px);
+}
+
 .attribute-option.active {
   background: #48733d;
   color: white;
+  box-shadow: 0 2px 8px rgba(72, 115, 61, 0.3);
+}
+
+/* Focus states for accessibility */
+.attribute-option:focus {
+  outline: 2px solid #48733d;
+  outline-offset: 2px;
+}
+
+/* Attribute Selection Enhancement */
+.attribute-selection {
+  gap: 8px;
+}
+
+/* Make attribute options more responsive on smaller screens */
+@media (max-width: 480px) {
+  .attribute-option {
+    padding: 6px 10px;
+    font-size: 0.6rem;
+    min-width: 35px;
+  }
+  
+  .attribute-selection {
+    gap: 6px;
+  }
+}
+
+/* Animation for selection feedback */
+.attribute-option.selecting {
+  transform: scale(0.95);
+}
+
+.attribute-option.selected-feedback {
+  animation: selectPulse 0.3s ease-out;
+}
+
+@keyframes selectPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Selection Summary Display */
+.selection-summary {
+  margin: 15px 0;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  color: #666;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.selection-summary strong {
+  color: #48733d;
+  font-weight: 600;
 }
 
 /* Legacy Size Selection - for backward compatibility */
@@ -574,6 +648,43 @@
   transform: translateY(-2px);
 }
 
+/* Button States for Add to Cart and Buy Now */
+.add-to-cart-btn:disabled,
+.buy-now-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.add-to-cart-btn.loading,
+.buy-now-btn.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.add-to-cart-btn.loading::after,
+.buy-now-btn.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: buttonSpin 1s linear infinite;
+}
+
+@keyframes buttonSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Product Navigation */
 .product-navigation {
   margin-bottom: 60px;
@@ -874,5 +985,42 @@ html {
 
   .payment-methods {
     justify-content: center;
+  }
+}
+
+/* =============================================================================
+   DEVA SUCCESS MESSAGE STYLES
+   ============================================================================= */
+
+.deva-success-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #28a745;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+}
+
+/* Mobile responsiveness for success message */
+@media (max-width: 480px) {
+  .deva-success-message {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    transform: translateY(-100%);
+    font-size: 12px;
+    padding: 10px 15px;
+  }
+  
+  .deva-success-message.show {
+    transform: translateY(0);
   }
 }

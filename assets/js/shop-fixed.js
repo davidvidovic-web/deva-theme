@@ -62,6 +62,7 @@ jQuery(document).ready(function($) {
                     updateWishlistCount(response.data.favorites.length);
                 }
             }).fail(function() {
+                console.log('Could not sync with server, using local favorites');
                 // Update UI with local favorites
                 updateFavoritesUI(favorites);
                 updateWishlistCount(favorites.length);
@@ -208,8 +209,13 @@ jQuery(document).ready(function($) {
     
     // === AJAX ADD TO CART ===
     
-    // DEVA Products Grid: AJAX Add to Cart with Buy Now workflow
-    $(document).on('click', '.deva-product-card .buy-now-btn, .deva-product-card .deva-add-to-cart-btn, .woocommerce ul.products li.product .button', function(e) {
+    // DEVA Products Grid: AJAX Add to Cart (for older buy-now-btn class)
+    $(document).on('click', '.deva-product-card .buy-now-btn, .woocommerce ul.products li.product .button', function(e) {
+        // Skip if this is the new deva-add-to-cart-btn
+        if ($(this).hasClass('deva-add-to-cart-btn')) {
+            return;
+        }
+        
         e.preventDefault();
         
         var $button = $(this);
@@ -264,7 +270,7 @@ jQuery(document).ready(function($) {
         });
     });
     
-    // DEVA Add to Cart functionality
+    // DEVA Add to Cart functionality - Buy Now (Add to Cart + Redirect to Checkout)
     $(document).on('click', '.deva-add-to-cart-btn', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -283,7 +289,7 @@ jQuery(document).ready(function($) {
         }
         
         $button.addClass('loading');
-        $button.find('.button-text').text('Adding...');
+        $button.find('.button-text').text('Processing...');
         
         $.ajax({
             url: wc_add_to_cart_params.ajax_url,
@@ -297,29 +303,40 @@ jQuery(document).ready(function($) {
                 $button.removeClass('loading');
                 
                 if (response && !response.error) {
-                    // Update cart fragments
-                    $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
-                    
-                    // Show redirecting state and redirect to checkout
+                    // Success: show brief confirmation then redirect to checkout
                     $button.find('.button-text').text('Redirecting...');
+                    $button.addClass('added');
                     
-                    // Show buy now notification
-                    showBuyNowNotification(productId);
-                    
-                    // Get checkout URL with fallbacks
-                    var checkoutUrl = '/checkout/';
-                    if (typeof deva_wc_params !== 'undefined' && deva_wc_params.checkout_url) {
-                        checkoutUrl = deva_wc_params.checkout_url;
-                    } else if (typeof wc_add_to_cart_params !== 'undefined' && wc_add_to_cart_params.checkout_url) {
-                        checkoutUrl = wc_add_to_cart_params.checkout_url;
-                    } else if (typeof woocommerce_params !== 'undefined' && woocommerce_params.checkout_url) {
-                        checkoutUrl = woocommerce_params.checkout_url;
+                    // Update cart fragments if available
+                    if (response.fragments && response.fragments['div.widget_shopping_cart_content']) {
+                        $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
                     }
                     
-                    // Redirect to checkout after short delay
+                    // Show quick notification
+                    showBuyNowNotification(productId);
+                    
+                    // Redirect to checkout after brief delay
                     setTimeout(function() {
+                        var checkoutUrl = '/checkout/'; // Default fallback
+                        
+                        // Try to get checkout URL from available WooCommerce params
+                        if (typeof deva_wc_params !== 'undefined' && deva_wc_params.checkout_url) {
+                            checkoutUrl = deva_wc_params.checkout_url;
+                        } else if (typeof wc_add_to_cart_params !== 'undefined' && wc_add_to_cart_params.checkout_url) {
+                            checkoutUrl = wc_add_to_cart_params.checkout_url;
+                        } else if (typeof woocommerce_params !== 'undefined' && woocommerce_params.checkout_url) {
+                            checkoutUrl = woocommerce_params.checkout_url;
+                        }
+                        
+                        // Ensure absolute URL
+                        if (checkoutUrl.indexOf('http') !== 0) {
+                            checkoutUrl = window.location.origin + checkoutUrl;
+                        }
+                        
+                        console.log('Redirecting to checkout:', checkoutUrl);
                         window.location.href = checkoutUrl;
-                    }, 800);
+                    }, 1000);
+                    
                 } else {
                     // Error state
                     $button.find('.button-text').text('Error');
@@ -357,6 +374,8 @@ jQuery(document).ready(function($) {
                 nonce: '',
                 is_user_logged_in: false
             };
+        } else {
+            console.log('DEVA Wishlist: shop_ajax loaded successfully', shop_ajax);
         }
         
         // Initialize all shop functionality
@@ -390,17 +409,87 @@ jQuery(document).ready(function($) {
         }
     }
     
-    // Buy Now notification function
-    function showBuyNowNotification(productId) {
-        // Remove any existing notification
-        $('.deva-cart-notification.buy-now-notification').remove();
+    
+    // Cart notification function
+    function showCartNotification(productId, quantity) {
+        // Get product name for notification
+        var productName = $('.deva-product-card[data-product-id="' + productId + '"] .deva-product-title a').text();
         
-        var notification = $('<div class="deva-cart-notification buy-now-notification">' +
-            '<div style="display: flex; align-items: center; gap: 10px;">' +
-                '<span class="cart-icon dashicons dashicons-cart" style="font-size: 18px;"></span>' +
+        // Get current cart count from WooCommerce (if available)
+        var cartCount = '';
+        if (typeof wc_cart_fragments_params !== 'undefined') {
+            var cartCountElement = $('.cart-contents-count, .cart-count');
+            if (cartCountElement.length) {
+                var currentCount = parseInt(cartCountElement.text()) || 0;
+                cartCount = '<br><small>Cart: ' + (currentCount + quantity) + ' item' + (currentCount + quantity !== 1 ? 's' : '') + '</small>';
+            }
+        }
+        
+        // Create notification
+        var notification = $('<div class="deva-cart-notification">' +
+            '<div class="notification-content">' +
+                '<div class="notification-icon">' +
+                    '<svg class="cart-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                        '<circle cx="9" cy="21" r="1"></circle>' +
+                        '<circle cx="20" cy="21" r="1"></circle>' +
+                        '<path d="m1 1 4 4 16 1-1 10H6L4 1H1"></path>' +
+                    '</svg>' +
+                '</div>' +
                 '<div class="notification-text">' +
-                    '<strong>Product Added!</strong><br>' +
-                    '<small>Redirecting to checkout...</small>' +
+                    '<strong>Added to cart!</strong>' +
+                    (productName ? '<br><span class="product-name">' + productName + '</span>' : '') +
+                    cartCount +
+                '</div>' +
+                '<a href="' + (wc_add_to_cart_params.cart_url || '/cart/') + '" class="view-cart-link">View Cart</a>' +
+            '</div>' +
+        '</div>');
+        
+        // Add to body
+        $('body').append(notification);
+        
+        // Show notification with animation
+        setTimeout(function() {
+            notification.addClass('show');
+        }, 100);
+        
+        // Auto-hide after 5 seconds (increased from 4)
+        setTimeout(function() {
+            notification.removeClass('show');
+            setTimeout(function() {
+                notification.remove();
+            }, 300);
+        }, 5000);
+        
+        // Allow manual close on click
+        notification.on('click', function(e) {
+            // Don't close if clicking the view cart link
+            if (!$(e.target).hasClass('view-cart-link')) {
+                notification.removeClass('show');
+                setTimeout(function() {
+                    notification.remove();
+                }, 300);
+            }
+        });
+    }
+    
+    // Buy Now notification function (shorter duration)
+    function showBuyNowNotification(productId) {
+        // Get product name for notification
+        var productName = $('.deva-product-card[data-product-id="' + productId + '"] .deva-product-title a').text();
+        
+        // Create notification
+        var notification = $('<div class="deva-cart-notification buy-now-notification">' +
+            '<div class="notification-content">' +
+                '<div class="notification-icon">' +
+                    '<svg class="cart-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                        '<path d="M9 12l2 2 4-4"></path>' +
+                        '<circle cx="12" cy="12" r="10"></circle>' +
+                    '</svg>' +
+                '</div>' +
+                '<div class="notification-text">' +
+                    '<strong>Added to cart!</strong>' +
+                    (productName ? '<br><span class="product-name">' + productName + '</span>' : '') +
+                    '<br><small>Redirecting to checkout...</small>' +
                 '</div>' +
             '</div>' +
         '</div>');
@@ -408,10 +497,10 @@ jQuery(document).ready(function($) {
         // Add to body
         $('body').append(notification);
         
-        // Animate in
+        // Show notification with animation
         setTimeout(function() {
             notification.addClass('show');
-        }, 10);
+        }, 100);
         
         // Auto-hide after 1.5 seconds (shorter for buy now)
         setTimeout(function() {
