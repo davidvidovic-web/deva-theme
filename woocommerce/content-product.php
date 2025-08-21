@@ -5,7 +5,9 @@
  * This template can be overridden by copying it to yourtheme/woocommerce/content-product.php.
  *
  * @package HelloElementorChild
- * @version 3.6.0
+ * @version 9.4.0
+ *
+ * @see https://docs.woocommerce.com/document/template-structure/
  */
 
 defined('ABSPATH') || exit;

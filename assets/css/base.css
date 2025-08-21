@@ -122,8 +122,9 @@ h6,
   margin-bottom: 20px;
 }
 
+/* WooCommerce notices wrapper - enhanced styling now in notifications.css */
 .deva-custom-shop .woocommerce-notices-wrapper {
-  max-width: 1200px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -136,4 +137,30 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.scale-on-hover,
+.scale-on-hover-button {
+  transition: transform 0.3s ease;
+}
+.scale-on-hover:hover {
+  transform: scale(1.05);
+}
+
+.scale-on-hover-button:hover {
+  transform: scale(1.1);
+}
+
+.page .site-main .page-content .elementor-element .elementor-button {
+  transition: transform 0.3s ease;
+}
+
+.page .site-main .page-content .elementor-element .elementor-button:hover {
+  transform: scale(1.1) !important;
+}
+
+@media only screen and (max-width: 1024px) {
+  .menu-item .elementor-item-active {
+    background: #b5d1a7;
+  }
 }

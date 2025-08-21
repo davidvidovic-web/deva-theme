@@ -170,3 +170,27 @@ function deva_get_how_to_use($product_id = null) {
     
     return $steps;
 }
+
+/**
+ * Helper function to get product FAQs
+ */
+function deva_get_product_faqs($product_id = null) {
+    if (!$product_id) {
+        global $post;
+        $product_id = $post->ID;
+    }
+    
+    // Check if Carbon Fields is available
+    if (!function_exists('carbon_get_post_meta')) {
+        return array();
+    }
+    
+    $faqs = carbon_get_post_meta($product_id, 'deva_faqs');
+    
+    // Return empty array if no FAQs or if it's not an array
+    if (!is_array($faqs) || empty($faqs)) {
+        return array();
+    }
+    
+    return $faqs;
+}

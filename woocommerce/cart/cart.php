@@ -6,7 +6,7 @@
  * This template can be overridden by copying it to yourtheme/woocommerce/cart/cart.php.
  *
  * @package HelloElementorChild
- * @version 3.4.0
+ * @version 10.0.0 
  */
 
 defined('ABSPATH') || exit;
@@ -177,9 +177,6 @@ do_action('woocommerce_before_cart'); ?>
 
         <!-- Wishlist Content -->
         <div class="deva-tab-content" id="wishlist-content">
-            <div class="deva-wishlist-header">
-                <h2 class="deva-wishlist-title"><?php esc_html_e('Your Wishlist', 'hello-elementor-child'); ?></h2>
-            </div>
             <div class="deva-wishlist-container">
                 <?php echo do_shortcode('[deva_wishlist]'); ?>
             </div>

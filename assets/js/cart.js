@@ -5,15 +5,24 @@
 
 jQuery(document).ready(function($) {
     
-    // Tab switching functionality for header tabs
-    $('.deva-cart-header .deva-tab').on('click', function(e) {
-        e.preventDefault();
-        
-        var tabId = $(this).data('tab');
-        
+    // URL Management Functions
+    function updateURL(tab) {
+        var newURL = window.location.pathname + window.location.search;
+        if (tab === 'wishlist') {
+            newURL += '#wishlist';
+        }
+        // Use pushState to update URL without page reload
+        history.pushState({tab: tab}, '', newURL);
+    }
+    
+    function getCurrentTabFromURL() {
+        return window.location.hash === '#wishlist' ? 'wishlist' : 'cart';
+    }
+    
+    function switchToTab(tabId) {
         // Update active tab in header
         $('.deva-cart-header .deva-tab').removeClass('active');
-        $(this).addClass('active');
+        $('.deva-cart-header .deva-tab[data-tab="' + tabId + '"]').addClass('active');
         
         // Update active content
         $('.deva-tab-content').removeClass('active');
@@ -27,6 +36,74 @@ jQuery(document).ready(function($) {
         if (tabId === 'wishlist') {
             loadWishlistContent();
         }
+    }
+    
+    // Initialize correct tab based on URL on page load
+    var initialTab = getCurrentTabFromURL();
+    if (initialTab === 'wishlist') {
+        switchToTab('wishlist');
+    }
+    
+    // Listen for browser back/forward button
+    $(window).on('popstate', function(event) {
+        var currentTab = getCurrentTabFromURL();
+        switchToTab(currentTab);
+    });
+    
+    // Initialize wishlist content if we're on the wishlist tab
+    if ($('#wishlist-content').hasClass('active') || $('.deva-wishlist-container').length > 0) {
+        loadWishlistContent();
+    }
+    
+    // Listen for localStorage changes (when wishlist is updated from other parts of the site)
+    $(window).on('storage', function(e) {
+        if (e.originalEvent.key === 'deva_favorites') {
+            // Reload wishlist if we're on the wishlist tab
+            if ($('#wishlist-content').hasClass('active') || $('.deva-wishlist-container').length > 0) {
+                loadWishlistContent();
+            }
+        }
+    });
+    
+    // Listen for custom wishlist update events
+    $(document).on('deva_wishlist_updated', function() {
+        if ($('#wishlist-content').hasClass('active') || $('.deva-wishlist-container').length > 0) {
+            loadWishlistContent();
+        }
+    });
+    
+    // Listen for wishlist item removal within the wishlist display
+    $(document).on('click', '.deva-wishlist-display .deva-favorite-heart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        var productId = $(this).data('product-id');
+        if (!productId) return;
+        
+        // Remove from localStorage
+        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var index = favorites.indexOf(productId.toString());
+        if (index > -1) {
+            favorites.splice(index, 1);
+            localStorage.setItem('deva_favorites', JSON.stringify(favorites));
+            
+            // Trigger the wishlist update event
+            $(document).trigger('deva_wishlist_updated');
+            
+            // Show feedback
+            $(this).removeClass('active');
+        }
+    });
+    
+    // Tab switching functionality for header tabs
+    $('.deva-cart-header .deva-tab').on('click', function(e) {
+        e.preventDefault();
+        
+        var tabId = $(this).data('tab');
+        
+        // Switch to the tab and update URL
+        switchToTab(tabId);
+        updateURL(tabId);
     });
     
     // Bottom pagination navigation
@@ -36,22 +113,9 @@ jQuery(document).ready(function($) {
         var targetTab = $(this).data('tab');
         if (!targetTab) return;
         
-        // Update active tab in header
-        $('.deva-cart-header .deva-tab').removeClass('active');
-        $('.deva-cart-header .deva-tab[data-tab="' + targetTab + '"]').addClass('active');
-        
-        // Update active content
-        $('.deva-tab-content').removeClass('active');
-        $('#' + targetTab + '-content').addClass('active');
-        
-        // Update pagination indicators
-        $('.cart-tab-indicator, .wishlist-tab-indicator').removeClass('active');
-        $('.' + targetTab + '-tab-indicator').addClass('active');
-        
-        // If switching to wishlist, reload the content
-        if (targetTab === 'wishlist') {
-            loadWishlistContent();
-        }
+        // Switch to the tab and update URL
+        switchToTab(targetTab);
+        updateURL(targetTab);
     });
     
     // Quantity controls
@@ -364,11 +428,14 @@ jQuery(document).ready(function($) {
     function loadWishlistContent() {
         var $container = $('.deva-wishlist-container');
         
+        // Get favorites from localStorage
+        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        console.log('Loading wishlist with favorites:', favorites);
+        
         // Show loading state
         $container.html('<div class="deva-loading">Loading wishlist...</div>');
         
-        // The wishlist shortcode should handle the display
-        // You could also make an AJAX call here to refresh the content
+        // Get AJAX config
         var ajaxConfig = getAjaxConfig();
         
         $.ajax({
@@ -376,18 +443,53 @@ jQuery(document).ready(function($) {
             type: 'POST',
             data: {
                 action: 'get_wishlist_content',
-                security: ajaxConfig.nonce
+                product_ids: JSON.stringify(favorites),
+                show_remove_button: true,
+                nonce: ajaxConfig.nonce,
+                security: ajaxConfig.security || ajaxConfig.nonce,
+                shop_nonce: ajaxConfig.shop_nonce || ajaxConfig.nonce
             },
             success: function(response) {
+                console.log('Wishlist AJAX response:', response);
                 if (response.success) {
-                    $container.html(response.data.content);
+                    $container.html(response.data.content || response.data.html);
+                    
+                    // After loading wishlist content, sync with localStorage
+                    syncWishlistUI();
+                } else {
+                    console.error('Wishlist AJAX error:', response);
+                    $container.html('<div class="deva-wishlist-empty"><p>Unable to load wishlist content.</p></div>');
                 }
             },
-            error: function() {
-                // Fallback to existing content
-                $container.html('<p>Unable to load wishlist content.</p>');
+            error: function(xhr, status, error) {
+                console.log('Wishlist AJAX Error:', {xhr: xhr, status: status, error: error});
+                $container.html('<div class="deva-wishlist-empty"><p>Error loading wishlist. Please try again.</p></div>');
             }
         });
+    }
+    
+    // Sync wishlist UI with localStorage
+    function syncWishlistUI() {
+        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        
+        // Update wishlist count
+        $('.deva-wishlist-count').text(favorites.length);
+        $('.wishlist-count-display').text('(' + favorites.length + ' items)');
+        
+        // Update heart icons to active state for favorited items
+        $('.deva-favorite-heart').removeClass('active');
+        favorites.forEach(function(productId) {
+            $('.deva-favorite-heart[data-product-id="' + productId + '"]').addClass('active');
+        });
+        
+        // If wishlist is empty, show empty state
+        if (favorites.length === 0) {
+            $('.deva-wishlist-products ul').hide();
+            $('.deva-wishlist-empty').show();
+        } else {
+            $('.deva-wishlist-products ul').show();
+            $('.deva-wishlist-empty').hide();
+        }
     }
     
     // Sync wishlist with server (reuse from shop.js)

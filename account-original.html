@@ -1,239 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Profile Page</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <!-- Breadcrumb -->
-      <div class="row">
-        <div class="col-xs-12">
-          <nav class="breadcrumb">
-            <a href="#">Home</a> > <span>Profile</span>
-          </nav>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deva Theme Button Components</title>
+  <style>
+    /* DEVA THEME BUTTON COMPONENTS */
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 2rem;
+      margin: 0;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    h1 {
+      color: #48733d;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 700;
+    }
+    
+    .button-section {
+      margin-bottom: 3rem;
+      padding: 1.5rem;
+      background: #f7fdf6;
+      border-radius: 8px;
+      border-left: 4px solid #48733d;
+    }
+    
+    .button-section h2 {
+      color: #48733d;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    
+    .button-section p {
+      color: #374151;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    /* Base Deva Button Styles */
+    .deva-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #48733d 0%, #5d8a51 100%);
+      color: white;
+      border-color: #48733d;
+    }
+    
+    /* Button 1: Simple Color Change on Hover */
+    .deva-btn-hover-color {
+      background: #48733d;
+    }
+    
+    .deva-btn-hover-color:hover {
+      background: #15803d;
+      color: white;
+    }
+    
+    /* Button 2: Box Shadow Pop-out Effect */
+    .deva-btn-hover-shadow {
+      background: linear-gradient(135deg, #48733d 0%, #5d8a51 100%);
+    }
+    
+    .deva-btn-hover-shadow:hover {
+      background: linear-gradient(135deg, #5d8a51 0%, #48733d 100%);
+      box-shadow: 0 8px 25px rgba(72, 115, 61, 0.4);
+      transform: translateY(-3px);
+      color: white;
+    }
+    
+    /* Button 3: Scale Effect on Hover */
+    .deva-btn-hover-scale {
+      background: linear-gradient(135deg, #48733d 0%, #5d8a51 100%);
+    }
+    
+    .deva-btn-hover-scale:hover {
+      background: linear-gradient(135deg, #5d8a51 0%, #15803d 100%);
+      transform: scale(1.1);
+      color: white;
+    }
+    
+    /* Additional styling for better presentation */
+    .button-demo {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .usage-example {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      border-left: 3px solid #48733d;
+    }
+    
+    .usage-example code {
+      background: #e2e8f0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Deva Theme Button Components</h1>
+    
+    <!-- Button 1: Color Change on Hover -->
+    <div class="button-section">
+      <h2>1. Deva Themed Green Button - Color Change on Hover</h2>
+      <p>This button changes from the standard Deva green (#48733d) to a brighter green (#15803d) on hover.</p>
+      
+      <div class="button-demo">
+        <button class="deva-btn deva-btn-hover-color">Hover for Color Change</button>
       </div>
-
-      <!-- Top Section -->
-      <div class="row top-section">
-        <!-- Profile Info -->
-        <div class="col-xs-12 col-md-6">
-          <div class="box profile-card">
-            <img
-              src="https://via.placeholder.com/100"
-              class="avatar"
-              alt="Avatar"
-            />
-            <h2>Hi Emma</h2>
-            <p class="email">Emma@gmail.com</p>
-            <p class="description">
-              Your journey, Your story<br />
-              This is your space! Add your health goals, track progress, and
-              stay motivated. You can update this anytime in Settings.
-            </p>
-          </div>
-        </div>
-
-        <!-- My Program + Menu -->
-        <div class="col-xs-12 col-md-6">
-          <div class="box program-section">
-            <h3>My program</h3>
-            <div class="program-box">
-              <img src="https://via.placeholder.com/60" class="program-image" />
-              <div class="program-info">
-                <strong>TPM Program</strong>
-                <p>Traditional Persian Medicine</p>
-                <small>Ancient healing for balance.</small>
-              </div>
-              <div class="program-price">$120</div>
-            </div>
-
-            <ul class="menu-list">
-              <li><span>Wishlist</span><span class="icon">🤍</span></li>
-              <li><span>Shopping cart</span><span class="icon">🛒</span></li>
-              <li><span>Billing history</span><span class="icon">🧾</span></li>
-              <li><span>Saved Blogs</span><span class="icon">🔖</span></li>
-              <li><span>Setting</span><span class="icon">⚙️</span></li>
-              <li><span>Sign out</span><span class="icon">⏏️</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Schedule Section -->
-      <div class="row schedule-section">
-        <div class="col-xs-12">
-          <h3>My schedule</h3>
-        </div>
-
-        <!-- First Session -->
-        <div class="col-xs-12 col-md-6">
-          <div class="box session-card">
-            <h4>First session</h4>
-            <p>⏰ Time: 1:00–1:30 (GMT+0:00) <span class="edit">✏️</span></p>
-            <p>📅 Date: 13th JUN <span class="edit">✏️</span></p>
-            <p>🔖 Save it to my calendar <span class="icon">🔔</span></p>
-            <button class="call-button">Call 📹</button>
-          </div>
-        </div>
-
-        <!-- Second Session -->
-        <div class="col-xs-12 col-md-6">
-          <div class="box session-card">
-            <h4>Second session</h4>
-            <p>⏰ Time: 1:00–1:30 (GMT+0:00) <span class="edit">✏️</span></p>
-            <p>📅 Date: 13th JUN <span class="edit">✏️</span></p>
-            <p>🔖 Save it to my calendar <span class="icon">🔔</span></p>
-            <button class="call-button disabled" disabled>Call 📹</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer Button -->
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="footer">
-            <button class="schedule-next">Schedule Your Next Session</button>
-          </div>
-        </div>
+      
+      <div class="usage-example">
+        <strong>CSS Class:</strong> <code>deva-btn deva-btn-hover-color</code>
       </div>
     </div>
-  </body>
+    
+    <!-- Button 2: Box Shadow Pop-out Effect -->
+    <div class="button-section">
+      <h2>2. Deva Themed Green Button - Box Shadow Pop-out Effect</h2>
+      <p>This button adds a prominent box shadow and lifts upward to create a "popping out" effect on hover.</p>
+      
+      <div class="button-demo">
+        <button class="deva-btn deva-btn-hover-shadow">Hover for Pop-out Effect</button>
+      </div>
+      
+      <div class="usage-example">
+        <strong>CSS Class:</strong> <code>deva-btn deva-btn-hover-shadow</code>
+      </div>
+    </div>
+    
+    <!-- Button 3: Scale Effect on Hover -->
+    <div class="button-section">
+      <h2>3. Deva Themed Green Button - Scale Transform on Hover</h2>
+      <p>This button scales up by 10% (scale(1.1)) on hover for a modern interaction effect.</p>
+      
+      <div class="button-demo">
+        <button class="deva-btn deva-btn-hover-scale">Hover for Scale Effect</button>
+      </div>
+      
+      <div class="usage-example">
+        <strong>CSS Class:</strong> <code>deva-btn deva-btn-hover-scale</code>
+      </div>
+    </div>
+    
+    <!-- Usage Instructions -->
+    <div class="button-section">
+      <h2>Usage Instructions</h2>
+      <p>To use these buttons in your Deva theme, copy the CSS styles above and apply the appropriate classes:</p>
+      <div class="usage-example">
+        <p><strong>HTML Structure:</strong></p>
+        <code>&lt;button class="deva-btn deva-btn-hover-color"&gt;Your Button Text&lt;/button&gt;</code><br><br>
+        <code>&lt;button class="deva-btn deva-btn-hover-shadow"&gt;Your Button Text&lt;/button&gt;</code><br><br>
+        <code>&lt;button class="deva-btn deva-btn-hover-scale"&gt;Your Button Text&lt;/button&gt;</code>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
-
-<style>
-  body {
-    font-family: sans-serif;
-    background: #f7fdf6;
-    color: #111;
-    margin: 0;
-    padding: 20px;
-  }
-
-  .breadcrumb {
-    margin-bottom: 20px;
-    font-size: 14px;
-  }
-
-  .box {
-    background: #eaf2e5;
-    padding: 20px;
-    border-radius: 8px;
-  }
-
-  .profile-card {
-    text-align: center;
-  }
-
-  .avatar {
-    width: 100px;
-    border-radius: 50%;
-  }
-
-  .email {
-    font-weight: bold;
-  }
-
-  .description {
-    font-size: 14px;
-    color: #444;
-  }
-
-  .program-section h3 {
-    margin-top: 0;
-  }
-
-  .program-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #eaf2e5;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-
-  .program-image {
-    width: 60px;
-    border-radius: 6px;
-  }
-
-  .program-info {
-    flex-grow: 1;
-  }
-
-  .program-price {
-    font-weight: bold;
-  }
-
-  .menu-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .menu-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-  }
-
-  .schedule-section h3 {
-    margin-top: 40px;
-    margin-bottom: 20px;
-  }
-
-  .session-card h4 {
-    margin-top: 0;
-  }
-
-  .session-card p {
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .edit {
-    cursor: pointer;
-  }
-
-  .call-button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background: #3c5f37;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .call-button.disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-  }
-
-  .schedule-next {
-    background: #3c5f37;
-    color: white;
-    padding: 14px 24px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-</style>

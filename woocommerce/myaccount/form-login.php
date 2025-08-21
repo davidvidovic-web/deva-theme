@@ -3,6 +3,7 @@
 /**
  * DEVA Custom Login/Registration Form
  * Template for [woocommerce_my_account] shortcode
+ * @version 9.9.0
  */
 
 defined('ABSPATH') || exit;

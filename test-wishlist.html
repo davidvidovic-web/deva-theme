@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wishlist Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Wishlist Test</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        // Check localStorage for wishlist items
+        function checkWishlist() {
+            const favorites = localStorage.getItem('deva_favorites');
+            const results = document.getElementById('test-results');
+            
+            if (favorites) {
+                const items = JSON.parse(favorites);
+                results.innerHTML = `
+                    <p><strong>Wishlist items found:</strong> ${items.length}</p>
+                    <p><strong>Product IDs:</strong> ${items.join(', ')}</p>
+                `;
+            } else {
+                results.innerHTML = '<p>No wishlist items found in localStorage</p>';
+            }
+        }
+        
+        // Add a test item to wishlist
+        function addTestItem() {
+            const favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+            favorites.push('123'); // Add a test product ID
+            localStorage.setItem('deva_favorites', JSON.stringify(favorites));
+            checkWishlist();
+        }
+        
+        // Clear wishlist
+        function clearWishlist() {
+            localStorage.removeItem('deva_favorites');
+            checkWishlist();
+        }
+        
+        // Initial check
+        checkWishlist();
+    </script>
+    
+    <button onclick="addTestItem()">Add Test Item</button>
+    <button onclick="clearWishlist()">Clear Wishlist</button>
+    <button onclick="checkWishlist()">Refresh Check</button>
+</body>
+</html>

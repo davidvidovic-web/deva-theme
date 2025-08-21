@@ -3,7 +3,7 @@
    =================================== */
 
 .deva-checkout-container {
-  max-width: 1200px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 2rem;
   background: #ffffff;
@@ -670,7 +670,7 @@ body .woocommerce-checkout select {
   background: #3a5c2f !important;
   border-color: #3a5c2f !important;
   color: #ffffff !important;
-  transform: translateY(-1px) !important;
+  transform: scale(1.05) !important;
   box-shadow: 0 4px 12px rgba(72, 115, 61, 0.3) !important;
 }
 

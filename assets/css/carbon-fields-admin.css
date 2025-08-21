@@ -177,7 +177,7 @@
 .carbon-field-complex .carbon-btn-add:hover {
     background: #005a87;
     border-color: #005a87;
-    transform: translateY(-1px);
+    transform: scale(1.05);
 }
 
 .carbon-field-complex .carbon-btn-remove {
@@ -189,7 +189,7 @@
 .carbon-field-complex .carbon-btn-remove:hover {
     background: #a00;
     border-color: #a00;
-    transform: translateY(-1px);
+    transform: scale(1.05);
 }
 
 /* 

@@ -65,7 +65,7 @@
 
 .hero-btn.search-btn:hover {
   background: #3d6234;
-  transform: translateY(-2px);
+  transform: scale(1.05);
 }
 
 .hero-btn.category-btn {

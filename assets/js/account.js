@@ -454,9 +454,15 @@ function toggleSettings(event) {
 
 function togglePasswordVisibility(fieldId) {
     const field = document.getElementById(fieldId);
+    if (!field) return;
+    
     const toggle = field.parentElement.querySelector('.deva-password-toggle');
+    if (!toggle) return;
+    
     const showText = toggle.querySelector('.show-text');
     const hideText = toggle.querySelector('.hide-text');
+    
+    if (!showText || !hideText) return;
     
     if (field.type === 'password') {
         field.type = 'text';

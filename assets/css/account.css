@@ -3,7 +3,7 @@
    =================================== */
 
 .deva-account-container {
-  max-width: 1200px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 2rem;
   background: #f7fdf6;
@@ -115,7 +115,7 @@
 
 .deva-program-box:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 .deva-program-image {
@@ -190,7 +190,7 @@
 
 .deva-browse-programs:hover {
   background: #3a5c2f;
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 /* Menu List */
@@ -309,7 +309,7 @@
 }
 
 .deva-session-card:hover {
-  transform: translateY(-2px);
+  transform: scale(1.05);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -357,7 +357,7 @@
 
 .deva-call-button:hover:not(:disabled) {
   background: #3a5c2f;
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 .deva-call-button.deva-disabled {
@@ -393,7 +393,7 @@
 
 .deva-schedule-next:hover {
   background: #3a5c2f;
-  transform: translateY(-2px);
+  transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(72, 115, 61, 0.4);
 }
 
@@ -524,7 +524,7 @@
 .deva-calendar-option:hover {
   background: #48733D;
   color: #ffffff;
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 .deva-close-modal,
@@ -607,7 +607,7 @@
 
 .deva-schedule-submit:hover {
   background: #3a5c2f;
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 /* Notification Styles */
@@ -897,7 +897,7 @@
 
 .deva-btn-primary:hover {
   background: linear-gradient(135deg, #3a5c2f, #4a7043);
-  transform: translateY(-1px);
+  transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(72, 115, 61, 0.3);
 }
 

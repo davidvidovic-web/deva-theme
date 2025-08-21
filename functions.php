@@ -18,14 +18,28 @@ if (!defined('ABSPATH')) {
 define('HELLO_ELEMENTOR_CHILD_VERSION', '1.0.0');
 
 /**
+ * Load DEVA shortcodes
+ */
+require_once get_stylesheet_directory() . '/inc/shortcodes-loader.php';
+
+/**
  * Enqueue parent theme styles
  */
 function hello_elementor_child_enqueue_styles()
 {
+    // First, enqueue parent theme style
+    wp_enqueue_style(
+        'hello-elementor-theme-style',
+        get_template_directory_uri() . '/style.css',
+        array(),
+        wp_get_theme()->parent()->get('Version')
+    );
+    
+    // Then enqueue child theme style to override parent
     wp_enqueue_style(
         'hello-elementor-child-style',
         get_stylesheet_uri(),
-        array('hello-elementor-theme-style'),
+        array('hello-elementor-theme-style'), // Depend on parent to ensure it loads after
         HELLO_ELEMENTOR_CHILD_VERSION
     );
 }
@@ -36,11 +50,11 @@ add_action('wp_enqueue_scripts', 'hello_elementor_child_enqueue_styles');
  */
 function hello_elementor_child_enqueue_assets()
 {
-    // Enqueue component-based CSS files
+    // Enqueue component-based CSS files - all depend on child theme style for priority
     wp_enqueue_style(
         'deva-base',
         get_stylesheet_directory_uri() . '/assets/css/base.css',
-        array('woocommerce-general'),
+        array('hello-elementor-child-style', 'woocommerce-general'),
         HELLO_ELEMENTOR_CHILD_VERSION
     );
 
@@ -86,6 +100,13 @@ function hello_elementor_child_enqueue_assets()
         HELLO_ELEMENTOR_CHILD_VERSION
     );
 
+    wp_enqueue_style(
+        'deva-notifications',
+        get_stylesheet_directory_uri() . '/assets/css/notifications.css',
+        array('deva-base'),
+        HELLO_ELEMENTOR_CHILD_VERSION
+    );
+
     // Enqueue shop JavaScript
     wp_enqueue_script(
         'hello-elementor-child-shop',
@@ -108,6 +129,15 @@ function hello_elementor_child_enqueue_assets()
     wp_enqueue_script(
         'deva-reviews-slider',
         get_stylesheet_directory_uri() . '/assets/js/reviews-slider.js',
+        array(),
+        HELLO_ELEMENTOR_CHILD_VERSION,
+        true
+    );
+
+    // Enqueue notifications JavaScript
+    wp_enqueue_script(
+        'deva-notifications',
+        get_stylesheet_directory_uri() . '/assets/js/notifications.js',
         array(),
         HELLO_ELEMENTOR_CHILD_VERSION,
         true
@@ -152,6 +182,8 @@ function hello_elementor_child_enqueue_assets()
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('wc_cart_item_quantity_update'),
             'remove_nonce' => wp_create_nonce('wc_cart_item_remove'),
+            'security' => wp_create_nonce('shop_nonce'),
+            'shop_nonce' => wp_create_nonce('shop_nonce'),
             'is_user_logged_in' => is_user_logged_in(),
             'cart_url' => wc_get_cart_url(),
             'shop_url' => get_permalink(wc_get_page_id('shop'))
@@ -919,16 +951,125 @@ add_action('wp_ajax_nopriv_remove_cart_item', 'deva_remove_cart_item');
  * AJAX handler for getting wishlist content
  */
 function deva_get_wishlist_content() {
-    // Optional nonce check
-    if (isset($_POST['security']) && !empty($_POST['security'])) {
-        check_ajax_referer('get_wishlist_content', 'security');
+    // Try multiple nonce validation methods to ensure compatibility
+    $nonce_valid = false;
+    
+    // Method 1: Check shop_nonce (used by shop.js)
+    if (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'shop_nonce')) {
+        $nonce_valid = true;
     }
     
-    // Get wishlist content using the shortcode
-    $content = do_shortcode('[deva_wishlist]');
+    // Method 2: Check security nonce (used by cart.js)
+    if (!$nonce_valid && isset($_POST['security']) && wp_verify_nonce($_POST['security'], 'shop_nonce')) {
+        $nonce_valid = true;
+    }
+    
+    // Method 3: Check get_wishlist_content specific nonce
+    if (!$nonce_valid && isset($_POST['security']) && wp_verify_nonce($_POST['security'], 'get_wishlist_content')) {
+        $nonce_valid = true;
+    }
+    
+    if (!$nonce_valid) {
+        wp_send_json_error('Security check failed');
+        return;
+    }
+    
+    // Get product IDs from the AJAX request
+    $product_ids = array();
+    if (isset($_POST['product_ids'])) {
+        $product_ids = json_decode(stripslashes($_POST['product_ids']), true);
+    }
+    
+    $show_remove_button = isset($_POST['show_remove_button']) ? $_POST['show_remove_button'] === 'true' : true;
+    
+    // Generate wishlist HTML directly
+    ob_start();
+    ?>
+    <div class="deva-wishlist-display">
+        <div class="deva-wishlist-header">
+            <h2>My Wishlist</h2>
+            <span class="wishlist-count-display">(<span class="deva-wishlist-count"><?php echo count($product_ids); ?></span> items)</span>
+        </div>
+        
+        <div class="deva-wishlist-products">
+            <?php if (empty($product_ids)): ?>
+                <div class="deva-wishlist-empty">
+                    <p>Your wishlist is empty.</p>
+                    <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" class="continue-shopping-btn">Continue Shopping</a>
+                </div>
+            <?php else: ?>
+                <ul class="deva-products-grid columns-3">
+                    <?php
+                    foreach ($product_ids as $product_id) {
+                        $product = wc_get_product($product_id);
+                        if (!$product) continue;
+                        
+                        // Get product image
+                        $image_id = $product->get_image_id();
+                        $image_url = wp_get_attachment_image_src($image_id, 'woocommerce_thumbnail')[0];
+                        if (!$image_url) {
+                            $image_url = wc_placeholder_img_src('woocommerce_thumbnail');
+                        }
+                        
+                        // Get product price
+                        $price_html = $product->get_price_html();
+                        
+                        // Get product excerpt
+                        $product_excerpt = $product->get_short_description();
+                        if (empty($product_excerpt)) {
+                            $product_excerpt = wp_trim_words($product->get_description(), 20);
+                        }
+                        ?>
+                        <li class="deva-product-card" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                            <a href="<?php echo esc_url($product->get_permalink()); ?>" class="deva-product-link">
+                                <div class="deva-product-image-container">
+                                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" class="deva-product-image">
+                                    
+                                    <?php if ($show_remove_button): ?>
+                                        <div class="deva-favorite-heart active" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M20.84 4.61012C20.3292 4.09912 19.7228 3.69376 19.0554 3.4172C18.3879 3.14064 17.6725 2.99829 16.95 2.99829C16.2275 2.99829 15.5121 3.14064 14.8446 3.4172C14.1772 3.69376 13.5708 4.09912 13.06 4.61012L12 5.67012L10.94 4.61012C9.9083 3.57842 8.50903 2.99883 7.05 2.99883C5.59096 2.99883 4.19169 3.57842 3.16 4.61012C2.1283 5.64181 1.54871 7.04108 1.54871 8.50012C1.54871 9.95915 2.1283 11.3584 3.16 12.3901L4.22 13.4501L12 21.2301L19.78 13.4501L20.84 12.3901C21.351 11.8794 21.7563 11.2729 22.0329 10.6055C22.3095 9.93801 22.4518 9.2226 22.4518 8.50012C22.4518 7.77763 22.3095 7.06222 22.0329 6.39476C21.7563 5.7273 21.351 5.12087 20.84 4.61012V4.61012Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="deva-product-content">
+                                    <h3 class="deva-product-title">
+                                        <?php echo esc_html($product->get_name()); ?>
+                                    </h3>
+                                    
+                                    <div class="deva-product-price">
+                                        <?php echo $price_html; ?>
+                                    </div>
+                                    
+                                    <?php if (!empty($product_excerpt)): ?>
+                                        <div class="deva-product-excerpt">
+                                            <?php echo esc_html($product_excerpt); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <div class="deva-product-actions">
+                                        <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+                                            <?php echo esc_html($product->single_add_to_cart_text()); ?>
+                                        </button>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <?php
+                    }
+                    ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+    $content = ob_get_clean();
     
     wp_send_json_success(array(
-        'content' => $content
+        'content' => $content,
+        'html' => $content
     ));
 }
 add_action('wp_ajax_get_wishlist_content', 'deva_get_wishlist_content');
@@ -1003,6 +1144,60 @@ function deva_enqueue_account_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'deva_enqueue_account_assets');
+
+/**
+ * Enqueue auth scripts and styles for login pages
+ */
+function deva_enqueue_auth_scripts() {
+    global $post;
+    
+    // Check if we're on a page that shows the login form
+    $show_auth_assets = false;
+    
+    if (!is_user_logged_in()) {
+        // Check if it's the my account page with shortcode
+        if (is_page() && $post && has_shortcode($post->post_content, 'woocommerce_my_account')) {
+            $show_auth_assets = true;
+        }
+        
+        // Check if it's the WooCommerce my account page
+        if (function_exists('is_account_page') && is_account_page()) {
+            $show_auth_assets = true;
+        }
+        
+        // Check for specific login-related page templates
+        if (is_page_template('page-login.php') || is_page_template('page-register.php')) {
+            $show_auth_assets = true;
+        }
+    }
+    
+    if ($show_auth_assets) {
+        // Enqueue Dashicons for frontend use
+        wp_enqueue_style('dashicons');
+        
+        // Enqueue auth CSS with higher priority
+        wp_enqueue_style(
+            'deva-auth',
+            get_stylesheet_directory_uri() . '/assets/css/auth.css',
+            array('dashicons'),
+            HELLO_ELEMENTOR_CHILD_VERSION
+        );
+        
+        wp_enqueue_script(
+            'deva-auth',
+            get_stylesheet_directory_uri() . '/assets/js/auth.js',
+            array('jquery'),
+            HELLO_ELEMENTOR_CHILD_VERSION,
+            true
+        );
+        
+        wp_localize_script('deva-auth', 'deva_auth_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('deva_auth_action'),
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'deva_enqueue_auth_scripts', 20);
 
 /**
  * Get user appointments/sessions
@@ -1366,354 +1561,6 @@ remove_shortcode('woocommerce_my_account');
 add_shortcode('woocommerce_my_account', 'deva_override_my_account_shortcode');
 
 /**
- * Handle AJAX authentication requests
- */
-add_action('wp_ajax_nopriv_deva_auth_process', 'deva_handle_auth_request');
-add_action('wp_ajax_deva_auth_process', 'deva_handle_auth_request');
-add_action('wp_ajax_nopriv_deva_lost_password', 'deva_handle_lost_password');
-add_action('wp_ajax_deva_lost_password', 'deva_handle_lost_password');
-
-function deva_handle_auth_request() {
-    // Verify nonce
-    if (!wp_verify_nonce($_POST['deva_auth_nonce'], 'deva_auth_action')) {
-        wp_send_json_error('Security check failed.');
-        return;
-    }
-    
-    $auth_mode = sanitize_text_field($_POST['auth_mode']);
-    $username = sanitize_user($_POST['username']);
-    $password = $_POST['password']; // Don't sanitize passwords
-    
-    if ($auth_mode === 'register') {
-        deva_handle_registration($username, $password);
-    } else {
-        deva_handle_login($username, $password);
-    }
-}
-
-/**
- * Handle user registration
- */
-function deva_handle_registration($username, $password) {
-    $email = sanitize_email($_POST['email']);
-    $confirm_password = $_POST['confirm_password'];
-    
-    // Validation
-    if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
-        wp_send_json_error('All fields are required.');
-        return;
-    }
-    
-    if (!is_email($email)) {
-        wp_send_json_error('Please enter a valid email address.');
-        return;
-    }
-    
-    if ($password !== $confirm_password) {
-        wp_send_json_error('Passwords do not match.');
-        return;
-    }
-    
-    if (strlen($password) < 6) {
-        wp_send_json_error('Password must be at least 6 characters long.');
-        return;
-    }
-    
-    if (username_exists($username)) {
-        wp_send_json_error('Username already exists. Please choose a different one.');
-        return;
-    }
-    
-    if (email_exists($email)) {
-        wp_send_json_error('Email address is already registered. Please use a different email or sign in.');
-        return;
-    }
-    
-    // Create user
-    $user_id = wp_create_user($username, $password, $email);
-    
-    if (is_wp_error($user_id)) {
-        wp_send_json_error('Registration failed: ' . $user_id->get_error_message());
-        return;
-    }
-    
-    // Set user role to customer
-    $user = new WP_User($user_id);
-    $user->set_role('customer');
-    
-    // Auto-login the user
-    wp_set_current_user($user_id);
-    wp_set_auth_cookie($user_id, true);
-    
-    // Send success response
-    wp_send_json_success(array(
-        'message' => 'Account created successfully! Redirecting to your dashboard...',
-        'redirect' => wc_get_page_permalink('myaccount')
-    ));
-}
-
-/**
- * Handle user login
- */
-function deva_handle_login($username, $password) {
-    // Validation
-    if (empty($username) || empty($password)) {
-        wp_send_json_error('Username and password are required.');
-        return;
-    }
-    
-    // Check if remember me is set
-    $remember = isset($_POST['rememberme']) && $_POST['rememberme'] === 'forever';
-    
-    // Attempt login
-    $creds = array(
-        'user_login'    => $username,
-        'user_password' => $password,
-        'remember'      => $remember,
-    );
-    
-    $user = wp_signon($creds, false);
-    
-    if (is_wp_error($user)) {
-        $error_message = $user->get_error_message();
-        
-        // Customize error messages
-        if (strpos($error_message, 'Invalid username') !== false) {
-            $error_message = 'Invalid username or password.';
-        } elseif (strpos($error_message, 'incorrect password') !== false) {
-            $error_message = 'Invalid username or password.';
-        }
-        
-        wp_send_json_error($error_message);
-        return;
-    }
-    
-    // Login successful
-    wp_send_json_success(array(
-        'message' => 'Welcome back! Redirecting to your dashboard...',
-        'redirect' => wc_get_page_permalink('myaccount')
-    ));
-}
-
-/**
- * Handle lost password requests
- */
-function deva_handle_lost_password() {
-    // Verify nonce
-    if (!wp_verify_nonce($_POST['lost_password_nonce'], 'lost_password_action')) {
-        wp_send_json_error('Security check failed.');
-        return;
-    }
-    
-    $user_login = sanitize_text_field($_POST['user_login']);
-    
-    // Validation
-    if (empty($user_login)) {
-        wp_send_json_error('Email address is required.');
-        return;
-    }
-    
-    if (!is_email($user_login)) {
-        wp_send_json_error('Please enter a valid email address.');
-        return;
-    }
-    
-    // Check if user exists
-    $user = get_user_by('email', $user_login);
-    if (!$user) {
-        // For security, don't reveal if email exists or not
-        wp_send_json_success(array(
-            'message' => 'If an account with that email exists, you will receive a password reset link shortly.'
-        ));
-        return;
-    }
-    
-    // Generate reset key
-    $key = get_password_reset_key($user);
-    if (is_wp_error($key)) {
-        wp_send_json_error('Unable to generate reset key. Please try again.');
-        return;
-    }
-    
-    // Create reset URL
-    $reset_url = add_query_arg(array(
-        'action' => 'rp',
-        'key' => $key,
-        'login' => rawurlencode($user->user_login),
-        'show-reset-form' => 'true'
-    ), wp_lostpassword_url());
-    
-    // Send email
-    $sent = deva_send_password_reset_email($user, $reset_url);
-    
-    if ($sent) {
-        wp_send_json_success(array(
-            'message' => 'Password reset email has been sent. Please check your email inbox and spam folder.'
-        ));
-    } else {
-        wp_send_json_error('Failed to send reset email. Please try again.');
-    }
-}
-
-/**
- * Send custom password reset email
- */
-function deva_send_password_reset_email($user, $reset_url) {
-    $subject = sprintf(__('[%s] Password Reset Request', 'hello-elementor-child'), get_bloginfo('name'));
-    
-    $message = sprintf(
-        __('Hi %s,', 'hello-elementor-child') . "\n\n" .
-        __('You recently requested to reset your password for your DEVA account. Click the link below to reset it:', 'hello-elementor-child') . "\n\n" .
-        '%s' . "\n\n" .
-        __('This link will expire in 24 hours for your security.', 'hello-elementor-child') . "\n\n" .
-        __('If you didn\'t request this password reset, please ignore this email. Your password will remain unchanged.', 'hello-elementor-child') . "\n\n" .
-        __('Best regards,', 'hello-elementor-child') . "\n" .
-        __('The DEVA Team', 'hello-elementor-child'),
-        $user->display_name,
-        $reset_url
-    );
-    
-    $headers = array(
-        'Content-Type: text/plain; charset=UTF-8',
-        'From: ' . get_bloginfo('name') . ' <' . get_option('admin_email') . '>'
-    );
-    
-    return wp_mail($user->user_email, $subject, $message, $headers);
-}
-
-/**
- * Handle custom password reset form
- */
-function deva_handle_password_reset() {
-    // This function handles the actual password reset when the form is submitted
-    // WordPress will handle this automatically, but we can customize it if needed
-    
-    if (isset($_POST['action']) && $_POST['action'] === 'resetpass') {
-        // Verify nonce
-        if (!wp_verify_nonce($_POST['reset_password_nonce'], 'reset_password_action')) {
-            wp_die('Security check failed.');
-        }
-        
-        $key = sanitize_text_field($_POST['key']);
-        $login = sanitize_text_field($_POST['login']);
-        $password1 = $_POST['password_1'];
-        $password2 = $_POST['password_2'];
-        
-        // Validate passwords
-        if (empty($password1) || empty($password2)) {
-            wp_redirect(add_query_arg(array(
-                'show-reset-form' => 'true',
-                'key' => $key,
-                'login' => $login,
-                'error' => 'empty_password'
-            ), wp_lostpassword_url()));
-            exit;
-        }
-        
-        if ($password1 !== $password2) {
-            wp_redirect(add_query_arg(array(
-                'show-reset-form' => 'true',
-                'key' => $key,
-                'login' => $login,
-                'error' => 'password_mismatch'
-            ), wp_lostpassword_url()));
-            exit;
-        }
-        
-        if (strlen($password1) < 6) {
-            wp_redirect(add_query_arg(array(
-                'show-reset-form' => 'true',
-                'key' => $key,
-                'login' => $login,
-                'error' => 'password_too_short'
-            ), wp_lostpassword_url()));
-            exit;
-        }
-        
-        // Check reset key
-        $user = check_password_reset_key($key, $login);
-        if (is_wp_error($user)) {
-            wp_redirect(add_query_arg('invalid-key', 'true', wp_lostpassword_url()));
-            exit;
-        }
-        
-        // Reset password
-        reset_password($user, $password1);
-        
-        // Redirect to login with success message
-        wp_redirect(add_query_arg('password-reset', 'true', wc_get_page_permalink('myaccount')));
-        exit;
-    }
-}
-add_action('init', 'deva_handle_password_reset');
-
-/**
- * Add custom body class for auth pages
- */
-function deva_add_auth_body_class($classes) {
-    if (!is_user_logged_in() && (is_page_template('page-login.php') || 
-        (is_page() && has_shortcode(get_post()->post_content, 'woocommerce_my_account')))) {
-        $classes[] = 'deva-auth-page';
-    }
-    return $classes;
-}
-add_filter('body_class', 'deva_add_auth_body_class');
-
-/**
- * Enqueue auth scripts only on login pages
- */
-function deva_enqueue_auth_scripts() {
-    global $post;
-    
-    // Check if we're on a page that shows the login form
-    $show_auth_assets = false;
-    
-    if (!is_user_logged_in()) {
-        // Check if it's the my account page with shortcode
-        if (is_page() && $post && has_shortcode($post->post_content, 'woocommerce_my_account')) {
-            $show_auth_assets = true;
-        }
-        
-        // Check if it's the WooCommerce my account page
-        if (function_exists('is_account_page') && is_account_page()) {
-            $show_auth_assets = true;
-        }
-        
-        // Check for specific login-related page templates
-        if (is_page_template('page-login.php') || is_page_template('page-register.php')) {
-            $show_auth_assets = true;
-        }
-    }
-    
-    if ($show_auth_assets) {
-        // Enqueue Dashicons for frontend use
-        wp_enqueue_style('dashicons');
-        
-        // Enqueue auth CSS with higher priority
-        wp_enqueue_style(
-            'deva-auth',
-            get_stylesheet_directory_uri() . '/assets/css/auth.css',
-            array('dashicons'),
-            HELLO_ELEMENTOR_CHILD_VERSION
-        );
-        
-        wp_enqueue_script(
-            'deva-auth',
-            get_stylesheet_directory_uri() . '/assets/js/auth.js',
-            array('jquery'),
-            HELLO_ELEMENTOR_CHILD_VERSION,
-            true
-        );
-        
-        wp_localize_script('deva-auth', 'deva_auth_ajax', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('deva_auth_action'),
-        ));
-    }
-}
-add_action('wp_enqueue_scripts', 'deva_enqueue_auth_scripts', 20);
-
-/**
  * Custom login redirect
  */
 function deva_login_redirect($redirect_to, $request, $user) {
@@ -1890,3 +1737,103 @@ function deva_update_profile_ajax() {
         )
     ));
 }
+
+/**
+ * DEVA Single Product Helper Functions
+ */
+
+/**
+ * Convert WooCommerce notices to toasts
+ * This ensures all WooCommerce notices are displayed as toast notifications
+ */
+function deva_enqueue_toast_scripts() {
+    // Only enqueue on frontend
+    if (!is_admin()) {
+        wp_enqueue_script('deva-notifications', get_template_directory_uri() . '/assets/js/notifications.js', array('jquery'), '1.0.0', true);
+        wp_enqueue_style('deva-notifications', get_template_directory_uri() . '/assets/css/notifications.css', array(), '1.0.0');
+    }
+}
+add_action('wp_enqueue_scripts', 'deva_enqueue_toast_scripts');
+
+/**
+ * Add a script to the footer to ensure notices are converted to toasts
+ */
+function deva_convert_notices_to_toasts() {
+    if (!is_admin()) {
+        ?>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Convert notices after a short delay to ensure they're rendered
+            setTimeout(function() {
+                if (typeof convertWooCommerceNoticesToToasts === 'function') {
+                    convertWooCommerceNoticesToToasts();
+                }
+            }, 100);
+            
+            // Also convert notices after AJAX updates
+            jQuery(document.body).on('updated_wc_div', function() {
+                setTimeout(function() {
+                    if (typeof convertWooCommerceNoticesToToasts === 'function') {
+                        convertWooCommerceNoticesToToasts();
+                    }
+                }, 100);
+            });
+            
+            // Convert notices after cart updates
+            jQuery(document.body).on('added_to_cart', function() {
+                setTimeout(function() {
+                    if (typeof convertWooCommerceNoticesToToasts === 'function') {
+                        convertWooCommerceNoticesToToasts();
+                    }
+                }, 200);
+            });
+            
+            // Convert notices after checkout updates
+            jQuery(document.body).on('checkout_error', function() {
+                setTimeout(function() {
+                    if (typeof convertWooCommerceNoticesToToasts === 'function') {
+                        convertWooCommerceNoticesToToasts();
+                    }
+                }, 100);
+            });
+        });
+        </script>
+        <?php
+    }
+}
+add_action('wp_footer', 'deva_convert_notices_to_toasts');
+
+/**
+ * Hide WooCommerce notices wrapper via CSS for pages where toasts are preferred
+ */
+function deva_hide_notice_wrappers() {
+    if (!is_admin()) {
+        ?>
+        <style>
+        /* Hide notice wrappers on key pages - toasts will be used instead */
+        body.woocommerce-account .woocommerce-notices-wrapper,
+        body.single-product .woocommerce-notices-wrapper,
+        body.woocommerce-cart .woocommerce-notices-wrapper,
+        body.woocommerce-checkout .woocommerce-notices-wrapper {
+            display: none !important;
+        }
+        </style>
+        <?php
+    }
+}
+add_action('wp_head', 'deva_hide_notice_wrappers');
+
+/**
+ * Test function to add WooCommerce notices for toast testing
+ * Remove this in production
+ */
+function deva_test_woocommerce_notices() {
+    if (isset($_GET['test_notices']) && is_user_logged_in()) {
+        wc_add_notice('Test success message for toast conversion!', 'success');
+        wc_add_notice('Test info message for toast conversion!', 'notice');
+        wc_add_notice('Test error message for toast conversion!', 'error');
+    }
+}
+add_action('init', 'deva_test_woocommerce_notices');
+
+

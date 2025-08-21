@@ -54,7 +54,7 @@
 }
 
 .category-card:hover {
-  transform: translateY(-5px);
+  transform: scale(1.05);
 }
 
 .category-card .category-link {
@@ -140,7 +140,7 @@
 }
 
 .category-display-card:hover {
-  transform: translateY(-5px);
+  transform: scale(1.05);
 }
 
 .category-display-card .category-content {
@@ -226,7 +226,7 @@
 
 .category-display-image img {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
   object-fit: cover;
   transition: transform 0.3s ease;
 }

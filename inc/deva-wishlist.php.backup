@@ -111,20 +111,8 @@ function deva_wishlist_shortcode($atts)
  * AJAX handler to get wishlist products HTML
  */
 function deva_get_wishlist_products() {
-    // Try multiple nonce validation methods to ensure compatibility
-    $nonce_valid = false;
-    
-    // Method 1: Check shop_nonce (used by shop.js)
-    if (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'shop_nonce')) {
-        $nonce_valid = true;
-    }
-    
-    // Method 2: Check security nonce (used by cart.js)
-    if (!$nonce_valid && isset($_POST['security']) && wp_verify_nonce($_POST['security'], 'shop_nonce')) {
-        $nonce_valid = true;
-    }
-    
-    if (!$nonce_valid) {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'shop_nonce')) {
         wp_send_json_error('Security check failed');
         return;
     }

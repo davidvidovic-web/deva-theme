@@ -131,6 +131,9 @@ jQuery(document).ready(function($) {
         localStorage.setItem('deva_favorites', JSON.stringify(favorites));
         updateWishlistCount(favorites.length);
         
+        // Trigger custom event for other parts of the site to listen for
+        $(document).trigger('deva_wishlist_updated');
+        
         // Sync with server if logged in
         if (typeof shop_ajax !== 'undefined' && shop_ajax && shop_ajax.is_user_logged_in) {
             var config = getAjaxConfig('toggle_favorite');
@@ -216,12 +219,12 @@ jQuery(document).ready(function($) {
         var productId = $button.data('product_id') || $button.attr('data-product_id');
         var originalText = $button.text();
         
-        // Skip if this is a variable product or requires options
-        if ($button.hasClass('product_type_variable') || $button.hasClass('product_type_grouped')) {
-            return true; // Allow default behavior
-        }
-        
-        if (!productId) {
+            // Skip if this is a variable product, grouped product, or booking product that requires options
+            if ($button.hasClass('product_type_variable') || 
+                $button.hasClass('product_type_grouped') ||
+                ($button.hasClass('product_type_booking') && !$button.hasClass('wc-bookings-simple-booking'))) {
+                return true; // Allow default behavior for products requiring options
+            }        if (!productId) {
             console.error('No product ID found');
             return;
         }
@@ -421,6 +424,97 @@ jQuery(document).ready(function($) {
             }, 300);
         }, 1500);
     }
+    
+    // === PAGINATION FUNCTIONALITY ===
+    
+    // Handle pagination clicks for products shortcode
+    $(document).on('click', '.deva-pagination a[data-page], .deva-pagination a[href*="paged="]', function(e) {
+        e.preventDefault();
+        
+        var $link = $(this);
+        var $container = $link.closest('.deva-shop-section');
+        var $productsContainer = $container.find('.deva-products-container');
+        
+        // Check if we found the required containers
+        if ($container.length === 0 || $productsContainer.length === 0) {
+            return;
+        }
+        
+        // Check if AJAX is enabled for this container
+        var ajaxEnabled = $container.data('ajax');
+        if (ajaxEnabled !== 'true' && ajaxEnabled !== true) {
+            // If AJAX is disabled, allow normal navigation
+            window.location.href = $link.attr('href');
+            return;
+        }
+        
+        // Get page number from data attribute or href
+        var page = $link.data('page');
+        if (!page) {
+            // Fallback: try to parse from href for backward compatibility
+            var href = $link.attr('href');
+            var pageMatch = href.match(/[?&]paged=(\d+)/);
+            page = pageMatch ? parseInt(pageMatch[1]) : 1;
+        }
+        
+        page = parseInt(page) || 1;
+        
+        // Get shortcode attributes
+        var shortcodeAtts = $productsContainer.data('shortcode-atts');
+        
+        // Ensure shortcodeAtts is properly formatted
+        if (typeof shortcodeAtts === 'string') {
+            try {
+                shortcodeAtts = JSON.parse(shortcodeAtts);
+            } catch (e) {
+                shortcodeAtts = {
+                    per_page: 12,
+                    columns: 3,
+                    class: '',
+                    pagination: 'true',
+                    ajax: 'true'
+                };
+            }
+        }
+        
+        // Show loading state
+        $productsContainer.addClass('loading');
+        $productsContainer.append('<div class="deva-loading-overlay"><div class="deva-spinner"></div></div>');
+        
+        // Make AJAX request
+        var config = getAjaxConfig('deva_load_products');
+        config.data.paged = page;
+        config.data.shortcode_atts = JSON.stringify(shortcodeAtts);
+        
+        $.ajax(config)
+            .done(function(response) {
+                if (response.success) {
+                    // Replace products container content
+                    $productsContainer.html(response.data.html);
+                    
+                    // Scroll to top of products section
+                    $('html, body').animate({
+                        scrollTop: $container.offset().top - 50
+                    }, 500);
+                    
+                    // Re-initialize wishlist functionality for new content
+                    syncWishlistWithServer();
+                } else {
+                    console.error('AJAX request failed with response:', response);
+                    // Fallback to normal navigation
+                    window.location.href = $link.attr('href');
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error('AJAX request failed:', error);
+                // Fallback to normal navigation
+                window.location.href = $link.attr('href');
+            })
+            .always(function() {
+                $productsContainer.removeClass('loading');
+                $('.deva-loading-overlay').remove();
+            });
+    });
     
     // Initialize shop functionality with retry mechanism
     tryInitialization();

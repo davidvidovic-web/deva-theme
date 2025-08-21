@@ -112,6 +112,36 @@
   border: 1px solid #bbf7d0;
 }
 
+/* Hide default WooCommerce columns for cleaner single-column layout */
+.deva-auth-container .u-columns.col2-set {
+  display: block;
+}
+
+.deva-auth-container .u-column1,
+.deva-auth-container .u-column2 {
+  width: 100% !important;
+  float: none !important;
+  margin-right: 0 !important;
+}
+
+/* Hide registration form by default, show only when activated by toggle */
+.deva-auth-container .u-column2 {
+  display: none;
+}
+
+.deva-auth-container .u-column2.deva-show-register {
+  display: block;
+}
+
+.deva-auth-container .u-column1.deva-hide-login {
+  display: none;
+}
+
+/* Style WooCommerce form titles to match DEVA design */
+.deva-auth-container .deva-form-title {
+  display: none; /* Hide since we have toggle buttons */
+}
+
 /* Form Groups */
 .deva-form-group {
   margin-bottom: 1.5rem;
@@ -129,8 +159,26 @@
   color: #dc2626;
 }
 
+/* Style WooCommerce form rows to match DEVA design */
+.deva-auth-container .woocommerce-form-row {
+  margin-bottom: 1.5rem;
+}
+
+.deva-auth-container .woocommerce-form-row label {
+  display: block;
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.deva-auth-container .woocommerce-form-row .required {
+  color: #dc2626;
+}
+
 /* Input Fields */
-.deva-input {
+.deva-input,
+.deva-auth-container .woocommerce-Input {
   width: 100%;
   padding: 0.875rem 1rem;
   border: 2px solid #d4e5ce;
@@ -142,13 +190,15 @@
   box-sizing: border-box;
 }
 
-.deva-input:focus {
+.deva-input:focus,
+.deva-auth-container .woocommerce-Input:focus {
   outline: none;
   border-color: #48733d;
   box-shadow: 0 0 0 3px rgba(72, 115, 61, 0.1);
 }
 
-.deva-input::placeholder {
+.deva-input::placeholder,
+.deva-auth-container .woocommerce-Input::placeholder {
   color: #9ca3af;
 }
 
@@ -159,7 +209,8 @@
   align-items: center;
 }
 
-.deva-password-wrapper .deva-input {
+.deva-password-wrapper .deva-input,
+.deva-auth-container .woocommerce-form-row .woocommerce-Input {
   padding-right: 3.5rem;
 }
 
@@ -279,7 +330,8 @@
 }
 
 /* Submit Button */
-.deva-submit-btn {
+.deva-submit-btn,
+.deva-auth-container .woocommerce-button.button {
   width: 100%;
   padding: 0.875rem 2rem;
   background: #48733d;
@@ -291,24 +343,92 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(72, 115, 61, 0.2);
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
 }
 
-.deva-submit-btn:hover:not(:disabled) {
+.deva-submit-btn:hover:not(:disabled),
+.deva-auth-container .woocommerce-button.button:hover:not(:disabled) {
   background: #3a5c2f;
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(72, 115, 61, 0.3);
+  color: #ffffff;
 }
 
-.deva-submit-btn:active:not(:disabled) {
+.deva-submit-btn:active:not(:disabled),
+.deva-auth-container .woocommerce-button.button:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(72, 115, 61, 0.2);
 }
 
-.deva-submit-btn:disabled {
+.deva-submit-btn:disabled,
+.deva-auth-container .woocommerce-button.button:disabled {
   background: #9ca3af;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* Style WooCommerce form elements to match DEVA design */
+.deva-auth-container .woocommerce-form__label-for-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+.deva-auth-container .woocommerce-form__input-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.5rem;
+  accent-color: #48733d;
+  cursor: pointer;
+}
+
+/* Style "Lost Password" link */
+.deva-auth-container .woocommerce-LostPassword a {
+  color: #48733d;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 1rem;
+  transition: color 0.3s ease;
+}
+
+.deva-auth-container .woocommerce-LostPassword a:hover {
+  color: #3a5c2f;
+  text-decoration: underline;
+}
+
+/* Hide WooCommerce default error messages since we're using toasts */
+.deva-auth-container .woocommerce-error,
+.deva-auth-container .woocommerce-message,
+.deva-auth-container .woocommerce-info {
+  display: none;
+}
+
+/* Ensure proper spacing for form elements */
+.deva-auth-container .form-row {
+  margin-bottom: 1.5rem;
+}
+
+.deva-auth-container .form-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments for the auth container */
+@media (max-width: 640px) {
+  .deva-auth-container {
+    padding: 1rem;
+  }
+  
+  .deva-auth-form-wrapper {
+    padding: 2rem 1.5rem;
+  }
 }
 
 /* Form Footer */

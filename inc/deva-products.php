@@ -33,18 +33,8 @@ function deva_products_shortcode($atts)
 
     // Get current page for pagination
     $paged = 1;
-    
-    // For AJAX mode, don't use URL parameters to avoid 404 errors
-    if ($atts['ajax'] === 'true') {
-        // Only get page from AJAX requests, ignore URL parameters
-        if (defined('DOING_AJAX') && DOING_AJAX && isset($_POST['paged'])) {
-            $paged = intval($_POST['paged']);
-        }
-    } else {
-        // For non-AJAX mode, allow URL parameters
-        if (isset($_GET['paged'])) {
-            $paged = intval($_GET['paged']);
-        }
+    if (isset($_GET['paged'])) {
+        $paged = intval($_GET['paged']);
     }
 
     // Handle AJAX requests
@@ -53,13 +43,17 @@ function deva_products_shortcode($atts)
         if ($shortcode_atts) {
             $atts = array_merge($atts, $shortcode_atts);
         }
+
+        if (isset($_POST['page'])) {
+            $paged = intval($_POST['page']);
+        }
     }
 
     ob_start();
 ?>
     <section class="deva-shop-section <?php echo esc_attr($atts['class']); ?>" id="<?php echo $shortcode_id; ?>" data-ajax="<?php echo esc_attr($atts['ajax']); ?>">
         <div class="elementor-container elementor-column-gap-default">
-            <div class="deva-products-container" data-shortcode-atts='<?php echo json_encode($atts); ?>'>
+            <div class="deva-products-container" data-shortcode-atts="<?php echo esc_attr(json_encode($atts)); ?>">
                 <?php echo deva_get_products_html($atts, $paged); ?>
             </div>
         </div>
@@ -193,49 +187,20 @@ function deva_get_products_html($atts, $paged = 1)
         if ($atts['pagination'] === 'true' && $products->max_num_pages > 1) :
             echo '<nav class="deva-pagination">';
 
-            if ($atts['ajax'] === 'true') {
-                // For AJAX-enabled pagination, create custom pagination with data attributes
-                echo '<ul class="page-numbers">';
-                
-                // Previous button
-                if ($paged > 1) {
-                    echo '<li><a href="javascript:void(0)" data-page="' . ($paged - 1) . '">&laquo;</a></li>';
-                }
-                
-                // Page numbers
-                $start_page = max(1, $paged - 3);
-                $end_page = min($products->max_num_pages, $paged + 3);
-                
-                for ($i = $start_page; $i <= $end_page; $i++) {
-                    if ($i == $paged) {
-                        echo '<li><span class="current">' . $i . '</span></li>';
-                    } else {
-                        echo '<li><a href="javascript:void(0)" data-page="' . $i . '">' . $i . '</a></li>';
-                    }
-                }
-                
-                // Next button
-                if ($paged < $products->max_num_pages) {
-                    echo '<li><a href="javascript:void(0)" data-page="' . ($paged + 1) . '">&raquo;</a></li>';
-                }
-                
-                echo '</ul>';
-            } else {
-                // For non-AJAX pagination, use standard pagination
-                $pagination_links = paginate_links(array(
-                    'base' => add_query_arg('paged', '%#%'),
-                    'format' => '',
-                    'current' => max(1, $paged),
-                    'total' => $products->max_num_pages,
-                    'prev_text' => '&laquo;',
-                    'next_text' => '&raquo;',
-                    'type' => 'list',
-                    'end_size' => 3,
-                    'mid_size' => 3
-                ));
-                echo $pagination_links;
-            }
-            
+            // Generate pagination with current page URL as base (same as category shortcode)
+            $base_url = remove_query_arg('paged');
+
+            echo paginate_links(array(
+                'base' => add_query_arg('paged', '%#%', $base_url),
+                'format' => '',
+                'current' => max(1, $paged),
+                'total' => $products->max_num_pages,
+                'prev_text' => '&laquo;',
+                'next_text' => '&raquo;',
+                'type' => 'list',
+                'end_size' => 3,
+                'mid_size' => 3
+            ));
             echo '</nav>';
         endif;
     else :
@@ -251,40 +216,16 @@ function deva_get_products_html($atts, $paged = 1)
 function deva_ajax_load_products()
 {
     // Verify nonce
-    if (!wp_verify_nonce($_POST['nonce'], 'shop_nonce')) {
-        wp_send_json_error('Security check failed');
-        return;
+    if (!wp_verify_nonce($_POST['nonce'], 'deva_products_nonce')) {
+        wp_die('Security check failed');
     }
 
-    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-    
-    // Decode shortcode attributes from JSON
-    $atts = array();
-    if (isset($_POST['shortcode_atts'])) {
-        $decoded_atts = json_decode(stripslashes($_POST['shortcode_atts']), true);
-        if (is_array($decoded_atts)) {
-            $atts = $decoded_atts;
-        }
-    }
-    
-    // Set default attributes if none provided
-    if (empty($atts)) {
-        $atts = array(
-            'per_page' => 12,
-            'columns' => 3,
-            'class' => '',
-            'pagination' => 'true',
-            'ajax' => 'true'
-        );
-    }
+    $paged = intval($_POST['paged']);
+    $atts = $_POST['shortcode_atts'];
 
-    // Get the HTML
     $html = deva_get_products_html($atts, $paged);
 
-    // Send success response
-    wp_send_json_success(array(
-        'html' => $html
-    ));
+    wp_send_json_success($html);
 }
 add_action('wp_ajax_deva_load_products', 'deva_ajax_load_products');
 add_action('wp_ajax_nopriv_deva_load_products', 'deva_ajax_load_products');

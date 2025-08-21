@@ -142,6 +142,16 @@ function deva_single_product_shortcode($atts)
                     <span class="price-current"><?php echo $product->get_price_html(); ?></span>
                 </div>
 
+                <!-- Review Score -->
+                <div class="review-score">
+                    <div class="review-stars">
+                        <span class="star filled">★</span>
+                    </div>
+                    <div class="review-count">
+                        <a href="#reviews">4.2 | 156 reviews</a>
+                    </div>
+                </div>
+
                 <!-- Key Benefits List -->
                 <div class="product-key-benefits">
                     <?php
@@ -156,6 +166,26 @@ function deva_single_product_shortcode($atts)
                                     <span class="benefit-text"><?php echo esc_html($benefit['benefit']); ?></span>
                                 </li>
                             <?php endforeach; ?>
+                        </ul>
+                    <?php else : ?>
+                        <!-- Fallback benefits -->
+                        <ul class="key-benefits-list">
+                            <li class="key-benefit-item">
+                                <span class="benefit-checkmark">✓</span>
+                                <span class="benefit-text">100% Natural and Organic</span>
+                            </li>
+                            <li class="key-benefit-item">
+                                <span class="benefit-checkmark">✓</span>
+                                <span class="benefit-text">Clinically Tested</span>
+                            </li>
+                            <li class="key-benefit-item">
+                                <span class="benefit-checkmark">✓</span>
+                                <span class="benefit-text">Free from Harmful Chemicals</span>
+                            </li>
+                            <li class="key-benefit-item">
+                                <span class="benefit-checkmark">✓</span>
+                                <span class="benefit-text">Suitable for All Skin Types</span>
+                            </li>
                         </ul>
                     <?php endif; ?>
                 </div>
@@ -189,6 +219,18 @@ function deva_single_product_shortcode($atts)
                     <?php endif; ?>
                 </div>
 
+                <!-- Payment Options -->
+                <div class="payment-options">
+                    <div class="payment-options-title">Available Payment Options</div>
+                    <div class="payment-methods">
+                        <div class="payment-method">Credit Card</div>
+                        <div class="payment-method">PayPal</div>
+                        <div class="payment-method">Apple Pay</div>
+                        <div class="payment-method">Google Pay</div>
+                        <div class="payment-method">Bank Transfer</div>
+                    </div>
+                </div>
+
                 <!-- Quantity and Add to Cart -->
                 <div class="product-actions" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
                     <div class="quantity-selector">
@@ -205,117 +247,126 @@ function deva_single_product_shortcode($atts)
         <!-- Product Navigation -->
         <div class="product-navigation">
             <div class="nav-buttons">
-                <?php
-                $ingredients = deva_get_key_ingredients($product->get_id());
-                $how_to_use = deva_get_how_to_use($product->get_id());
-                $faqs = deva_get_product_faqs($product->get_id());
-                
-                // Determine first available section for active class
-                $first_section = '';
-                if (!empty($ingredients)) {
-                    $first_section = 'ingredients-section';
-                } elseif (!empty($how_to_use)) {
-                    $first_section = 'how-to-use-section';
-                } elseif (!empty($faqs)) {
-                    $first_section = 'questions-section';
-                }
-                ?>
-                <?php if (!empty($ingredients)) : ?>
-                    <a href="#ingredients-section" class="nav-button <?php echo ($first_section === 'ingredients-section') ? 'active' : ''; ?>">Ingredients</a>
-                <?php endif; ?>
-                <?php if (!empty($how_to_use)) : ?>
-                    <a href="#how-to-use-section" class="nav-button <?php echo ($first_section === 'how-to-use-section') ? 'active' : ''; ?>">How to Use</a>
-                <?php endif; ?>
-                <?php if (!empty($faqs)) : ?>
-                    <a href="#questions-section" class="nav-button <?php echo ($first_section === 'questions-section') ? 'active' : ''; ?>">Questions</a>
-                <?php endif; ?>
+                <a href="#ingredients-section" class="nav-button active">Ingredients</a>
+                <a href="#how-to-use-section" class="nav-button">How to Use</a>
+                <a href="#reviews-section" class="nav-button">Reviews</a>
+                <a href="#questions-section" class="nav-button">Questions</a>
             </div>
         </div>
 
         <!-- Product Sections -->
         <div class="product-sections">
             <!-- Ingredients Section -->
-            <?php
-            $ingredients = deva_get_key_ingredients($product->get_id());
-            if (!empty($ingredients)) :
-            ?>
+
             <div class="product-section" id="ingredients-section">
                 <h2>Key Ingredients</h2>
-                <p>What's inside that really matters</p>
-                <div class="ingredients-grid">
-                    <?php foreach ($ingredients as $ingredient) : ?>
-                        <div class="ingredient-item">
-                            <?php if (!empty($ingredient['ingredient_image'])) : ?>
-                                <div class="ingredient-image">
-                                    <img src="<?php echo esc_url($ingredient['ingredient_image']); ?>" alt="<?php echo esc_attr($ingredient['ingredient_title']); ?>">
+                <p>What’s inside that really matters</p>
+                <?php
+                $ingredients = deva_get_key_ingredients($product->get_id());
+                if (!empty($ingredients)) :
+                ?>
+                    <div class="ingredients-grid">
+                        <?php foreach ($ingredients as $ingredient) : ?>
+                            <div class="ingredient-item">
+                                <?php if (!empty($ingredient['ingredient_image'])) : ?>
+                                    <div class="ingredient-image">
+                                        <img src="<?php echo esc_url($ingredient['ingredient_image']); ?>" alt="<?php echo esc_attr($ingredient['ingredient_title']); ?>">
+                                    </div>
+                                <?php endif; ?>
+                                <div class="ingredient-content">
+                                    <h4><?php echo esc_html($ingredient['ingredient_title']); ?></h4>
+                                    <p><?php echo wp_kses_post($ingredient['ingredient_description']); ?></p>
                                 </div>
-                            <?php endif; ?>
-                            <div class="ingredient-content">
-                                <h4><?php echo esc_html($ingredient['ingredient_title']); ?></h4>
-                                <p><?php echo wp_kses_post($ingredient['ingredient_description']); ?></p>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <!-- Fallback to mock data -->
+                    <p>Our premium product is carefully crafted with the finest natural ingredients:</p>
+                    <ul>
+                        <li><strong>Organic Aloe Vera:</strong> Soothes and hydrates the skin</li>
+                        <li><strong>Vitamin E:</strong> Provides antioxidant protection</li>
+                        <li><strong>Hyaluronic Acid:</strong> Deeply moisturizes and plumps skin</li>
+                        <li><strong>Green Tea Extract:</strong> Anti-inflammatory and anti-aging properties</li>
+                        <li><strong>Jojoba Oil:</strong> Balances skin's natural oils</li>
+                    </ul>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>            <!-- How to Use Section -->
-            <?php
-            $how_to_use = deva_get_how_to_use($product->get_id());
-            if (!empty($how_to_use)) :
-            ?>
+
+            <!-- How to Use Section -->
             <div class="product-section" id="how-to-use-section">
                 <h2>How to Use</h2>
-                <div class="how-to-use-steps">
-                    <?php foreach ($how_to_use as $index => $step) :
-                        $step_number = $index + 1;
-                        $is_odd = ($step_number % 2 === 1);
-                    ?>
-                        <div class="step-item <?php echo $is_odd ? 'step-odd' : 'step-even'; ?>">
-                            <!-- <div class="step-number"><?php //echo $step_number; ?></div> -->
-                            <div class="step-content">
-                                <?php if ($is_odd) : ?>
-                                    <!-- Odd steps: image, Step (x), text -->
-                                    <?php if (!empty($step['step_image'])) : ?>
-                                        <div class="step-image">
-                                            <img src="<?php echo esc_url($step['step_image']); ?>" alt="Step <?php echo $step_number; ?>">
+                <?php
+                $how_to_use = deva_get_how_to_use($product->get_id());
+                if (!empty($how_to_use)) :
+                ?>
+                    <div class="how-to-use-steps">
+                        <?php foreach ($how_to_use as $index => $step) :
+                            $step_number = $index + 1;
+                            $is_odd = ($step_number % 2 === 1);
+                        ?>
+                            <div class="step-item <?php echo $is_odd ? 'step-odd' : 'step-even'; ?>">
+                                <!-- <div class="step-number"><?php //echo $step_number; ?></div> -->
+                                <div class="step-content">
+                                    <?php if ($is_odd) : ?>
+                                        <!-- Odd steps: image, Step (x), text -->
+                                        <?php if (!empty($step['step_image'])) : ?>
+                                            <div class="step-image">
+                                                <img src="<?php echo esc_url($step['step_image']); ?>" alt="Step <?php echo $step_number; ?>">
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="step-text">
+                                            <h4>Step <?php echo $step_number; ?></h4>
+                                            <p><?php echo wp_kses_post($step['step_description']); ?></p>
                                         </div>
-                                    <?php endif; ?>
-                                    <div class="step-text">
-                                        <h4>Step <?php echo $step_number; ?></h4>
-                                        <p><?php echo wp_kses_post($step['step_description']); ?></p>
-                                    </div>
-                                <?php else : ?>
-                                    <!-- Even steps: Step (x), text, image -->
-                                    <div class="step-text">
-                                        <h4>Step <?php echo $step_number; ?></h4>
-                                        <p><?php echo wp_kses_post($step['step_description']); ?></p>
-                                    </div>
-                                    <?php if (!empty($step['step_image'])) : ?>
-                                        <div class="step-image">
-                                            <img src="<?php echo esc_url($step['step_image']); ?>" alt="Step <?php echo $step_number; ?>">
+                                    <?php else : ?>
+                                        <!-- Even steps: Step (x), text, image -->
+                                        <div class="step-text">
+                                            <h4>Step <?php echo $step_number; ?></h4>
+                                            <p><?php echo wp_kses_post($step['step_description']); ?></p>
                                         </div>
+                                        <?php if (!empty($step['step_image'])) : ?>
+                                            <div class="step-image">
+                                                <img src="<?php echo esc_url($step['step_image']); ?>" alt="Step <?php echo $step_number; ?>">
+                                            </div>
+                                        <?php endif; ?>
                                     <?php endif; ?>
-                                <?php endif; ?>
+                                </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <!-- Fallback to mock data -->
+                    <p>Follow these simple steps for optimal results:</p>
+                    <ol>
+                        <li>Cleanse your face thoroughly with a gentle cleanser</li>
+                        <li>Apply a small amount of the product to your fingertips</li>
+                        <li>Gently massage into skin using upward circular motions</li>
+                        <li>Allow the product to absorb for 2-3 minutes</li>
+                        <li>Use twice daily, morning and evening, for best results</li>
+                        <li>Always follow with SPF during daytime use</li>
+                    </ol>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
+
+            <!-- Reviews Section -->
+            <div class="product-section" id="reviews-section">
+                <h2>Customer Reviews</h2>
+                <?php echo do_shortcode('[deva_reviews]'); ?>
+            </div>
 
             <!-- Questions Section -->
-            <?php
-            $faqs = deva_get_product_faqs($product->get_id());
-            if (!empty($faqs)) :
-            ?>
             <div class="product-section" id="questions-section">
                 <h2>Frequently Asked Questions</h2>
-                <?php foreach ($faqs as $faq) : ?>
-                    <p><strong>Q: <?php echo esc_html($faq['question']); ?></strong></p>
-                    <p>A: <?php echo wp_kses_post($faq['answer']); ?></p>
-                <?php endforeach; ?>
+                <p><strong>Q: Is this product suitable for sensitive skin?</strong></p>
+                <p>A: Yes, our product is formulated with gentle, natural ingredients that are suitable for all skin types, including sensitive skin.</p>
+
+                <p><strong>Q: How long does it take to see results?</strong></p>
+                <p>A: Most customers notice improvements in skin texture and hydration within 7-14 days of regular use.</p>
+
+                <p><strong>Q: Can I use this product with other skincare products?</strong></p>
+                <p>A: Yes, this product works well with most skincare routines. Apply after cleansing and before moisturizer.</p>
             </div>
-            <?php endif; ?>
         </div>
 
         <!-- Related Products -->
@@ -852,6 +903,9 @@ function deva_single_product_shortcode($atts)
                     }, 300);
                 }, 100);
                 
+                // Log the selected value for debugging
+                console.log(`Selected ${attributeName}: ${this.getAttribute('data-value')}`);
+                
                 // Update product selection
                 updateProductSelection();
             });
@@ -879,6 +933,8 @@ function deva_single_product_shortcode($atts)
                 selectedAttributes[attributeName] = attributeValue;
             });
             
+            // Log selected attributes for debugging
+            console.log('Selected attributes:', selectedAttributes);
             
             // Update the product form or data attributes for cart functionality
             const productForm = document.querySelector('.product-actions');

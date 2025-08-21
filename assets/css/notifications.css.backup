@@ -1,0 +1,619 @@
+/* =============================================================================
+   DEVA NOTIFICATIONS & WOOCOMMERCE MESSAGES STYLES
+   ============================================================================= */
+
+/* =================================
+   WooCommerce Notices Wrapper
+   ================================= */
+
+body .woocommerce-notices-wrapper {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 999;
+}
+
+/* Clear default WooCommerce styles */
+body .woocommerce-message,
+body .woocommerce-info,
+body .woocommerce-error,
+body .wc-block-components-notice-banner {
+    margin: 0 0 15px 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    color: inherit !important;
+    list-style: none !important;
+}
+
+body .woocommerce-message::before,
+body .woocommerce-info::before,
+body .woocommerce-error::before {
+    display: none !important;
+}
+
+/* =================================
+   DEVA Message Base Styles
+   ================================= */
+
+body .woocommerce-message,
+body .woocommerce-info,
+body .woocommerce-error,
+body .wc-block-components-notice-banner,
+.deva-notification,
+.deva-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideInDown 0.3s ease;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+/* =================================
+   Success Messages (Green)
+   ================================= */
+
+/* =================================
+   Success Messages (DEVA Green)
+   ================================= */
+
+body .woocommerce-message,
+.deva-notification.success,
+.deva-message.success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border-left: 4px solid #2e7d32;
+}
+
+body .woocommerce-message .dashicons,
+.deva-notification.success .dashicons,
+.deva-message.success .dashicons {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* =================================
+   Info Messages (DEVA Blue)
+   ================================= */
+
+body .woocommerce-info,
+.wc-block-components-notice-banner.is-info,
+.deva-notification.info,
+.deva-message.info {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border-left: 4px solid #0D47A1;
+}
+
+body .woocommerce-info .dashicons,
+.wc-block-components-notice-banner.is-info .dashicons,
+.deva-notification.info .dashicons,
+.deva-message.info .dashicons {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* =================================
+   Info Messages (Blue)
+   ================================= */
+
+.woocommerce-info,
+.deva-notification-info,
+.deva-message.deva-info,
+.wc-block-components-notice-banner.is-info {
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    color: #0c4a6e;
+    border-left: 4px solid #0ea5e9;
+}
+
+.woocommerce-info::before,
+.deva-notification-info::before,
+.deva-message.deva-info::before {
+    content: "i";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #0ea5e9;
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* =================================
+   Warning Messages (DEVA Orange)
+   ================================= */
+
+body .wc-block-components-notice-banner.is-warning,
+.deva-notification.warning,
+.deva-message.warning {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+    border-left: 4px solid #e65100;
+}
+
+body .wc-block-components-notice-banner.is-warning .dashicons,
+.deva-notification.warning .dashicons,
+.deva-message.warning .dashicons {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* =================================
+   Error Messages (DEVA Red)
+   ================================= */
+
+body .woocommerce-error,
+.wc-block-components-notice-banner.is-error,
+.deva-notification.error,
+.deva-message.error {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    border-left: 4px solid #b71c1c;
+}
+
+body .woocommerce-error .dashicons,
+.wc-block-components-notice-banner.is-error .dashicons,
+.deva-notification.error .dashicons,
+.deva-message.error .dashicons {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* =================================
+   Error Messages (Red)
+   ================================= */
+
+.woocommerce-error,
+.deva-notification-error,
+.deva-message.deva-error,
+.wc-block-components-notice-banner.is-error {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    color: #dc2626;
+    border-left: 4px solid #ef4444;
+}
+
+.woocommerce-error::before,
+.deva-notification-error::before,
+.deva-message.deva-error::before {
+    content: "×";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* =================================
+   Message Content Styling
+   ================================= */
+
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error,
+.woocommerce-warning {
+    font-family: inherit;
+}
+
+.woocommerce-message a,
+.woocommerce-info a,
+.woocommerce-error a,
+.woocommerce-warning a,
+.deva-notification a,
+.deva-message a {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+}
+
+.woocommerce-message a:hover,
+.woocommerce-info a:hover,
+.woocommerce-error a:hover,
+.woocommerce-warning a:hover,
+.deva-notification a:hover,
+.deva-message a:hover {
+    opacity: 0.8;
+}
+
+/* =================================
+   Cart Messages Specific Styling
+   ================================= */
+
+.woocommerce-cart .woocommerce-notices-wrapper,
+.woocommerce-checkout .woocommerce-notices-wrapper {
+    margin: 0 0 30px 0;
+}
+
+/* Cart updated message */
+.woocommerce-message[data-message*="updated"] {
+    background: linear-gradient(135deg, #f0f9f4, #e6f7ed);
+}
+
+/* Product added to cart message */
+.woocommerce-message[data-message*="added"] {
+    background: linear-gradient(135deg, #f0f9f4, #e6f7ed);
+}
+
+/* =================================
+   Checkout Messages
+   ================================= */
+
+.woocommerce-checkout .woocommerce-notices-wrapper {
+    background: #f8fdf7;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    border: 1px solid #e5f3e1;
+}
+
+/* =================================
+   Account Page Messages
+   ================================= */
+
+.woocommerce-account .woocommerce-notices-wrapper {
+    margin-bottom: 30px;
+}
+
+.woocommerce-account .woocommerce-message,
+.woocommerce-account .woocommerce-error,
+.woocommerce-account .woocommerce-info {
+    max-width: none;
+}
+
+/* =================================
+   Shop & Product Page Messages
+   ================================= */
+
+.single-product .woocommerce-notices-wrapper,
+.woocommerce-shop .woocommerce-notices-wrapper,
+.archive.woocommerce .woocommerce-notices-wrapper {
+    margin: 20px auto;
+}
+
+/* =================================
+   Dismiss Button Styling
+   ================================= */
+
+.woocommerce-message .woocommerce-message-dismiss,
+.woocommerce-info .woocommerce-info-dismiss,
+.woocommerce-error .woocommerce-error-dismiss,
+.deva-notification .dismiss-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    font-size: 18px;
+    transition: opacity 0.3s ease;
+}
+
+.woocommerce-message .woocommerce-message-dismiss:hover,
+.woocommerce-info .woocommerce-info-dismiss:hover,
+.woocommerce-error .woocommerce-error-dismiss:hover,
+.deva-notification .dismiss-btn:hover {
+    opacity: 1;
+}
+
+/* =================================
+   Animation for Messages
+   ================================= */
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.deva-notification.fade-out,
+.woocommerce-message.fade-out,
+.woocommerce-info.fade-out,
+.woocommerce-error.fade-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+/* =================================
+   Auto-dismiss functionality
+   ================================= */
+
+.deva-notification[data-auto-dismiss],
+.woocommerce-message[data-auto-dismiss] {
+    position: relative;
+    overflow: hidden;
+}
+
+.deva-notification[data-auto-dismiss]::after,
+.woocommerce-message[data-auto-dismiss]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.2);
+    animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
+
+/* =================================
+   Multiple Messages Stacking
+   ================================= */
+
+.woocommerce-notices-wrapper .woocommerce-message + .woocommerce-message,
+.woocommerce-notices-wrapper .woocommerce-error + .woocommerce-error,
+.woocommerce-notices-wrapper .woocommerce-info + .woocommerce-info {
+    margin-top: 10px;
+}
+
+/* =================================
+   Block Editor Compatibility
+   ================================= */
+
+.wp-block-woocommerce-cart .wc-block-components-notice-banner,
+.wp-block-woocommerce-checkout .wc-block-components-notice-banner {
+    margin: 0 0 20px 0;
+}
+
+/* =================================
+   Responsive Design
+   ================================= */
+
+@media (max-width: 768px) {
+    .woocommerce-notices-wrapper {
+        padding: 0 15px;
+        margin: 15px auto;
+    }
+    
+    .woocommerce-message,
+    .woocommerce-info,
+    .woocommerce-error,
+    .woocommerce-warning,
+    .deva-notification,
+    .deva-message {
+        padding: 12px 16px;
+        font-size: 13px;
+        gap: 10px;
+    }
+    
+    .woocommerce-message::before,
+    .woocommerce-info::before,
+    .woocommerce-error::before,
+    .woocommerce-warning::before,
+    .deva-notification::before,
+    .deva-message::before {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .woocommerce-notices-wrapper {
+        padding: 0 10px;
+        margin: 10px auto;
+    }
+    
+    .woocommerce-message,
+    .woocommerce-info,
+    .woocommerce-error,
+    .woocommerce-warning,
+    .deva-notification,
+    .deva-message {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+}
+
+/* =================================
+   Toast Notifications (Floating)
+   ================================= */
+
+.deva-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.deva-toast {
+    pointer-events: auto;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .deva-toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
+
+/* =================================
+   WooCommerce Specific Message Types
+   ================================= */
+
+/* Order received/thank you page */
+.woocommerce-order-received .woocommerce-notices-wrapper {
+    text-align: center;
+    padding: 30px 20px;
+    background: #f8fdf7;
+    border-radius: 12px;
+    margin: 30px auto;
+    border: 1px solid #e5f3e1;
+}
+
+/* Stock status messages */
+.woocommerce-message.stock-message {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    color: #92400e;
+    border-left-color: #f59e0b;
+}
+
+/* Coupon messages */
+.woocommerce-message.coupon-message {
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    color: #0c4a6e;
+    border-left-color: #0ea5e9;
+}
+
+/* Login required messages */
+.woocommerce-info.login-required {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    color: #92400e;
+    border-left-color: #f59e0b;
+}
+
+/* =================================
+   Integration with Existing Cart Notifications
+   ================================= */
+
+/* Existing DEVA cart notifications (from shop.js) */
+.deva-cart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid #48733D;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    max-width: 350px;
+    font-size: 14px;
+}
+
+.deva-cart-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.deva-cart-notification .notification-content {
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.deva-cart-notification .notification-icon {
+    color: #48733D;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.deva-cart-notification .notification-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.deva-cart-notification .notification-text strong {
+    color: #48733D;
+    font-weight: 600;
+}
+
+.deva-cart-notification .product-name {
+    color: #374151;
+    font-weight: 500;
+}
+
+.deva-cart-notification .view-cart-link {
+    color: #48733D;
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: 13px;
+    margin-top: 8px;
+    display: inline-block;
+}
+
+.deva-cart-notification .view-cart-link:hover {
+    color: #3a5c2f;
+}
+
+.deva-cart-notification.buy-now-notification {
+    background: linear-gradient(135deg, #f0f9f4, #e6f7ed);
+    border-color: #48733D;
+}
+
+.deva-cart-notification.buy-now-notification .notification-icon {
+    color: #16a34a;
+}
+
+/* Mobile responsiveness for cart notifications */
+@media (max-width: 768px) {
+    .deva-cart-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}

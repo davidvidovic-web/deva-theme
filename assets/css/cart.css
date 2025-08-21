@@ -3,7 +3,7 @@
    =================================== */
 
 .deva-cart-container {
-  max-width: 1200px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 2rem;
   background: #ffffff;
@@ -52,13 +52,13 @@
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .deva-cart-navigation .deva-pagination li.cart-tab,
   .deva-cart-navigation .deva-pagination li.wishlist-tab {
     max-width: 100%;
     width: 100%;
   }
-  
+
   .deva-tab {
     padding: 1rem 1.5rem;
     min-height: 50px;
@@ -72,13 +72,13 @@
     margin-left: 0;
     margin-right: 0;
   }
-  
+
   .deva-cart-header .deva-tab {
     padding: 14px 24px;
     font-size: 0.9rem;
     gap: 6px;
   }
-  
+
   .deva-cart-header .deva-tab svg {
     width: 16px;
     height: 16px;
@@ -91,7 +91,7 @@
     font-size: 0.85rem;
     gap: 4px;
   }
-  
+
   .deva-cart-header .deva-tab svg {
     width: 14px;
     height: 14px;
@@ -138,8 +138,8 @@
   justify-content: center;
   gap: 8px;
   padding: 16px 32px;
-  background: #EBF3E8;
-  color: #48733D;
+  background: #ebf3e8;
+  color: #48733d;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -158,7 +158,7 @@
 }
 
 .deva-cart-header .deva-tab.active {
-  background: #48733D;
+  background: #48733d;
   color: #ffffff;
   font-weight: bold;
 }
@@ -414,12 +414,12 @@
   .deva-item-price {
     gap: 0.375rem;
   }
-  
+
   .unit-price .price-amount,
   .total-price .price-amount {
     font-size: 0.9rem;
   }
-  
+
   .subtotal-amount {
     font-size: 1.1rem;
   }
@@ -429,11 +429,11 @@
   .deva-item-price {
     gap: 0.25rem;
   }
-  
+
   .unit-price .price-amount {
     font-size: 0.85rem;
   }
-  
+
   .subtotal-amount {
     font-size: 1rem;
   }
@@ -1099,10 +1099,18 @@ body.woocommerce-cart .deva-cart-container .qty-btn {
 
 /* Ensure inactive indicators maintain outline style */
 .deva-cart-container .deva-pagination ul li.cart-indicator span:not(.active),
-.deva-cart-container .deva-pagination ul li.wishlist-indicator span:not(.active) {
+.deva-cart-container
+  .deva-pagination
+  ul
+  li.wishlist-indicator
+  span:not(.active) {
   background: #ffffff;
   color: #48733d;
   border-color: #48733d;
+}
+
+.woocommerce-cart-form {
+  margin: 20px auto;
 }
 
 /* Responsive Design */
@@ -1110,11 +1118,11 @@ body.woocommerce-cart .deva-cart-container .qty-btn {
   .deva-cart-container .deva-pagination {
     margin-top: 30px;
   }
-  
+
   .deva-cart-container .deva-pagination ul {
     gap: 8px;
   }
-  
+
   .deva-cart-container .deva-pagination ul li button,
   .deva-cart-container .deva-pagination ul li span {
     width: 36px;
