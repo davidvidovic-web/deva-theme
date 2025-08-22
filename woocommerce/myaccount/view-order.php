@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DEVA View Order
  *
@@ -26,15 +27,15 @@ $status_class = sanitize_html_class($status);
         <div class="deva-order-title">
             <h2>
                 <span class="dashicons dashicons-visibility"></span>
-                <?php printf(__('Order #%s', 'hello-elementor-child'), $order->get_order_number()); ?>
+                <?php printf(__('Order #%s', 'woocommerce'), $order->get_order_number()); ?>
             </h2>
         </div>
-        
+
         <!-- Back to Orders Link -->
         <div class="deva-order-back">
             <a href="<?php echo esc_url(wc_get_endpoint_url('orders', '', wc_get_page_permalink('myaccount'))); ?>" class="deva-back-link">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
-                <?php _e('Back to Orders', 'hello-elementor-child'); ?>
+                <?php _e('Back to Orders', 'woocommerce'); ?>
             </a>
         </div>
     </div>
@@ -82,12 +83,12 @@ $status_class = sanitize_html_class($status);
                 <span class="dashicons dashicons-cart"></span>
                 <?php _e('Order Items', 'hello-elementor-child'); ?>
             </h3>
-            
+
             <div class="deva-order-items-list">
                 <?php foreach ($order_items as $item_id => $item) :
                     $product = $item->get_product();
                     if (!$product) continue;
-                    
+
                     $product_image = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
                     if (!$product_image) {
                         $product_image = wc_placeholder_img_src('thumbnail');
@@ -97,29 +98,31 @@ $status_class = sanitize_html_class($status);
                         <div class="deva-item-image">
                             <img src="<?php echo esc_url($product_image); ?>" alt="<?php echo esc_attr($product->get_name()); ?>" />
                         </div>
-                        
+
                         <div class="deva-item-details">
                             <h4><?php echo esc_html($product->get_name()); ?></h4>
-                            
+
                             <?php if ($product->get_sku()) : ?>
                                 <div class="deva-item-sku">
-                                    <strong><?php _e('SKU:', 'hello-elementor-child'); ?></strong> 
+                                    <strong><?php _e('SKU:', 'hello-elementor-child'); ?></strong>
                                     <?php echo esc_html($product->get_sku()); ?>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <div class="deva-item-meta">
                                 <span class="deva-quantity">
-                                    <strong><?php _e('Quantity:', 'hello-elementor-child'); ?></strong> 
+                                    <strong><?php _e('Quantity:', 'hello-elementor-child'); ?></strong>
                                     <?php echo esc_html($item->get_quantity()); ?>
                                 </span>
+                            </div>
+                            <div class="deva-item-meta">
                                 <span class="deva-price">
-                                    <strong><?php _e('Price:', 'hello-elementor-child'); ?></strong> 
+                                    <strong><?php _e('Price:', 'hello-elementor-child'); ?></strong>
                                     <?php echo wp_kses_post(wc_price($item->get_total())); ?>
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="deva-item-actions">
                             <?php if ($product->is_purchasable() && $order->get_status() === 'completed') : ?>
                                 <a href="<?php echo esc_url($product->add_to_cart_url()); ?>" class="deva-btn deva-btn-secondary">
@@ -139,18 +142,18 @@ $status_class = sanitize_html_class($status);
                 <span class="dashicons dashicons-admin-generic"></span>
                 <?php _e('Order Information', 'hello-elementor-child'); ?>
             </h3>
-            
+
             <div class="deva-order-info-card">
                 <div class="deva-info-row">
                     <span class="deva-info-label"><?php _e('Order Number:', 'hello-elementor-child'); ?></span>
                     <span class="deva-info-value">#<?php echo esc_html($order->get_order_number()); ?></span>
                 </div>
-                
+
                 <div class="deva-info-row">
                     <span class="deva-info-label"><?php _e('Order Date:', 'hello-elementor-child'); ?></span>
                     <span class="deva-info-value"><?php echo esc_html(wc_format_datetime($order->get_date_created(), 'F j, Y \a\t g:i A')); ?></span>
                 </div>
-                
+
                 <div class="deva-info-row">
                     <span class="deva-info-label"><?php _e('Status:', 'hello-elementor-child'); ?></span>
                     <span class="deva-info-value">
@@ -159,12 +162,12 @@ $status_class = sanitize_html_class($status);
                         </span>
                     </span>
                 </div>
-                
+
                 <div class="deva-info-row">
                     <span class="deva-info-label"><?php _e('Payment Method:', 'hello-elementor-child'); ?></span>
                     <span class="deva-info-value"><?php echo esc_html($order->get_payment_method_title()); ?></span>
                 </div>
-                
+
                 <?php if ($order->get_billing_email()) : ?>
                     <div class="deva-info-row">
                         <span class="deva-info-label"><?php _e('Email:', 'hello-elementor-child'); ?></span>
@@ -181,10 +184,10 @@ $status_class = sanitize_html_class($status);
                     <span class="dashicons dashicons-location"></span>
                     <?php _e('Billing Address', 'hello-elementor-child'); ?>
                 </h3>
-                
+
                 <div class="deva-address-card">
                     <?php echo wp_kses_post($order->get_formatted_billing_address()); ?>
-                    
+
                     <?php if ($order->get_billing_phone()) : ?>
                         <div class="deva-phone">
                             <strong><?php _e('Phone:', 'hello-elementor-child'); ?></strong>
@@ -202,7 +205,7 @@ $status_class = sanitize_html_class($status);
                     <span class="dashicons dashicons-admin-home"></span>
                     <?php _e('Shipping Address', 'hello-elementor-child'); ?>
                 </h3>
-                
+
                 <div class="deva-address-card">
                     <?php echo wp_kses_post($order->get_formatted_shipping_address()); ?>
                 </div>
@@ -217,7 +220,7 @@ $status_class = sanitize_html_class($status);
                 <span class="dashicons dashicons-admin-comments"></span>
                 <?php _e('Order Updates', 'hello-elementor-child'); ?>
             </h3>
-            
+
             <div class="deva-notes-list">
                 <?php foreach ($notes as $note) : ?>
                     <div class="deva-order-note">
@@ -238,24 +241,29 @@ $status_class = sanitize_html_class($status);
     $actions = wc_get_account_orders_actions($order);
     if (!empty($actions)) :
     ?>
-        <div class="deva-order-actions-section">
+        <!-- <div class="deva-order-actions-section">
             <h3><?php _e('Order Actions', 'hello-elementor-child'); ?></h3>
             <div class="deva-order-actions">
-                <?php foreach ($actions as $key => $action) :
-                    $button_class = 'deva-btn deva-btn-secondary';
-                    if ($key === 'pay') {
-                        $button_class = 'deva-btn deva-btn-success';
-                    } elseif ($key === 'cancel') {
-                        $button_class = 'deva-btn deva-btn-danger';
-                    }
+                <?php //foreach ($actions as $key => $action) :
+                //$button_class = 'deva-btn deva-btn-secondary';
+                //if ($key === 'pay') {
+                //$button_class = 'deva-btn deva-btn-success';
+                //} elseif ($key === 'cancel') {
+                //$button_class = 'deva-btn deva-btn-danger';
+                //}
                 ?>
-                    <a href="<?php echo esc_url($action['url']); ?>" class="<?php echo esc_attr($button_class); ?>">
-                        <?php echo esc_html($action['name']); ?>
+                    <a href="<?php //echo esc_url($action['url']); 
+                                ?>" class="<?php //echo esc_attr($button_class); 
+                                            ?>">
+                        <?php //cho esc_html($action['name']); 
+                        ?>
                     </a>
-                <?php endforeach; ?>
+                <?php //endforeach; 
+                ?>
             </div>
-        </div>
+        </div> -->
     <?php endif; ?>
 </div>
 
-<?php do_action('woocommerce_view_order', $order_id); ?>
+<?php //do_action('woocommerce_view_order', $order_id); 
+?>

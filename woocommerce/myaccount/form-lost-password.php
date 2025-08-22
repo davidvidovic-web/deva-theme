@@ -141,13 +141,6 @@ if (! empty($_GET['reset-link-sent'])) {
                 <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>" class="deva-back-link">
                     ← <?php _e('Back to Sign In', 'hello-elementor-child'); ?>
                 </a>
-                <div class="deva-help-text">
-                    <p><?php _e('Remember your password?', 'hello-elementor-child'); ?>
-                        <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>" class="deva-signin-link">
-                            <?php _e('Sign in here', 'hello-elementor-child'); ?>
-                        </a>
-                    </p>
-                </div>
             <?php endif; ?>
         </div>
     </div>

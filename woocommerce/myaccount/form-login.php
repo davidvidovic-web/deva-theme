@@ -1,19 +1,19 @@
 <?php
-
 /**
- * DEVA Custom Login/Registration Form
- * Template for [woocommerce_my_account] shortcode
- * @version 9.9.0
+ * Login Form
+ *
+ * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/form-login.php.
+ *
+ * @see https://docs.woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 7.0.1
  */
 
-defined('ABSPATH') || exit;
-
-// If user is already logged in, redirect to account page
-if (is_user_logged_in()) {
-    wp_safe_redirect(wc_get_page_permalink('myaccount'));
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
-?>
+
+do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 <div class="deva-auth-container">
     <div class="deva-auth-form-wrapper">
@@ -22,238 +22,168 @@ if (is_user_logged_in()) {
             <p><?php _e('Create your account or sign in to continue your wellness journey', 'hello-elementor-child'); ?></p>
         </div>
 
-        <form class="deva-auth-form" method="post" id="deva-auth-form">
-            <?php wp_nonce_field('deva_auth_action', 'deva_auth_nonce'); ?>
+        <!-- Form Mode Toggle -->
+        <div class="deva-form-toggle">
+            <button type="button" class="deva-toggle-btn active" data-mode="login">
+                <?php _e('Sign In', 'hello-elementor-child'); ?>
+            </button>
+            <button type="button" class="deva-toggle-btn" data-mode="register">
+                <?php _e('Create Account', 'hello-elementor-child'); ?>
+            </button>
+        </div>
 
-            <!-- Form Mode Toggle -->
-            <div class="deva-form-toggle">
-                <button type="button" class="deva-toggle-btn active" data-mode="login">
-                    <?php _e('Sign In', 'hello-elementor-child'); ?>
-                </button>
-                <button type="button" class="deva-toggle-btn" data-mode="register">
-                    <?php _e('Create Account', 'hello-elementor-child'); ?>
-                </button>
+        <div class="u-columns col2-set" id="customer_login">
+
+            <div class="u-column1 deva-login-form-wrapper">
+
+                <!-- LOGIN FORM -->
+                <form class="woocommerce-form woocommerce-form-login login deva-auth-form" method="post">
+
+                    <?php do_action( 'woocommerce_login_form_start' ); ?>
+
+                    <!-- Username Field -->
+                    <div class="deva-form-group">
+                        <label for="username"><?php _e('Username or email address', 'hello-elementor-child'); ?> <span class="required">*</span></label>
+                        <input type="text" class="woocommerce-Input woocommerce-Input--text input-text deva-input" 
+                               name="username" id="username" autocomplete="username" 
+                               value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; ?>" 
+                               placeholder="<?php _e('Enter your username or email', 'hello-elementor-child'); ?>"
+                               required />
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="deva-form-group">
+                        <label for="password"><?php _e('Password', 'hello-elementor-child'); ?> <span class="required">*</span></label>
+                        <div class="deva-password-wrapper">
+                            <input class="woocommerce-Input woocommerce-Input--text input-text deva-input" 
+                                   type="password" name="password" id="password" autocomplete="current-password" 
+                                   placeholder="<?php _e('Enter your password', 'hello-elementor-child'); ?>"
+                                   required />
+                        </div>
+                    </div>
+
+                    <?php do_action( 'woocommerce_login_form' ); ?>
+
+                    <!-- Remember Me -->
+                    <div class="deva-form-group deva-login-field">
+                        <label class="deva-checkbox-wrapper woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme">
+                            <input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" />
+                            <span class="deva-checkbox-custom"></span>
+                            <span class="deva-checkbox-text"><?php esc_html_e( 'Remember me', 'woocommerce' ); ?></span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="deva-form-group">
+                        <?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
+                        <button type="submit" class="woocommerce-button button woocommerce-form-login__submit deva-submit-btn" 
+                                name="login" value="<?php esc_attr_e( 'Log in', 'woocommerce' ); ?>">
+                            <?php esc_html_e( 'Sign In', 'hello-elementor-child' ); ?>
+                        </button>
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <div class="deva-form-footer deva-login-field">
+                        <a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" class="deva-forgot-password">
+                            <?php esc_html_e( 'Forgot your password?', 'hello-elementor-child' ); ?>
+                        </a>
+                    </div>
+
+                    <?php do_action( 'woocommerce_login_form_end' ); ?>
+
+                </form>
+
             </div>
 
-            <!-- Error/Success Messages -->
-            <div class="deva-auth-messages" id="deva-auth-messages"></div>
+            <div class="u-column2 deva-register-form-wrapper" style="display: none;">
 
-            <!-- Username Field (Always Visible) -->
-            <div class="deva-form-group">
-                <label for="deva_username"><?php _e('Username', 'hello-elementor-child'); ?> <span class="required">*</span></label>
-                <input type="text"
-                    name="username"
-                    id="deva_username"
-                    class="deva-input"
-                    placeholder="<?php _e('Enter your username', 'hello-elementor-child'); ?>"
-                    required />
+                <!-- REGISTRATION FORM -->
+                <form method="post" class="woocommerce-form woocommerce-form-register register deva-auth-form deva-register-form" <?php do_action( 'woocommerce_register_form_tag' ); ?> >
+
+                    <?php do_action( 'woocommerce_register_form_start' ); ?>
+
+                    <?php if ( 'no' === get_option( 'woocommerce_registration_generate_username' ) ) : ?>
+                        <!-- Username Field for Registration -->
+                        <div class="deva-form-group">
+                            <label for="reg_username"><?php esc_html_e( 'Username', 'woocommerce' ); ?> <span class="required">*</span></label>
+                            <input type="text" class="woocommerce-Input woocommerce-Input--text input-text deva-input" 
+                                   name="username" id="reg_username" autocomplete="username" 
+                                   value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; ?>" 
+                                   placeholder="<?php _e('Enter your username', 'hello-elementor-child'); ?>"
+                                   required />
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Email Field for Registration -->
+                    <div class="deva-form-group">
+                        <label for="reg_email"><?php esc_html_e( 'Email address', 'woocommerce' ); ?> <span class="required">*</span></label>
+                        <input type="email" class="woocommerce-Input woocommerce-Input--text input-text deva-input" 
+                               name="email" id="reg_email" autocomplete="email" 
+                               value="<?php echo ( ! empty( $_POST['email'] ) ) ? esc_attr( wp_unslash( $_POST['email'] ) ) : ''; ?>" 
+                               placeholder="<?php _e('Enter your email address', 'hello-elementor-child'); ?>"
+                               required />
+                    </div>
+
+                    <?php if ( 'no' === get_option( 'woocommerce_registration_generate_password' ) ) : ?>
+                        <!-- Password Field for Registration -->
+                        <div class="deva-form-group">
+                            <label for="reg_password"><?php esc_html_e( 'Password', 'woocommerce' ); ?> <span class="required">*</span></label>
+                            <div class="deva-password-wrapper">
+                                <input type="password" class="woocommerce-Input woocommerce-Input--text input-text deva-input" 
+                                       name="password" id="reg_password" autocomplete="new-password" 
+                                       placeholder="<?php _e('Enter your password', 'hello-elementor-child'); ?>"
+                                       required />
+                            </div>
+                        </div>
+                    <?php else : ?>
+                        <div class="deva-form-group">
+                            <p><?php esc_html_e( 'A link to set a new password will be sent to your email address.', 'woocommerce' ); ?></p>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php do_action( 'woocommerce_register_form' ); ?>
+
+                    <!-- Submit Button for Registration -->
+                    <div class="deva-form-group">
+                        <?php wp_nonce_field( 'woocommerce-register', 'woocommerce-register-nonce' ); ?>
+                        <button type="submit" class="woocommerce-button button woocommerce-form-register__submit deva-submit-btn" 
+                                name="register" value="<?php esc_attr_e( 'Register', 'woocommerce' ); ?>">
+                            <?php esc_html_e( 'Create Account', 'hello-elementor-child' ); ?>
+                        </button>
+                    </div>
+
+                    <?php do_action( 'woocommerce_register_form_end' ); ?>
+
+                </form>
+
             </div>
-
-            <!-- Email Field (Visible for registration, hidden for login) -->
-            <div class="deva-form-group deva-register-field" style="display: none;">
-                <label for="deva_email"><?php _e('Email Address', 'hello-elementor-child'); ?> <span class="required">*</span></label>
-                <input type="email"
-                    name="email"
-                    id="deva_email"
-                    class="deva-input"
-                    placeholder="<?php _e('Enter your email address', 'hello-elementor-child'); ?>" />
-            </div>
-
-            <!-- Password Field -->
-            <div class="deva-form-group">
-                <label for="deva_password"><?php _e('Password', 'hello-elementor-child'); ?> <span class="required">*</span></label>
-                <div class="deva-password-wrapper">
-                    <input type="password"
-                        name="password"
-                        id="deva_password"
-                        class="deva-input"
-                        placeholder="<?php _e('Enter your password', 'hello-elementor-child'); ?>"
-                        required />
-                    <button type="button" class="deva-password-toggle" onclick="togglePasswordVisibility('deva_password')">
-                        <span class="show-text dashicons dashicons-visibility" title="<?php _e('Show password', 'hello-elementor-child'); ?>"></span>
-                        <span class="hide-text dashicons dashicons-hidden" style="display: none;" title="<?php _e('Hide password', 'hello-elementor-child'); ?>"></span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Confirm Password Field (Only for registration) -->
-            <div class="deva-form-group deva-register-field" style="display: none;">
-                <label for="deva_confirm_password"><?php _e('Confirm Password', 'hello-elementor-child'); ?> <span class="required">*</span></label>
-                <div class="deva-password-wrapper">
-                    <input type="password"
-                        name="confirm_password"
-                        id="deva_confirm_password"
-                        class="deva-input"
-                        placeholder="<?php _e('Confirm your password', 'hello-elementor-child'); ?>" />
-                    <button type="button" class="deva-password-toggle" onclick="togglePasswordVisibility('deva_confirm_password')">
-                        <span class="show-text dashicons dashicons-visibility" title="<?php _e('Show password', 'hello-elementor-child'); ?>"></span>
-                        <span class="hide-text dashicons dashicons-hidden" style="display: none;" title="<?php _e('Hide password', 'hello-elementor-child'); ?>"></span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Remember Me (Login only) -->
-            <div class="deva-form-group deva-login-field">
-                <label class="deva-checkbox-wrapper">
-                    <input type="checkbox" name="rememberme" value="forever" />
-                    <span class="deva-checkbox-custom"></span>
-                    <span class="deva-checkbox-text"><?php _e('Remember me', 'hello-elementor-child'); ?></span>
-                </label>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="deva-form-group">
-                <button type="submit" class="deva-submit-btn" id="deva-submit-btn">
-                    <span class="login-text"><?php _e('Sign In', 'hello-elementor-child'); ?></span>
-                    <span class="register-text" style="display: none;"><?php _e('Create Account', 'hello-elementor-child'); ?></span>
-                    <span class="loading-text" style="display: none;"><?php _e('Processing...', 'hello-elementor-child'); ?></span>
-                </button>
-            </div>
-
-            <!-- Forgot Password Link (Login only) -->
-            <div class="deva-form-footer deva-login-field">
-                <a href="<?php echo esc_url(wp_lostpassword_url()); ?>" class="deva-forgot-password">
-                    <?php _e('Forgot your password?', 'hello-elementor-child'); ?>
-                </a>
-            </div>
-
-            <!-- Hidden fields for form processing -->
-            <input type="hidden" name="action" value="deva_auth_process" />
-            <input type="hidden" name="auth_mode" id="auth_mode" value="login" />
-        </form>
-    </div>
-</div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('deva-auth-form');
-        const toggleBtns = document.querySelectorAll('.deva-toggle-btn');
-        const registerFields = document.querySelectorAll('.deva-register-field');
-        const loginFields = document.querySelectorAll('.deva-login-field');
-        const authModeInput = document.getElementById('auth_mode');
-        const submitBtn = document.getElementById('deva-submit-btn');
-        const loginText = submitBtn.querySelector('.login-text');
-        const registerText = submitBtn.querySelector('.register-text');
-
-        // Form mode toggle
-        toggleBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const mode = this.dataset.mode;
-
-                // Update button states
-                toggleBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-
-                // Update form fields visibility
-                if (mode === 'register') {
-                    registerFields.forEach(field => field.style.display = 'block');
-                    loginFields.forEach(field => field.style.display = 'none');
-                    loginText.style.display = 'none';
-                    registerText.style.display = 'inline';
-
-                    // Make email and confirm password required
-                    document.getElementById('deva_email').required = true;
-                    document.getElementById('deva_confirm_password').required = true;
-                } else {
-                    registerFields.forEach(field => field.style.display = 'none');
-                    loginFields.forEach(field => field.style.display = 'block');
-                    loginText.style.display = 'inline';
-                    registerText.style.display = 'none';
-
-                    // Remove email and confirm password required
-                    document.getElementById('deva_email').required = false;
-                    document.getElementById('deva_confirm_password').required = false;
-                }
-
-                authModeInput.value = mode;
-            });
-        });
-
-        // Form submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-            const submitBtn = document.getElementById('deva-submit-btn');
-            const loadingText = submitBtn.querySelector('.loading-text');
-            const currentText = authModeInput.value === 'login' ? loginText : registerText;
-
-            // Show loading state
-            submitBtn.disabled = true;
-            currentText.style.display = 'none';
-            loadingText.style.display = 'inline';
-
-            // Clear previous messages
-            document.getElementById('deva-auth-messages').innerHTML = '';
-
-            // Validate passwords match for registration
-            if (authModeInput.value === 'register') {
-                const password = document.getElementById('deva_password').value;
-                const confirmPassword = document.getElementById('deva_confirm_password').value;
-
-                if (password !== confirmPassword) {
-                    showMessage('Passwords do not match.', 'error');
-                    resetSubmitButton();
-                    return;
-                }
+// Toggle between login and register forms with WordPress standard forms
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtns = document.querySelectorAll('.deva-toggle-btn');
+    const loginWrapper = document.querySelector('.deva-login-form-wrapper');
+    const registerWrapper = document.querySelector('.deva-register-form-wrapper');
+    
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mode = this.dataset.mode;
+            
+            // Update active button
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Toggle form visibility
+            if (mode === 'login') {
+                if (loginWrapper) loginWrapper.style.display = 'block';
+                if (registerWrapper) registerWrapper.style.display = 'none';
+            } else {
+                if (loginWrapper) loginWrapper.style.display = 'none';
+                if (registerWrapper) registerWrapper.style.display = 'block';
             }
-
-            // Submit via AJAX
-            fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showMessage(data.data.message, 'success');
-                        if (data.data.redirect) {
-                            setTimeout(() => {
-                                window.location.href = data.data.redirect;
-                            }, 1500);
-                        }
-                    } else {
-                        showMessage(data.data || 'An error occurred. Please try again.', 'error');
-                    }
-                })
-                .catch(error => {
-                    showMessage('Network error. Please try again.', 'error');
-                })
-                .finally(() => {
-                    resetSubmitButton();
-                });
         });
-
-        function resetSubmitButton() {
-            const submitBtn = document.getElementById('deva-submit-btn');
-            const loadingText = submitBtn.querySelector('.loading-text');
-            const currentText = authModeInput.value === 'login' ? loginText : registerText;
-
-            submitBtn.disabled = false;
-            loadingText.style.display = 'none';
-            currentText.style.display = 'inline';
-        }
-
-        function showMessage(message, type) {
-            const messagesDiv = document.getElementById('deva-auth-messages');
-            messagesDiv.innerHTML = `<div class="deva-message deva-${type}">${message}</div>`;
-        }
     });
-
-    function togglePasswordVisibility(fieldId) {
-        const field = document.getElementById(fieldId);
-        const button = field.nextElementSibling;
-        const showText = button.querySelector('.show-text');
-        const hideText = button.querySelector('.hide-text');
-
-        if (field.type === 'password') {
-            field.type = 'text';
-            showText.style.display = 'none';
-            hideText.style.display = 'inline';
-        } else {
-            field.type = 'password';
-            showText.style.display = 'inline';
-            hideText.style.display = 'none';
-        }
-    }
+});
 </script>
+
+<?php do_action( 'woocommerce_after_customer_login_form' ); ?>

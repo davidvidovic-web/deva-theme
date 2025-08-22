@@ -1,0 +1,477 @@
+/* =============================================================================
+   DEVA THANK YOU PAGE STYLES
+   ============================================================================= */
+
+/* Thank You Container */
+.deva-thankyou-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Thank You Header */
+.deva-thankyou-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+}
+
+.deva-thankyou-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.deva-thankyou-icon.success {
+    background: linear-gradient(135deg, #48733d, #5d8a51);
+    color: white;
+}
+
+.deva-thankyou-icon.error {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+}
+
+.deva-thankyou-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.deva-order-success .deva-thankyou-title {
+    color: #48733d;
+}
+
+.deva-order-failed .deva-thankyou-title,
+.deva-order-notfound .deva-thankyou-title {
+    color: #dc2626;
+}
+
+.deva-thankyou-subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Order Summary Grid */
+.deva-order-summary {
+    margin-bottom: 3rem;
+}
+
+.deva-order-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.deva-order-info-card {
+    background: #f8faf8;
+    border: 2px solid #ebf3e8;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.deva-order-info-card h3 {
+    color: #48733d;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    border-bottom: 2px solid #ebf3e8;
+    padding-bottom: 0.5rem;
+}
+
+/* Order Details List */
+.deva-order-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.deva-order-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.deva-order-detail:last-child {
+    border-bottom: none;
+}
+
+.deva-order-detail .label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.deva-order-detail .value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.deva-order-detail .value.total {
+    color: #48733d;
+    font-size: 1.125rem;
+}
+
+/* Address Styling */
+.deva-address {
+    color: #374151;
+    line-height: 1.6;
+}
+
+.deva-address p {
+    margin: 0.25rem 0;
+}
+
+.deva-phone {
+    font-weight: 500;
+    margin-top: 0.5rem !important;
+}
+
+/* Order Review Table */
+.deva-order-review {
+    margin-bottom: 3rem;
+}
+
+.deva-order-review h3 {
+    color: #48733d;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    border-bottom: 2px solid #ebf3e8;
+    padding-bottom: 1rem;
+}
+
+.deva-order-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.deva-order-table thead th {
+    background: #48733d;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.deva-order-table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+.deva-order-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.deva-order-table tbody tr:nth-child(even) {
+    background: #f8faf8;
+}
+
+.deva-order-table tfoot th,
+.deva-order-table tfoot td {
+    padding: 1rem;
+    font-weight: 600;
+    background: #f8faf8;
+    border-top: 2px solid #ebf3e8;
+}
+
+.deva-order-table .product-name {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.deva-order-table .product-quantity {
+    text-align: center;
+    color: #6b7280;
+}
+
+.deva-order-table .product-total {
+    text-align: right;
+    font-weight: 600;
+    color: #48733d;
+}
+
+/* Next Steps Section */
+.deva-next-steps {
+    margin-bottom: 3rem;
+}
+
+.deva-next-steps h3 {
+    color: #48733d;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 2rem 0;
+    text-align: center;
+}
+
+.deva-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.deva-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8faf8;
+    border: 2px solid #ebf3e8;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.deva-step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 115, 61, 0.15);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #48733d, #5d8a51);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.step-content h4 {
+    color: #1f2937;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.step-content p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Action Buttons */
+.deva-thankyou-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.deva-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    min-width: 160px;
+}
+
+.deva-button.primary {
+    background: linear-gradient(135deg, #48733d, #5d8a51);
+    color: white;
+    border-color: #48733d;
+}
+
+.deva-button.primary:hover {
+    background: linear-gradient(135deg, #3d6234, #4a7043);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 115, 61, 0.3);
+}
+
+.deva-button.secondary {
+    background: transparent;
+    color: #48733d;
+    border-color: #48733d;
+}
+
+.deva-button.secondary:hover {
+    background: #48733d;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 115, 61, 0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .deva-thankyou-container {
+        margin: 20px;
+        padding: 1.5rem;
+    }
+
+    .deva-thankyou-title {
+        font-size: 2rem;
+    }
+
+    .deva-thankyou-subtitle {
+        font-size: 1rem;
+    }
+
+    .deva-order-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .deva-order-info-card {
+        padding: 1rem;
+    }
+
+    .deva-order-detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .deva-steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .deva-step {
+        padding: 1rem;
+    }
+
+    .deva-thankyou-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .deva-button {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* Table responsive */
+    .deva-order-table {
+        font-size: 0.875rem;
+    }
+
+    .deva-order-table thead th,
+    .deva-order-table tbody td,
+    .deva-order-table tfoot th,
+    .deva-order-table tfoot td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .deva-thankyou-container {
+        margin: 10px;
+        padding: 1rem;
+    }
+
+    .deva-thankyou-header {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .deva-thankyou-title {
+        font-size: 1.75rem;
+    }
+
+    .deva-thankyou-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+
+    .deva-order-table {
+        font-size: 0.8rem;
+    }
+
+    .deva-order-table thead th,
+    .deva-order-table tbody td,
+    .deva-order-table tfoot th,
+    .deva-order-table tfoot td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    /* Stack table on very small screens */
+    .deva-order-table,
+    .deva-order-table thead,
+    .deva-order-table tbody,
+    .deva-order-table th,
+    .deva-order-table td,
+    .deva-order-table tr {
+        display: block;
+    }
+
+    .deva-order-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .deva-order-table tr {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #f8faf8;
+    }
+
+    .deva-order-table td {
+        border: none;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative;
+        padding: 0.5rem 0;
+    }
+
+    .deva-order-table td:before {
+        content: attr(data-label) ": ";
+        font-weight: 600;
+        color: #48733d;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .deva-thankyou-actions,
+    .deva-next-steps {
+        display: none;
+    }
+
+    .deva-thankyou-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    .deva-order-table {
+        box-shadow: none;
+    }
+}

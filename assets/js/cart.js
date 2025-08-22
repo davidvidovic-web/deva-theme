@@ -5,6 +5,35 @@
 
 jQuery(document).ready(function($) {
     
+    // Utility function to safely get favorites from localStorage as an array
+    function getFavoritesFromStorage() {
+        try {
+            var storedData = localStorage.getItem('deva_favorites');
+            if (!storedData) return [];
+            
+            var parsed = JSON.parse(storedData);
+            
+            // If it's already an array, return it
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+            
+            // If it's an object with numeric keys, convert to array
+            if (typeof parsed === 'object' && parsed !== null) {
+                var converted = [];
+                Object.keys(parsed).forEach(function(key) {
+                    converted.push(parsed[key]);
+                });
+                return converted;
+            }
+            
+            return [];
+        } catch (e) {
+            console.warn('Error parsing favorites from localStorage:', e);
+            return [];
+        }
+    }
+    
     // URL Management Functions
     function updateURL(tab) {
         var newURL = window.location.pathname + window.location.search;
@@ -81,7 +110,7 @@ jQuery(document).ready(function($) {
         if (!productId) return;
         
         // Remove from localStorage
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var favorites = getFavoritesFromStorage();
         var index = favorites.indexOf(productId.toString());
         if (index > -1) {
             favorites.splice(index, 1);
@@ -355,7 +384,7 @@ jQuery(document).ready(function($) {
         $cartItem.addClass('moving-to-wishlist');
         
         // First add to wishlist
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var favorites = getFavoritesFromStorage();
         if (favorites.indexOf(productId) === -1) {
             favorites.push(productId);
             localStorage.setItem('deva_favorites', JSON.stringify(favorites));
@@ -388,9 +417,9 @@ jQuery(document).ready(function($) {
                     updateCartTotals(response.data);
                     showMessage('Item moved to wishlist', 'success');
                     
-                    // Sync with server if user is logged in
+                    // Sync with server if user is logged in (force sync after user action)
                     if (typeof shop_ajax !== 'undefined' && shop_ajax.is_user_logged_in) {
-                        syncWishlistWithServer();
+                        syncWishlistWithServer(true);
                     }
                 } else {
                     showMessage('Error moving item to wishlist', 'error');
@@ -429,8 +458,7 @@ jQuery(document).ready(function($) {
         var $container = $('.deva-wishlist-container');
         
         // Get favorites from localStorage
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
-        console.log('Loading wishlist with favorites:', favorites);
+        var favorites = getFavoritesFromStorage();
         
         // Show loading state
         $container.html('<div class="deva-loading">Loading wishlist...</div>');
@@ -470,7 +498,7 @@ jQuery(document).ready(function($) {
     
     // Sync wishlist UI with localStorage
     function syncWishlistUI() {
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var favorites = getFavoritesFromStorage();
         
         // Update wishlist count
         $('.deva-wishlist-count').text(favorites.length);
@@ -492,14 +520,37 @@ jQuery(document).ready(function($) {
         }
     }
     
-    // Sync wishlist with server (reuse from shop.js)
-    function syncWishlistWithServer() {
+    // Sync wishlist with server (optimized - reuse from shop.js)
+    function syncWishlistWithServer(forceSync) {
         var ajaxConfig = getAjaxConfig();
-        if (!ajaxConfig.ajax_url || !ajaxConfig.is_user_logged_in) {
+        
+        // Validate AJAX config before proceeding
+        if (!ajaxConfig || !ajaxConfig.ajax_url || !ajaxConfig.nonce) {
             return;
         }
         
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        // Only sync if user is logged in
+        if (!ajaxConfig.is_user_logged_in) {
+            return;
+        }
+        
+        var favorites = getFavoritesFromStorage();
+        
+        // Skip sync if no favorites and not forced
+        if (!forceSync && favorites.length === 0) {
+            return;
+        }
+        
+        // Check sync cooldown (unless forced)
+        if (!forceSync) {
+            var lastSyncTime = sessionStorage.getItem('deva_last_sync');
+            var currentTime = Date.now();
+            var syncCooldown = 30000; // 30 seconds
+            
+            if (lastSyncTime && (currentTime - parseInt(lastSyncTime)) < syncCooldown) {
+                return;
+            }
+        }
         
         $.ajax({
             url: ajaxConfig.ajax_url,
@@ -510,9 +561,16 @@ jQuery(document).ready(function($) {
                 nonce: ajaxConfig.nonce
             },
             success: function(response) {
-                if (response.success && response.data.favorites) {
+                if (response.success && Array.isArray(response.data.favorites)) {
                     localStorage.setItem('deva_favorites', JSON.stringify(response.data.favorites));
+                    // Mark sync time
+                    sessionStorage.setItem('deva_last_sync', Date.now().toString());
+                } else {
+                    // Server sync failed
                 }
+            },
+            error: function(xhr, status, error) {
+                // Server sync AJAX failed
             }
         });
     }

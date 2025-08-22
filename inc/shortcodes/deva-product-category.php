@@ -353,7 +353,8 @@ function deva_product_category_shortcode($atts) {
                 },
                 success: function(response) {
                     if (response.error) {
-                        alert('Error: ' + response.error);
+                        // Error handled by default WooCommerce notifications
+                        console.error('Error loading products:', response.error);
                         $button.removeClass('loading').text('Buy Now');
                     } else {
                         $button.removeClass('loading').text('Redirecting...');
@@ -379,7 +380,8 @@ function deva_product_category_shortcode($atts) {
                 },
                 error: function() {
                     $button.removeClass('loading').text('Buy Now');
-                    alert('Error adding product to cart');
+                    // Error handled by default WooCommerce notifications
+                    console.error('Error adding product to cart');
                 }
             });
         });

@@ -27,8 +27,15 @@
   padding: 3rem;
   box-shadow: 0 10px 25px rgba(72, 115, 61, 0.1);
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   border: 1px solid #d4e5ce;
+}
+
+.woocommerce form.checkout_coupon,
+.woocommerce form.login,
+.woocommerce form.register {
+  border: none;
+  padding: 0;
 }
 
 /* Header */
@@ -76,7 +83,8 @@
   background: rgba(72, 115, 61, 0.05) !important;
 }
 
-.deva-toggle-btn.active {
+.deva-toggle-btn.active,
+.woocommerce .woocommerce-form-login .woocommerce-form-login__submit {
   background: #48733d !important;
   color: #ffffff !important;
   box-shadow: 0 2px 4px rgba(72, 115, 61, 0.2);
@@ -155,8 +163,10 @@
 /* Password Field */
 .deva-password-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
+}
+
+.dismiss-btn {
+  color: #fff;
 }
 
 .deva-password-wrapper .deva-input {
@@ -328,6 +338,15 @@
 .deva-forgot-password:hover {
   color: #3a5c2f;
   text-decoration: underline;
+}
+
+main#content .show-password-input,
+main#content .show-password-input:hover {
+  background: none;
+  transform: none;
+  top: 0;
+  right: 0;
+  padding: 10px;
 }
 
 /* Responsive Design */

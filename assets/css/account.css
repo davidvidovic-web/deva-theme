@@ -21,7 +21,7 @@
 }
 
 .deva-breadcrumb a {
-  color: #48733D;
+  color: #48733d;
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -56,7 +56,7 @@
   height: 100px;
   border-radius: 50%;
   margin-bottom: 1rem;
-  border: 3px solid #48733D;
+  border: 3px solid #48733d;
   object-fit: cover;
 }
 
@@ -69,7 +69,7 @@
 
 .deva-email {
   font-weight: 600;
-  color: #48733D;
+  color: #48733d;
   font-size: 1rem;
   margin: 0 0 1rem 0;
 }
@@ -91,6 +91,9 @@
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  min-height: fit-content;
+  display: flex;
+  flex-direction: column;
 }
 
 .deva-program-section h3 {
@@ -109,7 +112,7 @@
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid #D4E5CE;
+  border: 1px solid #d4e5ce;
   transition: all 0.3s ease;
 }
 
@@ -152,7 +155,7 @@
 .deva-program-price {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #48733D;
+  color: #48733d;
   flex-shrink: 0;
 }
 
@@ -161,7 +164,7 @@
   text-align: center;
   padding: 2rem;
   background: #f8f9fa;
-  border: 2px dashed #D4E5CE;
+  border: 2px dashed #d4e5ce;
 }
 
 .deva-program-placeholder strong {
@@ -180,7 +183,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  background: #48733D;
+  background: #48733d;
   color: #ffffff;
   text-decoration: none;
   border-radius: 8px;
@@ -197,11 +200,11 @@
 .deva-menu-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 1.5rem 0;
 }
 
 .deva-menu-list li {
-  border-bottom: 1px solid #D4E5CE;
+  border-bottom: 1px solid #d4e5ce;
 }
 
 .deva-menu-list li:last-child {
@@ -221,7 +224,7 @@
 }
 
 .deva-menu-list a:hover {
-  color: #48733D;
+  color: #48733d;
   padding-left: 0.5rem;
 }
 
@@ -264,7 +267,7 @@
 .deva-session-date .dashicons,
 .deva-session-calendar .dashicons {
   margin-right: 8px;
-  color: #48733D;
+  color: #48733d;
   font-size: 16px;
   width: 16px;
   height: 16px;
@@ -344,7 +347,7 @@
 .deva-call-button {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #48733D;
+  background: #48733d;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -379,7 +382,7 @@
 }
 
 .deva-schedule-next {
-  background: #48733D;
+  background: #48733d;
   color: #ffffff;
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -397,43 +400,48 @@
   box-shadow: 0 6px 20px rgba(72, 115, 61, 0.4);
 }
 
+.deva-program-placeholder {
+  text-align: center;
+  width: 100%;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .deva-account-container {
     padding: 1rem;
   }
-  
+
   .deva-account-top-section {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-  
+
   .deva-profile-card,
   .deva-program-section {
     padding: 1.5rem;
   }
-  
+
   .deva-program-box {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-  
+
   .deva-program-image {
     width: 80px;
     height: 80px;
   }
-  
+
   .deva-schedule-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .deva-session-card {
     padding: 1.25rem;
   }
-  
+
   .deva-schedule-next {
     padding: 0.875rem 1.5rem;
     font-size: 0.9rem;
@@ -444,25 +452,25 @@
   .deva-account-container {
     padding: 0.75rem;
   }
-  
+
   .deva-profile-card,
   .deva-program-section,
   .deva-session-card {
     padding: 1rem;
   }
-  
+
   .deva-profile-card h2 {
     font-size: 1.5rem;
   }
-  
+
   .deva-schedule-section h3 {
     font-size: 1.5rem;
   }
-  
+
   .deva-program-box {
     padding: 0.75rem;
   }
-  
+
   .deva-menu-list a {
     font-size: 0.8rem;
   }
@@ -513,7 +521,7 @@
   display: flex;
   align-items: center;
   padding: 1rem;
-  background: #EBF3E8;
+  background: #ebf3e8;
   color: #374151;
   text-decoration: none;
   border-radius: 8px;
@@ -522,7 +530,7 @@
 }
 
 .deva-calendar-option:hover {
-  background: #48733D;
+  background: #48733d;
   color: #ffffff;
   transform: scale(1.05);
 }
@@ -568,7 +576,7 @@
 .deva-form-group select,
 .deva-form-group textarea {
   padding: 0.75rem;
-  border: 2px solid #D4E5CE;
+  border: 2px solid #d4e5ce;
   border-radius: 8px;
   font-size: 0.875rem;
   transition: border-color 0.3s ease;
@@ -578,7 +586,7 @@
 .deva-form-group select:focus,
 .deva-form-group textarea:focus {
   outline: none;
-  border-color: #48733D;
+  border-color: #48733d;
   box-shadow: 0 0 0 3px rgba(72, 115, 61, 0.1);
 }
 
@@ -596,7 +604,7 @@
 .deva-schedule-submit {
   flex: 1;
   padding: 0.75rem;
-  background: #48733D;
+  background: #48733d;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -662,11 +670,11 @@
     max-width: none;
     width: auto;
   }
-  
+
   .deva-form-actions {
     flex-direction: column;
   }
-  
+
   .deva-notification {
     top: 10px;
     right: 10px;
@@ -680,33 +688,27 @@
    =================================== */
 
 .deva-settings-section {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  /* background: #ffffff; */
+  /* border: 1px solid #e5e7eb; */
   border-radius: 12px;
-  margin-top: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  /* margin-top: 1.5rem; */
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 0;
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .deva-settings-section.deva-settings-open {
-  animation: expandDown 0.3s ease;
-}
-
-@keyframes expandDown {
-  from {
-    opacity: 0;
-    max-height: 0;
-  }
-  to {
-    opacity: 1;
-    max-height: 1000px;
-  }
+  max-height: 2000px; /* Increased to accommodate all content */
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .deva-settings-header {
-  background: linear-gradient(135deg, #48733D, #5d8a51);
-  color: white;
+  /* background: linear-gradient(135deg, #48733d, #5d8a51); */
+  /* color: white; */
   padding: 1.5rem 2rem;
   text-align: center;
 }
@@ -742,17 +744,17 @@
   margin: 0 0 1.5rem 0;
   font-size: 1.125rem;
   font-weight: 600;
-  color: #48733D;
+  color: #48733d;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .deva-settings-group h5::before {
-  content: '';
+  content: "";
   width: 4px;
   height: 20px;
-  background: linear-gradient(135deg, #48733D, #5d8a51);
+  background: linear-gradient(135deg, #48733d, #5d8a51);
   border-radius: 2px;
 }
 
@@ -778,7 +780,7 @@
 }
 
 .deva-form-field label .dashicons {
-  color: #48733D;
+  color: #48733d;
   width: 16px;
   height: 16px;
   font-size: 16px;
@@ -796,7 +798,7 @@
 
 .deva-input:focus {
   outline: none;
-  border-color: #48733D;
+  border-color: #48733d;
   box-shadow: 0 0 0 3px rgba(72, 115, 61, 0.1);
 }
 
@@ -825,7 +827,7 @@
 
 .deva-password-toggle:hover {
   background: #f3f4f6;
-  color: #48733D;
+  color: #48733d;
 }
 
 .deva-password-toggle .dashicons {
@@ -849,21 +851,21 @@
 
 .deva-checkbox-label:hover {
   background: #f3f4f6;
-  border-color: #48733D;
+  border-color: #48733d;
 }
 
 .deva-checkbox-label input[type="checkbox"] {
   width: 18px;
   height: 18px;
   margin: 0;
-  accent-color: #48733D;
+  accent-color: #48733d;
   cursor: pointer;
   margin-top: 2px;
 }
 
 .deva-checkbox-label .dashicons {
   margin-top: 2px;
-  color: #48733D;
+  color: #48733d;
 }
 
 /* Form Actions */
@@ -873,7 +875,6 @@
   justify-content: flex-end;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
 }
 
 .deva-btn {
@@ -891,7 +892,7 @@
 }
 
 .deva-btn-primary {
-  background: linear-gradient(135deg, #48733D, #5d8a51);
+  background: linear-gradient(135deg, #48733d, #5d8a51);
   color: white;
 }
 
@@ -973,19 +974,19 @@
   .deva-form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .deva-settings-header {
     padding: 1rem 1.5rem;
   }
-  
+
   .deva-profile-form {
     padding: 1.5rem;
   }
-  
+
   .deva-settings-actions {
     flex-direction: column;
   }
-  
+
   .deva-btn {
     width: 100%;
     justify-content: center;
@@ -996,11 +997,11 @@
   .deva-settings-header h4 {
     font-size: 1.25rem;
   }
-  
+
   .deva-checkbox-label {
     padding: 0.75rem;
   }
-  
+
   .deva-form-field label {
     font-size: 0.8125rem;
   }

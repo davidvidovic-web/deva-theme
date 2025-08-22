@@ -37,57 +37,119 @@ jQuery(document).ready(function($) {
     
     // Update favorites UI
     function updateFavoritesUI(favorites) {
+        // Ensure favorites is an array
+        if (!Array.isArray(favorites)) {
+            console.warn('DEVA: updateFavoritesUI received non-array:', favorites);
+            
+            // Convert object with numeric keys to array
+            if (favorites && typeof favorites === 'object') {
+                var convertedArray = [];
+                for (var key in favorites) {
+                    if (favorites.hasOwnProperty(key) && !isNaN(favorites[key])) {
+                        convertedArray.push(parseInt(favorites[key], 10));
+                    }
+                }
+                favorites = convertedArray;
+            } else {
+                favorites = [];
+            }
+        }
+        
         $('.deva-wishlist-heart, .favorite-heart, .deva-favorite-heart').removeClass('active');
         favorites.forEach(function(productId) {
             $('.deva-wishlist-heart[data-product-id="' + productId + '"], .favorite-heart[data-product-id="' + productId + '"], .deva-favorite-heart[data-product-id="' + productId + '"]').addClass('active');
         });
     }
     
-    // Sync wishlist with server
-    function syncWishlistWithServer() {
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+    // Sync wishlist with server (optimized)
+    function syncWishlistWithServer(forceSync) {
+        var favorites = getFavoritesFromStorage();
         
-        // If user is logged in, sync with server
-        if (typeof shop_ajax !== 'undefined' && shop_ajax && shop_ajax.is_user_logged_in) {
+        // Check if we have proper AJAX configuration and user is logged in
+        if (typeof shop_ajax === 'undefined' || !shop_ajax || !shop_ajax.ajax_url || !shop_ajax.nonce) {
+            console.log('DEVA: shop_ajax not properly configured, skipping server sync');
+            // Just update UI with local favorites
+            updateFavoritesUI(favorites);
+            updateWishlistCount(favorites.length);
+            return;
+        }
+        
+        // Check if we need to sync:
+        // 1. Force sync is requested (user action)
+        // 2. User is logged in AND has favorites to sync
+        // 3. Skip if no favorites and no force sync
+        if (!forceSync && favorites.length === 0) {
+            console.log('DEVA: No favorites to sync, skipping server sync');
+            updateFavoritesUI(favorites);
+            updateWishlistCount(favorites.length);
+            return;
+        }
+        
+        // Check if we already synced in this session
+        var lastSyncTime = sessionStorage.getItem('deva_last_sync');
+        var currentTime = Date.now();
+        var syncCooldown = 30000; // 30 seconds cooldown
+        
+        if (!forceSync && lastSyncTime && (currentTime - parseInt(lastSyncTime)) < syncCooldown) {
+            console.log('DEVA: Sync cooldown active, skipping server sync');
+            updateFavoritesUI(favorites);
+            updateWishlistCount(favorites.length);
+            return;
+        }
+        
+        // Only sync with server if user is logged in
+        if (shop_ajax.is_user_logged_in) {
             var config = getAjaxConfig('sync_favorites');
+            
+            // Validate config before making request
+            if (!config.data.nonce) {
+                console.log('DEVA: No nonce available, skipping server sync');
+                updateFavoritesUI(favorites);
+                updateWishlistCount(favorites.length);
+                return;
+            }
+            
             config.data.favorites = favorites;
             
+            console.log('DEVA: Syncing ' + favorites.length + ' favorites with server...');
+            
             $.ajax(config).done(function(response) {
-                if (response.success && response.data.favorites) {
+                if (response.success && Array.isArray(response.data.favorites)) {
                     // Update localStorage with server favorites
                     localStorage.setItem('deva_favorites', JSON.stringify(response.data.favorites));
+                    
+                    // Mark sync time
+                    sessionStorage.setItem('deva_last_sync', currentTime.toString());
                     
                     // Update UI
                     updateFavoritesUI(response.data.favorites);
                     updateWishlistCount(response.data.favorites.length);
+                    
+                    console.log('DEVA: Sync successful, ' + response.data.favorites.length + ' favorites');
+                } else {
+                    console.log('DEVA: Server sync failed:', response);
+                    // Update UI with local favorites
+                    updateFavoritesUI(favorites);
+                    updateWishlistCount(favorites.length);
                 }
-            }).fail(function() {
+            }).fail(function(xhr, status, error) {
+                console.log('DEVA: Server sync AJAX failed:', {xhr: xhr, status: status, error: error});
                 // Update UI with local favorites
                 updateFavoritesUI(favorites);
                 updateWishlistCount(favorites.length);
             });
         } else {
-            // Update UI with local favorites
+            console.log('DEVA: User not logged in, using local favorites only');
+            // Update UI with local favorites for non-logged-in users
             updateFavoritesUI(favorites);
             updateWishlistCount(favorites.length);
         }
     }
     
-    // Show wishlist message
+    // Show wishlist message - DISABLED
     function showWishlistMessage(message, type) {
-        // Remove existing messages
-        $('.deva-wishlist-message').remove();
-        
-        // Create new message
-        var $message = $('<div class="deva-wishlist-message deva-wishlist-message-' + type + '">' + message + '</div>');
-        $('body').append($message);
-        
-        // Auto-hide after 3 seconds
-        setTimeout(function() {
-            $message.fadeOut(function() {
-                $(this).remove();
-            });
-        }, 3000);
+        // Custom notifications disabled - using default WooCommerce notifications only
+        return;
     }
     
     // === WISHLIST FUNCTIONALITY ===
@@ -113,7 +175,7 @@ jQuery(document).ready(function($) {
         $heart.addClass('loading');
         
         // Get current favorites
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var favorites = getFavoritesFromStorage();
         var isBecomingFavorited = !$heart.hasClass('active');
         
         // Optimistically update UI
@@ -143,41 +205,88 @@ jQuery(document).ready(function($) {
             $.ajax(config).done(function(response) {
                 $heart.removeClass('loading');
                 if (response.success) {
-                    showWishlistMessage(isBecomingFavorited ? 'Added to wishlist' : 'Removed from wishlist', 'success');
+                    // Notification removed - using default WooCommerce notifications only
                     
                     // Update wishlist count from server if available
                     if (response.data && typeof response.data.count !== 'undefined') {
                         updateWishlistCount(response.data.count);
                     }
+                    
+                    // Force sync to ensure server and local are in sync after user action
+                    syncWishlistWithServer(true);
                 } else {
                     // Revert optimistic update on server error
                     $heart.toggleClass('active');
-                    showWishlistMessage('Error updating wishlist', 'error');
+                    // Notification removed - using default WooCommerce notifications only
                 }
             }).fail(function() {
                 $heart.removeClass('loading');
                 // Keep optimistic update for localStorage fallback
-                showWishlistMessage(isBecomingFavorited ? 'Added to wishlist (saved locally)' : 'Removed from wishlist', 'success');
+                // Notification removed - using default WooCommerce notifications only
             });
         } else {
             $heart.removeClass('loading');
             // Fallback to localStorage only
-            showWishlistMessage(isBecomingFavorited ? 'Added to wishlist' : 'Removed from wishlist', 'success');
+            // Notification removed - using default WooCommerce notifications only
+        }
+    }
+    
+    // Get favorites from localStorage and ensure it's a proper array
+    function getFavoritesFromStorage() {
+        try {
+            var stored = localStorage.getItem('deva_favorites');
+            if (!stored || stored === 'null' || stored === 'undefined') {
+                return [];
+            }
+            
+            var favorites = JSON.parse(stored);
+            
+            // Handle case where it's an object with numeric keys
+            if (!Array.isArray(favorites) && favorites && typeof favorites === 'object') {
+                console.warn('DEVA: Converting favorites object to array');
+                var convertedArray = [];
+                for (var key in favorites) {
+                    if (favorites.hasOwnProperty(key) && !isNaN(favorites[key])) {
+                        convertedArray.push(parseInt(favorites[key], 10));
+                    }
+                }
+                favorites = convertedArray;
+                // Save the corrected array back to localStorage
+                localStorage.setItem('deva_favorites', JSON.stringify(favorites));
+            }
+            
+            // Ensure it's an array
+            if (!Array.isArray(favorites)) {
+                console.warn('DEVA: favorites not an array, resetting');
+                favorites = [];
+            }
+            
+            // Filter out invalid values and ensure integers
+            favorites = favorites.filter(function(id) { return !isNaN(id) && id > 0; });
+            favorites = favorites.map(function(id) { return parseInt(id, 10); });
+            
+            return favorites;
+        } catch (e) {
+            console.error('DEVA: Error parsing favorites from localStorage:', e);
+            localStorage.removeItem('deva_favorites');
+            return [];
         }
     }
     
     // Initialize wishlist functionality
     function initializeWishlistFunctionality() {
         // Get current favorites and update heart icons
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var favorites = getFavoritesFromStorage();
         updateFavoritesUI(favorites);
         updateWishlistCount(favorites.length);
         
         // Bind wishlist heart click events (including backward compatibility)
         $(document).on('click', '.deva-wishlist-heart, .favorite-heart, .deva-favorite-heart', handleWishlistClick);
         
-        // Sync with server if logged in
-        syncWishlistWithServer();
+        // Only sync with server if user is logged in AND has favorites to sync
+        if (typeof shop_ajax !== 'undefined' && shop_ajax && shop_ajax.is_user_logged_in && favorites.length > 0) {
+            syncWishlistWithServer(false); // Don't force sync
+        }
     }
     
     // === SHOP FUNCTIONALITY ===
@@ -306,8 +415,7 @@ jQuery(document).ready(function($) {
                     // Show redirecting state and redirect to checkout
                     $button.find('.button-text').text('Redirecting...');
                     
-                    // Show buy now notification
-                    showBuyNowNotification(productId);
+                    // Custom notification removed - using default WooCommerce notifications only
                     
                     // Get checkout URL with fallbacks
                     var checkoutUrl = '/checkout/';
@@ -393,36 +501,10 @@ jQuery(document).ready(function($) {
         }
     }
     
-    // Buy Now notification function
+    // Buy Now notification function - DISABLED
     function showBuyNowNotification(productId) {
-        // Remove any existing notification
-        $('.deva-cart-notification.buy-now-notification').remove();
-        
-        var notification = $('<div class="deva-cart-notification buy-now-notification">' +
-            '<div style="display: flex; align-items: center; gap: 10px;">' +
-                '<span class="cart-icon dashicons dashicons-cart" style="font-size: 18px;"></span>' +
-                '<div class="notification-text">' +
-                    '<strong>Product Added!</strong><br>' +
-                    '<small>Redirecting to checkout...</small>' +
-                '</div>' +
-            '</div>' +
-        '</div>');
-        
-        // Add to body
-        $('body').append(notification);
-        
-        // Animate in
-        setTimeout(function() {
-            notification.addClass('show');
-        }, 10);
-        
-        // Auto-hide after 1.5 seconds (shorter for buy now)
-        setTimeout(function() {
-            notification.removeClass('show');
-            setTimeout(function() {
-                notification.remove();
-            }, 300);
-        }, 1500);
+        // Custom notifications disabled - using default WooCommerce notifications only
+        return;
     }
     
     // === PAGINATION FUNCTIONALITY ===
@@ -497,8 +579,10 @@ jQuery(document).ready(function($) {
                         scrollTop: $container.offset().top - 50
                     }, 500);
                     
-                    // Re-initialize wishlist functionality for new content
-                    syncWishlistWithServer();
+                    // Re-initialize wishlist functionality for new content (just update UI, don't sync)
+                    var favorites = getFavoritesFromStorage();
+                    updateFavoritesUI(favorites);
+                    updateWishlistCount(favorites.length);
                 } else {
                     console.error('AJAX request failed with response:', response);
                     // Fallback to normal navigation

@@ -1,0 +1,823 @@
+/* =============================================================================
+   DEVA Order History & Order Details Styling
+   ============================================================================= */
+
+/* Global Order Page Styling */
+.deva-orders-page,
+.deva-order-details-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+/* =============================================================================
+   ORDER HISTORY PAGE (orders.php)
+   ============================================================================= */
+
+/* Page Header */
+.deva-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 3px solid #48733d;
+}
+
+.deva-orders-title h2 {
+  color: #48733d;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.deva-orders-title h2 .dashicons {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.deva-orders-title p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.deva-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  color: #48733d;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.deva-back-link:hover {
+  background: #48733d;
+  color: white;
+  border-color: #48733d;
+  transform: translateY(-2px);
+}
+
+/* Orders Grid */
+.deva-orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+/* Order Card */
+.deva-order-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deva-order-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #48733d;
+}
+
+.deva-order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-color: #48733d;
+}
+
+/* Order Status Variations */
+.deva-order-status-completed::before {
+  background: #27ae60;
+}
+.deva-order-status-processing::before {
+  background: #f39c12;
+}
+.deva-order-status-pending::before {
+  background: #e74c3c;
+}
+.deva-order-status-cancelled::before {
+  background: #95a5a6;
+}
+.deva-order-status-refunded::before {
+  background: #9b59b6;
+}
+
+/* Order Header */
+.deva-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.deva-order-number {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #48733d;
+  margin-bottom: 0.25rem;
+}
+
+.deva-order-date {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.deva-order-total {
+  text-align: right;
+}
+
+.deva-total-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.deva-item-count {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Status Badge */
+.deva-status-badge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deva-status-completed {
+  background: #d4edda;
+  color: #155724;
+}
+.deva-status-processing {
+  background: #fff3cd;
+  color: #856404;
+}
+.deva-status-pending {
+  background: #f8d7da;
+  color: #721c24;
+}
+.deva-status-cancelled {
+  background: #e2e3e5;
+  color: #383d41;
+}
+.deva-status-refunded {
+  background: #e7e3ff;
+  color: #5a4fcf;
+}
+
+/* Order Items Preview */
+.deva-order-items {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.deva-order-image {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.deva-order-image img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+}
+
+.deva-more-items {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #48733d;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.deva-order-products {
+  flex: 1;
+}
+
+.deva-product-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.deva-quantity {
+  color: #48733d;
+  font-weight: 700;
+}
+
+.deva-more-products {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Order Actions */
+.deva-order-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Empty State */
+.deva-orders-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.deva-empty-icon .dashicons {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: #bdc3c7;
+  margin-bottom: 1rem;
+}
+
+.deva-orders-empty h3 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.deva-orders-empty p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Pagination */
+.deva-orders-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.deva-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid #48733d;
+  border-radius: 8px;
+  color: #48733d;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.deva-pagination-btn:hover {
+  background: #48733d;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.deva-pagination-info {
+  color: #6c757d;
+  font-weight: 600;
+}
+
+/* =============================================================================
+   ORDER DETAILS PAGE (view-order.php)
+   ============================================================================= */
+
+/* Order Details Header */
+.deva-order-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 3px solid #48733d;
+}
+
+.deva-order-title h2 {
+  color: #48733d;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.deva-order-title h2 .dashicons {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+/* Order Status Card */
+.deva-order-status-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid #48733d;
+}
+
+.deva-order-status-completed {
+  border-left-color: #27ae60;
+}
+.deva-order-status-processing {
+  border-left-color: #f39c12;
+}
+.deva-order-status-pending {
+  border-left-color: #e74c3c;
+}
+.deva-order-status-cancelled {
+  border-left-color: #95a5a6;
+}
+
+.deva-status-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.deva-status-icon .dashicons {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 50%;
+  color: #48733d;
+}
+
+.deva-status-info {
+  flex: 1;
+}
+
+.deva-status-info h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.deva-status-info p {
+  color: #6c757d;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.deva-status-total {
+  text-align: right;
+}
+
+.deva-total-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.deva-total-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #48733d;
+}
+
+/* Order Details Grid */
+.deva-order-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+/* Order Section */
+.deva-order-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #48733d;
+}
+
+.deva-order-section h3 {
+  color: #48733d;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.deva-order-section h3 .dashicons {
+  font-size: 1.3rem;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+/* Order Items List */
+.deva-order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.deva-order-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.deva-order-item:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.deva-item-image {
+  max-width: 150px;
+}
+
+.deva-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+}
+
+.deva-item-details {
+  flex: 1;
+}
+
+.deva-item-details h4 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.deva-item-sku {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.deva-item-meta {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.95rem;
+}
+
+.deva-item-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Order Info Card */
+.deva-order-info-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+}
+
+.deva-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.deva-info-row:last-child {
+  border-bottom: none;
+}
+
+.deva-info-label {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.deva-info-value {
+  color: #6c757d;
+  text-align: right;
+}
+
+/* Address Cards */
+.deva-address-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+.deva-phone {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  color: #48733d;
+}
+
+/* Order Notes */
+.deva-order-notes {
+  grid-column: 1 / -1;
+}
+
+.deva-notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.deva-order-note {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 4px solid #48733d;
+}
+
+.deva-note-date {
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.deva-note-content {
+  color: #2c3e50;
+  line-height: 1.6;
+}
+
+/* Order Actions Section */
+.deva-order-actions-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #48733d;
+  margin-top: 2rem;
+}
+
+.deva-order-actions-section h3 {
+  color: #48733d;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.deva-order-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* =============================================================================
+   BUTTON STYLING
+   ============================================================================= */
+
+.deva-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.deva-btn .dashicons {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.deva-btn-primary {
+  background: #48733d;
+  color: white;
+  border-color: #48733d;
+}
+
+.deva-btn-primary:hover {
+  background: #3d5f34;
+  border-color: #3d5f34;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 115, 61, 0.3);
+}
+
+.deva-btn-secondary {
+  background: white;
+  color: #48733d;
+  border-color: #48733d;
+}
+
+.deva-btn-secondary:hover {
+  background: #48733d;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.deva-btn-success {
+  background: #27ae60;
+  color: white;
+  border-color: #27ae60;
+}
+
+.deva-btn-success:hover {
+  background: #219a52;
+  border-color: #219a52;
+  transform: translateY(-2px);
+}
+
+.deva-btn-danger {
+  background: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+}
+
+.deva-btn-danger:hover {
+  background: #c0392b;
+  border-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.deva-btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  .deva-orders-page,
+  .deva-order-details-page {
+    padding: 1rem;
+  }
+
+  .deva-orders-header,
+  .deva-order-details-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .deva-orders-title h2,
+  .deva-order-title h2 {
+    font-size: 2rem;
+  }
+
+  .deva-orders-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .deva-order-details-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .deva-order-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .deva-status-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .deva-order-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .deva-item-meta {
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .deva-info-row {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .deva-order-actions {
+    justify-content: center;
+  }
+
+  .deva-orders-pagination {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .deva-order-card {
+    padding: 1.5rem;
+  }
+
+  .deva-order-section {
+    padding: 1.5rem;
+  }
+
+  .deva-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .deva-order-actions {
+    flex-direction: column;
+  }
+}
+
+/* =============================================================================
+   PRINT STYLES
+   ============================================================================= */
+
+@media print {
+  .deva-orders-header,
+  .deva-order-details-header,
+  .deva-order-actions,
+  .deva-order-actions-section,
+  .deva-orders-pagination {
+    display: none !important;
+  }
+
+  .deva-orders-page,
+  .deva-order-details-page {
+    padding: 0;
+    max-width: none;
+  }
+
+  .deva-order-card,
+  .deva-order-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+}

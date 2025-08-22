@@ -19,15 +19,15 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
     <!-- Page Header -->
     <div class="deva-orders-header">
         <div class="deva-orders-title">
-            <h2><span class="dashicons dashicons-text-page"></span> <?php _e('Order History', 'hello-elementor-child'); ?></h2>
-            <p><?php _e('View and track all your previous orders', 'hello-elementor-child'); ?></p>
+            <h2><span class="dashicons dashicons-text-page"></span> <?php _e('Order History', 'woocommerce'); ?></h2>
+            <p><?php _e('View and track all your previous orders', 'woocommerce'); ?></p>
         </div>
         
         <!-- Back to Account Link -->
         <div class="deva-orders-back">
             <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>" class="deva-back-link">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
-                <?php _e('Back to Account', 'hello-elementor-child'); ?>
+                <?php _e('Back to Account', 'woocommerce'); ?>
             </a>
         </div>
     </div>
@@ -81,7 +81,7 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
                                 <?php echo wp_kses_post($order->get_formatted_order_total()); ?>
                             </div>
                             <div class="deva-item-count">
-                                <?php printf(_n('%s item', '%s items', $item_count, 'hello-elementor-child'), $item_count); ?>
+                                <?php printf(_n('%s item', '%s items', $item_count, 'woocommerce'), $item_count); ?>
                             </div>
                         </div>
                     </div>

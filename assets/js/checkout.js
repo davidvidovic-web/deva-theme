@@ -5,6 +5,35 @@
 
 jQuery(document).ready(function($) {
     
+    // Utility function to safely get favorites from localStorage as an array
+    function getFavoritesFromStorage() {
+        try {
+            var storedData = localStorage.getItem('deva_favorites');
+            if (!storedData) return [];
+            
+            var parsed = JSON.parse(storedData);
+            
+            // If it's already an array, return it
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+            
+            // If it's an object with numeric keys, convert to array
+            if (typeof parsed === 'object' && parsed !== null) {
+                var converted = [];
+                Object.keys(parsed).forEach(function(key) {
+                    converted.push(parsed[key]);
+                });
+                return converted;
+            }
+            
+            return [];
+        } catch (e) {
+            console.warn('Error parsing favorites from localStorage:', e);
+            return [];
+        }
+    }
+    
     // Tab switching functionality
     $('.deva-tab').on('click', function(e) {
         e.preventDefault();
@@ -115,17 +144,17 @@ jQuery(document).ready(function($) {
                         $cartItem.find('.price-amount').html(response.data.item_subtotal);
                     }
                     
-                    showMessage('Cart updated successfully', 'success');
+                    // Custom notification removed - using default WooCommerce notifications only
                 } else {
                     // Revert quantity on error
                     $input.val(originalQty);
-                    showMessage('Error updating cart', 'error');
+                    // Custom notification removed - using default WooCommerce notifications only
                 }
             },
             error: function() {
                 // Revert quantity on error
                 $input.val(originalQty);
-                showMessage('Error updating cart', 'error');
+                // Custom notification removed - using default WooCommerce notifications only
             },
             complete: function() {
                 $cartItem.removeClass('updating');
@@ -159,13 +188,13 @@ jQuery(document).ready(function($) {
                     
                     // Update cart totals
                     updateCartTotals(response.data);
-                    showMessage('Item removed from cart', 'success');
+                    // Custom notification removed - using default WooCommerce notifications only
                 } else {
-                    showMessage('Error removing item', 'error');
+                    // Custom notification removed - using default WooCommerce notifications only
                 }
             },
             error: function() {
-                showMessage('Error removing item', 'error');
+                // Custom notification removed - using default WooCommerce notifications only
             },
             complete: function() {
                 $cartItem.removeClass('removing');
@@ -178,7 +207,7 @@ jQuery(document).ready(function($) {
         $cartItem.addClass('moving-to-wishlist');
         
         // First add to wishlist
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        var favorites = getFavoritesFromStorage();
         if (favorites.indexOf(productId) === -1) {
             favorites.push(productId);
             localStorage.setItem('deva_favorites', JSON.stringify(favorites));
@@ -207,18 +236,19 @@ jQuery(document).ready(function($) {
                     
                     // Update cart totals
                     updateCartTotals(response.data);
-                    showMessage('Item moved to wishlist', 'success');
+                    // Custom notification removed - using default WooCommerce notifications only
                     
                     // Sync with server if user is logged in
                     if (typeof shop_ajax !== 'undefined' && shop_ajax.is_user_logged_in) {
-                        syncWishlistWithServer();
+                        // Force sync after user action
+                        syncWishlistWithServer(true);
                     }
                 } else {
-                    showMessage('Error moving item to wishlist', 'error');
+                    // Custom notification removed - using default WooCommerce notifications only
                 }
             },
             error: function() {
-                showMessage('Error moving item to wishlist', 'error');
+                // Custom notification removed - using default WooCommerce notifications only
             },
             complete: function() {
                 $cartItem.removeClass('moving-to-wishlist');
@@ -273,13 +303,35 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // Sync wishlist with server (reuse from shop.js)
-    function syncWishlistWithServer() {
-        if (typeof shop_ajax === 'undefined' || !shop_ajax.is_user_logged_in) {
+    // Sync wishlist with server (optimized - reuse from shop.js)
+    function syncWishlistWithServer(forceSync) {
+        // Validate shop_ajax configuration
+        if (typeof shop_ajax === 'undefined' || !shop_ajax || !shop_ajax.ajax_url || !shop_ajax.nonce) {
             return;
         }
         
-        var favorites = JSON.parse(localStorage.getItem('deva_favorites') || '[]');
+        // Only sync if user is logged in
+        if (!shop_ajax.is_user_logged_in) {
+            return;
+        }
+        
+        var favorites = getFavoritesFromStorage();
+        
+        // Skip sync if no favorites and not forced
+        if (!forceSync && favorites.length === 0) {
+            return;
+        }
+        
+        // Check sync cooldown (unless forced)
+        if (!forceSync) {
+            var lastSyncTime = sessionStorage.getItem('deva_last_sync');
+            var currentTime = Date.now();
+            var syncCooldown = 30000; // 30 seconds
+            
+            if (lastSyncTime && (currentTime - parseInt(lastSyncTime)) < syncCooldown) {
+                return;
+            }
+        }
         
         $.ajax({
             url: shop_ajax.ajax_url,
@@ -290,56 +342,24 @@ jQuery(document).ready(function($) {
                 nonce: shop_ajax.nonce
             },
             success: function(response) {
-                if (response.success && response.data.favorites) {
+                if (response.success && Array.isArray(response.data.favorites)) {
                     localStorage.setItem('deva_favorites', JSON.stringify(response.data.favorites));
+                    // Mark sync time
+                    sessionStorage.setItem('deva_last_sync', Date.now().toString());
+                } else {
+                    // Server sync failed
                 }
+            },
+            error: function(xhr, status, error) {
+                // Server sync AJAX failed
             }
         });
     }
     
-    // Show message function
+    // Show message function - DISABLED
     function showMessage(message, type) {
-        // Remove existing messages
-        $('.deva-checkout-message').remove();
-        
-        var messageEl = $('<div class="deva-checkout-message deva-checkout-' + type + '">' + message + '</div>');
-        messageEl.css({
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            background: type === 'success' ? '#10b981' : '#ef4444',
-            color: 'white',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 9999,
-            fontSize: '14px',
-            fontWeight: '500',
-            opacity: 0,
-            transform: 'translateX(100%)',
-            transition: 'all 0.3s ease'
-        });
-        
-        $('body').append(messageEl);
-        
-        // Show message
-        setTimeout(function() {
-            messageEl.css({
-                opacity: 1,
-                transform: 'translateX(0)'
-            });
-        }, 100);
-        
-        // Hide message after 3 seconds
-        setTimeout(function() {
-            messageEl.css({
-                opacity: 0,
-                transform: 'translateX(100%)'
-            });
-            setTimeout(function() {
-                messageEl.remove();
-            }, 300);
-        }, 3000);
+        // Custom notifications disabled - using default WooCommerce notifications only
+        return;
     }
     
     // Add loading states CSS

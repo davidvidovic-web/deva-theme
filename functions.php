@@ -100,12 +100,36 @@ function hello_elementor_child_enqueue_assets()
         HELLO_ELEMENTOR_CHILD_VERSION
     );
 
+    // Toast notification styles
     wp_enqueue_style(
         'deva-notifications',
         get_stylesheet_directory_uri() . '/assets/css/notifications.css',
         array('deva-base'),
         HELLO_ELEMENTOR_CHILD_VERSION
     );
+
+    // Thank you page styles
+    if (is_admin() || is_wc_endpoint_url('order-received') || (isset($_GET['key']) && strpos($_SERVER['REQUEST_URI'], 'order-received') !== false)) {
+        wp_enqueue_style(
+            'deva-thankyou',
+            get_stylesheet_directory_uri() . '/assets/css/thankyou.css',
+            array('deva-base'),
+            HELLO_ELEMENTOR_CHILD_VERSION
+        );
+        
+        // Debug: Log when thankyou CSS is loaded
+        error_log('DEVA: Thankyou CSS loaded for URL: ' . $_SERVER['REQUEST_URI']);
+    }
+
+    // Order history and order details page styles
+    if (is_admin() || is_account_page() || is_wc_endpoint_url('orders') || is_wc_endpoint_url('view-order')) {
+        wp_enqueue_style(
+            'deva-orders',
+            get_stylesheet_directory_uri() . '/assets/css/orders.css',
+            array('deva-base'),
+            HELLO_ELEMENTOR_CHILD_VERSION
+        );
+    }
 
     // Enqueue shop JavaScript
     wp_enqueue_script(
@@ -214,6 +238,15 @@ function hello_elementor_child_woocommerce_support()
     add_theme_support('wc-product-gallery-slider');
 }
 add_action('after_setup_theme', 'hello_elementor_child_woocommerce_support');
+
+// Debug: Check if WooCommerce templates are being loaded
+add_filter('woocommerce_locate_template', 'deva_debug_template_loading', 10, 3);
+function deva_debug_template_loading($template, $template_name, $template_path) {
+    if (strpos($template_name, 'thankyou') !== false) {
+        error_log('DEVA: WooCommerce template loading - ' . $template_name . ' from: ' . $template);
+    }
+    return $template;
+}
 
 /**
  * WooCommerce Customizations
@@ -805,7 +838,18 @@ function deva_get_user_wishlist($user_id = null) {
     }
     
     $favorites = get_user_meta($user_id, 'deva_wishlist', true);
-    return is_array($favorites) ? $favorites : array();
+    
+    // Ensure we return a proper sequential array
+    if (is_array($favorites)) {
+        // Remove any empty values and re-index
+        $favorites = array_filter($favorites);
+        $favorites = array_values($favorites);
+        // Ensure all values are integers
+        $favorites = array_map('intval', $favorites);
+        return $favorites;
+    }
+    
+    return array();
 }
 
 /**
@@ -876,6 +920,62 @@ function deva_sync_wishlist() {
 }
 
 add_action('wp_ajax_sync_wishlist', 'deva_sync_wishlist');
+
+/**
+ * AJAX handler to sync favorites (alternative endpoint)
+ */
+function deva_sync_favorites() {
+    // Check if nonce exists
+    if (!isset($_POST['nonce'])) {
+        wp_send_json_error('No nonce provided');
+        return;
+    }
+    
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'shop_nonce')) {
+        wp_send_json_error('Security check failed');
+        return;
+    }
+    
+    // Handle favorites array from JavaScript
+    $favorites = array();
+    if (isset($_POST['favorites']) && is_array($_POST['favorites'])) {
+        $favorites = array_map('intval', $_POST['favorites']);
+        $favorites = array_filter($favorites); // Remove zeros/empty values
+        $favorites = array_values($favorites); // Re-index array
+    }
+    
+    if (is_user_logged_in()) {
+        $user_id = get_current_user_id();
+        $server_favorites = deva_get_user_wishlist($user_id);
+        
+        // Ensure server_favorites is an array
+        if (!is_array($server_favorites)) {
+            $server_favorites = array();
+        }
+        
+        // Merge local and server favorites
+        $merged_favorites = array_unique(array_merge($server_favorites, $favorites));
+        $merged_favorites = array_values($merged_favorites); // Re-index
+        
+        // Save merged favorites
+        update_user_meta($user_id, 'deva_wishlist', $merged_favorites);
+        
+        wp_send_json_success(array(
+            'favorites' => $merged_favorites,
+            'count' => count($merged_favorites)
+        ));
+    } else {
+        // For non-logged-in users, just return the favorites they sent
+        wp_send_json_success(array(
+            'favorites' => $favorites,
+            'count' => count($favorites)
+        ));
+    }
+}
+
+add_action('wp_ajax_sync_favorites', 'deva_sync_favorites');
+add_action('wp_ajax_nopriv_sync_favorites', 'deva_sync_favorites');
 
 /**
  * AJAX handler for updating cart item quantity
@@ -1591,39 +1691,6 @@ function deva_restrict_admin_access() {
 add_action('admin_init', 'deva_restrict_admin_access');
 
 /**
- * Redirect default WordPress lost password to our custom form
- */
-function deva_redirect_lost_password() {
-    global $pagenow;
-    
-    if ($pagenow === 'wp-login.php' && isset($_GET['action']) && $_GET['action'] === 'lostpassword') {
-        $redirect_url = add_query_arg('action', 'lost-password', wc_get_page_permalink('myaccount'));
-        wp_redirect($redirect_url);
-        exit;
-    }
-    
-    if ($pagenow === 'wp-login.php' && isset($_GET['action']) && $_GET['action'] === 'rp') {
-        $redirect_url = add_query_arg(array(
-            'action' => 'rp',
-            'key' => sanitize_text_field($_GET['key'] ?? ''),
-            'login' => sanitize_text_field($_GET['login'] ?? ''),
-            'show-reset-form' => 'true'
-        ), wc_get_page_permalink('myaccount'));
-        wp_redirect($redirect_url);
-        exit;
-    }
-}
-add_action('init', 'deva_redirect_lost_password');
-
-/**
- * Customize lost password URL to point to our custom form
- */
-function deva_custom_lostpassword_url($lostpassword_url, $redirect) {
-    return add_query_arg('action', 'lost-password', wc_get_page_permalink('myaccount'));
-}
-add_filter('lostpassword_url', 'deva_custom_lostpassword_url', 10, 2);
-
-/**
  * AJAX handler for profile updates
  */
 add_action('wp_ajax_update_deva_profile', 'deva_update_profile_ajax');
@@ -1743,8 +1810,7 @@ function deva_update_profile_ajax() {
  */
 
 /**
- * Convert WooCommerce notices to toasts
- * This ensures all WooCommerce notices are displayed as toast notifications
+ * Enqueue toast notification scripts and styles
  */
 function deva_enqueue_toast_scripts() {
     // Only enqueue on frontend
@@ -1756,7 +1822,7 @@ function deva_enqueue_toast_scripts() {
 add_action('wp_enqueue_scripts', 'deva_enqueue_toast_scripts');
 
 /**
- * Add a script to the footer to ensure notices are converted to toasts
+ * Convert WooCommerce notices to toast notifications
  */
 function deva_convert_notices_to_toasts() {
     if (!is_admin()) {
@@ -1804,7 +1870,7 @@ function deva_convert_notices_to_toasts() {
 add_action('wp_footer', 'deva_convert_notices_to_toasts');
 
 /**
- * Hide WooCommerce notices wrapper via CSS for pages where toasts are preferred
+ * Hide WooCommerce notices wrapper to show toasts instead
  */
 function deva_hide_notice_wrappers() {
     if (!is_admin()) {
@@ -1824,9 +1890,9 @@ function deva_hide_notice_wrappers() {
 add_action('wp_head', 'deva_hide_notice_wrappers');
 
 /**
- * Test function to add WooCommerce notices for toast testing
- * Remove this in production
+ * Test function disabled - using default WooCommerce notifications only
  */
+/*
 function deva_test_woocommerce_notices() {
     if (isset($_GET['test_notices']) && is_user_logged_in()) {
         wc_add_notice('Test success message for toast conversion!', 'success');
@@ -1835,5 +1901,6 @@ function deva_test_woocommerce_notices() {
     }
 }
 add_action('init', 'deva_test_woocommerce_notices');
+*/
 
 

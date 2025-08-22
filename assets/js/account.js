@@ -426,29 +426,27 @@ function toggleSettings(event) {
     
     const settingsSection = document.getElementById('deva-settings-section');
     const settingsButton = document.querySelector('.deva-settings-toggle');
-    const arrow = settingsButton ? settingsButton.querySelector('.dashicons') : null;
+    const arrow = settingsButton ? settingsButton.querySelector('.deva-settings-arrow') : null;
     
-    if (settingsSection.style.display === 'none' || settingsSection.style.display === '') {
+    if (settingsSection.classList.contains('deva-settings-open')) {
+        // Hide settings
+        settingsSection.classList.remove('deva-settings-open');
+        if (arrow) {
+            arrow.classList.remove('dashicons-arrow-up');
+            arrow.classList.add('dashicons-arrow-down');
+        }
+    } else {
         // Show settings
-        settingsSection.style.display = 'block';
         settingsSection.classList.add('deva-settings-open');
         if (arrow) {
             arrow.classList.remove('dashicons-arrow-down');
             arrow.classList.add('dashicons-arrow-up');
         }
         
-        // Smooth scroll to settings section
+        // Smooth scroll to settings section after animation
         setTimeout(() => {
             settingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-    } else {
-        // Hide settings
-        settingsSection.style.display = 'none';
-        settingsSection.classList.remove('deva-settings-open');
-        if (arrow) {
-            arrow.classList.remove('dashicons-arrow-up');
-            arrow.classList.add('dashicons-arrow-down');
-        }
+        }, 300);
     }
 }
 

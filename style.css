@@ -13,3 +13,37 @@ Updated: 2025-07-03 12:41:44
 .amelia-v2-booking #amelia-container.am-fs__wrapper {
   margin: 50px auto !important;
 }
+
+table td,
+table th {
+  border: 1px solid hsl(0deg 0% 50% / 10%) !important;
+}
+
+fieldset {
+  border: none;
+}
+
+html a {
+  color: #48733d;
+}
+
+html a:hover {
+  color: #fff;
+}
+
+html main#content button {
+  padding: 0.75rem 1.5rem;
+  background: #48733d;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  font-weight: 600;
+}
+
+html main#content button:hover {
+  background: #3a5c2f;
+  transform: scale(1.01);
+}

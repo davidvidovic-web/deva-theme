@@ -480,7 +480,8 @@ function deva_single_product_shortcode($atts)
         
         function handleAddToCartSuccess(response, button, originalText, quantity) {
             if (response.error) {
-                alert('Error: ' + response.error);
+                // Error handled by default WooCommerce notifications
+                console.error('Error:', response.error);
                 resetButton(button, originalText);
             } else {
                 // Update cart count if exists and jQuery is available
@@ -492,8 +493,7 @@ function deva_single_product_shortcode($atts)
                 button.textContent = 'Added!';
                 button.style.background = '#28a745';
                 
-                // Show success message
-                showSuccessMessage(`Added ${quantity} item(s) to cart!`);
+                // Custom notification removed - using default WooCommerce notifications only
                 
                 // Reset button after 2 seconds
                 setTimeout(function() {
@@ -503,8 +503,8 @@ function deva_single_product_shortcode($atts)
         }
         
         function handleAddToCartError(button, originalText) {
-            console.error('Error adding product to cart');
-            alert('Error adding product to cart. Please try again.');
+            // Error handled by default WooCommerce notifications
+            console.error('Error adding product to cart. Please try again.');
             resetButton(button, originalText);
         }
         
@@ -590,7 +590,8 @@ function deva_single_product_shortcode($atts)
         
         function handleBuyNowSuccess(response, button, originalText) {
             if (response.error) {
-                alert('Error: ' + response.error);
+                // Error handled by default WooCommerce notifications
+                console.error('Error:', response.error);
                 resetButton(button, originalText);
             } else {
                 // Update cart count if exists and jQuery is available
@@ -611,8 +612,7 @@ function deva_single_product_shortcode($atts)
                     checkoutUrl = woocommerce_params.checkout_url;
                 }
                 
-                // Show notification
-                showBuyNowNotification();
+                // Custom notification removed - using default WooCommerce notifications only
                 
                 // Redirect after short delay
                 setTimeout(() => {
@@ -622,156 +622,12 @@ function deva_single_product_shortcode($atts)
         }
         
         function handleBuyNowError(button, originalText) {
-            console.error('Error processing order');
-            alert('Error processing order. Please try again.');
+            // Error handled by default WooCommerce notifications
+            console.error('Error processing order. Please try again.');
             resetButton(button, originalText);
         }
         
-        // Buy Now notification function
-        function showBuyNowNotification() {
-            // Create notification element
-            let notificationEl = document.querySelector('.deva-buy-now-notification');
-            if (notificationEl) {
-                notificationEl.remove();
-            }
-            
-            notificationEl = document.createElement('div');
-            notificationEl.className = 'deva-buy-now-notification';
-            notificationEl.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #48733d 0%, #5a8a4a 100%);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 20px rgba(72, 115, 61, 0.3);
-                z-index: 9999;
-                font-size: 14px;
-                font-weight: 600;
-                opacity: 0;
-                transform: translateX(100%);
-                transition: all 0.3s ease;
-                max-width: calc(100vw - 40px);
-                word-wrap: break-word;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            `;
-            
-            notificationEl.innerHTML = `
-                <span class="dashicons dashicons-cart" style="font-size: 18px;"></span>
-                <div>
-                    <strong>Product Added!</strong><br>
-                    <small>Redirecting to checkout...</small>
-                </div>
-            `;
-            
-            // Mobile responsive positioning
-            if (window.innerWidth <= 480) {
-                notificationEl.style.cssText += `
-                    top: 10px;
-                    right: 10px;
-                    left: 10px;
-                    transform: translateY(-100%);
-                    font-size: 12px;
-                    padding: 12px 15px;
-                `;
-            }
-            
-            document.body.appendChild(notificationEl);
-            
-            // Animate in
-            setTimeout(() => {
-                notificationEl.style.opacity = '1';
-                notificationEl.style.transform = window.innerWidth <= 480 ? 'translateY(0)' : 'translateX(0)';
-            }, 10);
-            
-            // Auto-hide after 1 second
-            setTimeout(() => {
-                if (notificationEl && notificationEl.parentNode) {
-                    notificationEl.style.opacity = '0';
-                    notificationEl.style.transform = window.innerWidth <= 480 ? 'translateY(-100%)' : 'translateX(100%)';
-                    setTimeout(() => {
-                        if (notificationEl && notificationEl.parentNode) {
-                            notificationEl.remove();
-                        }
-                    }, 300);
-                }
-            }, 1000);
-        }
-        
-        // Success message function (for Add to Cart)
-        function showSuccessMessage(message) {
-            // Create success message element
-            let messageEl = document.querySelector('.deva-success-message');
-            if (!messageEl) {
-                messageEl = document.createElement('div');
-                messageEl.className = 'deva-success-message';
-                messageEl.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: #28a745;
-                    color: white;
-                    padding: 15px 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
-                    z-index: 9999;
-                    font-size: 14px;
-                    font-weight: 600;
-                    opacity: 0;
-                    transform: translateX(100%);
-                    transition: all 0.3s ease;
-                    max-width: calc(100vw - 40px);
-                    word-wrap: break-word;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                `;
-                
-                // Mobile responsive positioning
-                if (window.innerWidth <= 480) {
-                    messageEl.style.cssText += `
-                        top: 10px;
-                        right: 10px;
-                        left: 10px;
-                        transform: translateY(-100%);
-                        font-size: 12px;
-                        padding: 12px 15px;
-                    `;
-                }
-                
-                document.body.appendChild(messageEl);
-            }
-            
-            messageEl.innerHTML = `
-                <span class="dashicons dashicons-yes" style="font-size: 18px;"></span>
-                <div>${message}</div>
-            `;
-            
-            // Show message
-            setTimeout(() => {
-                messageEl.style.opacity = '1';
-                if (window.innerWidth <= 480) {
-                    messageEl.style.transform = 'translateY(0)';
-                    messageEl.classList.add('show');
-                } else {
-                    messageEl.style.transform = 'translateX(0)';
-                }
-            }, 100);
-            
-            // Hide message after 3 seconds
-            setTimeout(() => {
-                messageEl.style.opacity = '0';
-                if (window.innerWidth <= 480) {
-                    messageEl.style.transform = 'translateY(-100%)';
-                    messageEl.classList.remove('show');
-                } else {
-                    messageEl.style.transform = 'translateX(100%)';
-                }
-            }, 3000);
-        }
+        // Custom notification functions removed - using default WooCommerce notifications only
 
         // Navigation button active state and smooth scrolling
         document.querySelectorAll('.nav-button').forEach(button => {
