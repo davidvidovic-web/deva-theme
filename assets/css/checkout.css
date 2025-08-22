@@ -322,9 +322,7 @@ body .woocommerce-checkout select {
 
 .woocommerce-checkout .col2-set .col-1,
 .woocommerce-checkout .col2-set .col-2 {
-  width: 48% !important;
-  float: left !important;
-  margin-right: 4% !important;
+  width: 100% !important;
 }
 
 .woocommerce-checkout .col2-set .col-2 {

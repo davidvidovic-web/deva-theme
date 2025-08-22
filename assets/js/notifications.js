@@ -1,14 +1,16 @@
 /**
  * WooCommerce Toast Notification System
- * Converts all WooCommerce notices into modern toast notifications
+ * Converts WooCommerce notices into modern toast notifications
  * 
- * This file implements comprehensive coverage for all WooCommerce message types:
+ * This file implements coverage for WooCommerce message types:
  * - success (woocommerce-message)
  * - error (woocommerce-error) 
  * - info (woocommerce-info)
  * - warning (custom notices)
  * 
- * Supports all WooCommerce contexts: cart, checkout, account, shop, single product
+ * EXCLUDES: Coupon notifications (left as default WooCommerce notifications)
+ * 
+ * Supports WooCommerce contexts: cart, checkout, account, shop, single product
  */
 
 (function($) {
@@ -31,18 +33,16 @@
             '.woocommerce-info', 
             '.woocommerce-notice',
             
-            // Checkout specific notices
+            // Checkout specific notices (excluding coupon areas)
             '.woocommerce-checkout .woocommerce-notices-wrapper > *',
-            '.checkout_coupon .woocommerce-notices-wrapper > *',
             '.payment_method_paypal .woocommerce-notices-wrapper > *',
             '.woocommerce-billing-fields .woocommerce-notices-wrapper > *',
             '.woocommerce-shipping-fields .woocommerce-notices-wrapper > *',
             
-            // Cart specific notices  
+            // Cart specific notices (excluding coupon areas)
             '.woocommerce-cart .woocommerce-notices-wrapper > *',
             '.cart_totals .woocommerce-notices-wrapper > *',
             '.cart-collaterals .woocommerce-notices-wrapper > *',
-            '.coupon .woocommerce-notices-wrapper > *',
             
             // Account page notices
             '.woocommerce-account .woocommerce-notices-wrapper > *',
@@ -54,11 +54,6 @@
             '.woocommerce-shop .woocommerce-notices-wrapper > *',
             '.single-product .woocommerce-notices-wrapper > *',
             '.woocommerce-product-gallery .woocommerce-notices-wrapper > *',
-            
-            // Coupon and discount notices
-            '.coupon-info',
-            '.discount-info', 
-            '.applied-coupon',
             
             // Payment and shipping notices
             '.payment-notice',
@@ -92,6 +87,11 @@
                     return;
                 }
                 
+                // Skip coupon notifications - let them display as default WooCommerce notifications
+                if (isCouponNotification($notice)) {
+                    return;
+                }
+                
                 // Extract notice content and type
                 const noticeData = extractNoticeData($notice);
                 if (!noticeData.message) {
@@ -122,7 +122,7 @@
         const classList = $element[0].className;
         
         // Must have WooCommerce notice class or be a notice-like element
-        if (!/woocommerce-(message|error|info|notice)|coupon-info|discount-info|applied-coupon|payment-notice|shipping-notice|order-info/.test(classList)) {
+        if (!/woocommerce-(message|error|info|notice)|discount-info|payment-notice|shipping-notice|order-info/.test(classList)) {
             return false;
         }
         
@@ -148,6 +148,31 @@
         }
         
         return true;
+    }
+
+    /**
+     * Check if a notice is coupon-related and should be excluded from toast conversion
+     */
+    function isCouponNotification($element) {
+        const classList = $element[0].className;
+        const text = $element.text().toLowerCase();
+        
+        // Check for coupon-specific classes
+        if (/coupon-info|applied-coupon|checkout_coupon|coupon/.test(classList)) {
+            return true;
+        }
+        
+        // Check for coupon-related content in the message
+        if (/coupon|discount code|promo code|promotional code/.test(text)) {
+            return true;
+        }
+        
+        // Check if the element is within a coupon context
+        if ($element.closest('.coupon, .checkout_coupon, .woocommerce-coupon').length > 0) {
+            return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -177,7 +202,7 @@
         // Determine notice type from classes
         const classList = $notice[0].className;
         
-        if (/woocommerce-message|coupon-info|applied-coupon/.test(classList)) {
+        if (/woocommerce-message/.test(classList)) {
             type = 'success';
         } else if (/woocommerce-error/.test(classList)) {
             type = 'error';
@@ -192,7 +217,7 @@
                 type = 'error';
             } else if (/warning|note|please|attention|important/.test(lowerMessage)) {
                 type = 'warning';
-            } else if (/coupon|discount|shipping|payment|billing/.test(lowerMessage)) {
+            } else if (/shipping|payment|billing/.test(lowerMessage)) {
                 type = 'info';
             } else {
                 type = 'info';

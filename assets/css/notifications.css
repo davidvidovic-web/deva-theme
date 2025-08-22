@@ -1,0 +1,12 @@
+.showcoupon:hover {
+  color: #48733d;
+}
+
+.checkout_coupon.woocommerce-form-coupon {
+  display: flex;
+  align-items: center;
+}
+
+.checkout_coupon.woocommerce-form-coupon .form-row {
+  margin: 0 !important;
+}
