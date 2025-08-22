@@ -396,7 +396,7 @@ if (($is_lost_password || $is_reset_password) && !is_user_logged_in()) {
                                             <?php _e('Update Profile', 'hello-elementor-child'); ?>
                                         </button>
 
-                                        <button type="button" class="deva-btn deva-btn-secondary" onclick="toggleSettings(event)">
+                                        <button type="button" class="deva-btn deva-btn-secondary" onclick="cancelProfileEdit(event)">
                                             <span class="dashicons dashicons-no-alt"></span>
                                             <?php _e('Cancel', 'hello-elementor-child'); ?>
                                         </button>

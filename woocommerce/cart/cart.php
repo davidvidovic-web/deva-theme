@@ -168,7 +168,7 @@ do_action('woocommerce_before_cart'); ?>
 
                 <!-- Place your order button - only show on cart tab -->
                 <div class="deva-cart-footer">
-                    <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="deva-add-to-cart-btn">
+                    <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="deva-checkout-btn">
                         <?php esc_html_e('Place your order →', 'hello-elementor-child'); ?>
                     </a>
                 </div>

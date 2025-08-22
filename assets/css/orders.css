@@ -473,11 +473,14 @@
 .deva-order-item {
   display: flex;
   gap: 1rem;
+  flex-direction: column;
   padding: 1.5rem;
   background: #f8f9fa;
   border-radius: 12px;
   border: 1px solid #e9ecef;
   transition: all 0.3s ease;
+  justify-content: center;
+  align-items: center;
 }
 
 .deva-order-item:hover {
@@ -487,6 +490,7 @@
 
 .deva-item-image {
   max-width: 150px;
+  max-height: 150px;
 }
 
 .deva-item-image img {

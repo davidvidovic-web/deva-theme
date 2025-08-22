@@ -1515,7 +1515,8 @@ function number_to_words($number)
  */
 function deva_add_wishlist_endpoint()
 {
-    add_rewrite_endpoint('wishlist', EP_ROOT | EP_PAGES);
+    // Only add to account pages, not root to avoid conflicts with WooCommerce URLs
+    add_rewrite_endpoint('wishlist', EP_PAGES);
 }
 add_action('init', 'deva_add_wishlist_endpoint');
 
@@ -1960,3 +1961,34 @@ function disable_billing_state_required($fields)
     }
     return $fields;
 }
+
+function custom_order_received_rewrite()
+{
+    add_rewrite_rule(
+        '^order-received/([0-9]+)/?',
+        'index.php?order-received=$matches[1]',
+        'top'
+    );
+}
+add_action('init', 'custom_order_received_rewrite');
+
+// Make WP recognize order-received as a query var
+function custom_order_received_query_vars($vars)
+{
+    $vars[] = 'order-received';
+    return $vars;
+}
+add_filter('query_vars', 'custom_order_received_query_vars');
+
+// Load WooCommerce thankyou template
+function custom_order_received_template()
+{
+    $order_id = get_query_var('order-received');
+    if ($order_id) {
+        wc_get_template('checkout/thankyou.php', array(
+            'order' => wc_get_order($order_id),
+        ));
+        exit;
+    }
+}
+add_action('template_redirect', 'custom_order_received_template');

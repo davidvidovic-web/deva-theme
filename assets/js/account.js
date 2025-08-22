@@ -341,6 +341,9 @@ const devaAccount = {
         const profileForm = document.getElementById('deva-profile-form');
         
         if (profileForm) {
+            // Store initial form values
+            this.storeOriginalFormValues();
+            
             profileForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
@@ -370,7 +373,12 @@ const devaAccount = {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         // Show success message
@@ -381,9 +389,21 @@ const devaAccount = {
                         const confirmPasswordField = document.getElementById('user_pass_confirm');
                         if (passwordField) passwordField.value = '';
                         if (confirmPasswordField) confirmPasswordField.value = '';
+                        
+                        // Update stored original values
+                        this.storeOriginalFormValues();
+                        
+                        // Close settings panel after successful update
+                        setTimeout(() => {
+                            const settingsSection = document.getElementById('deva-settings-section');
+                            if (settingsSection && settingsSection.classList.contains('deva-settings-open')) {
+                                const event = { preventDefault: () => {} };
+                                toggleSettings(event);
+                            }
+                        }, 1500);
                     } else {
                         // Show error message
-                        this.showNotification(data.data.message || 'Error updating profile. Please try again.', 'error');
+                        this.showNotification(data.data?.message || 'Error updating profile. Please try again.', 'error');
                     }
                 })
                 .catch(error => {
@@ -397,6 +417,62 @@ const devaAccount = {
                 });
             });
         }
+    },
+
+    // Store original form values for cancel functionality
+    storeOriginalFormValues: function() {
+        const profileForm = document.getElementById('deva-profile-form');
+        if (!profileForm) return;
+        
+        this.originalFormValues = {};
+        const formElements = profileForm.querySelectorAll('input, textarea, select');
+        
+        formElements.forEach(element => {
+            if (element.type === 'checkbox') {
+                this.originalFormValues[element.name] = element.checked;
+            } else if (element.type !== 'password') { // Don't store passwords
+                this.originalFormValues[element.name] = element.value;
+            }
+        });
+    },
+
+    // Check if form has been modified
+    isFormModified: function() {
+        const profileForm = document.getElementById('deva-profile-form');
+        if (!profileForm || !this.originalFormValues) return false;
+        
+        const formElements = profileForm.querySelectorAll('input, textarea, select');
+        
+        for (let element of formElements) {
+            if (element.type === 'password') continue; // Skip password fields
+            
+            const currentValue = element.type === 'checkbox' ? element.checked : element.value;
+            const originalValue = this.originalFormValues[element.name];
+            
+            if (currentValue !== originalValue) {
+                return true;
+            }
+        }
+        
+        return false;
+    },
+
+    // Reset form to original values
+    resetProfileForm: function() {
+        const profileForm = document.getElementById('deva-profile-form');
+        if (!profileForm || !this.originalFormValues) return;
+        
+        const formElements = profileForm.querySelectorAll('input, textarea, select');
+        
+        formElements.forEach(element => {
+            if (element.type === 'password') {
+                element.value = '';
+            } else if (element.type === 'checkbox') {
+                element.checked = this.originalFormValues[element.name] || false;
+            } else {
+                element.value = this.originalFormValues[element.name] || '';
+            }
+        });
     }
 };
 
@@ -421,6 +497,26 @@ function joinCall(meetingUrl) {
     devaAccount.joinCall(meetingUrl);
 }
 
+function cancelProfileEdit(event) {
+    event.preventDefault();
+    
+    const profileForm = document.getElementById('deva-profile-form');
+    if (!profileForm) return;
+    
+    // Confirm cancellation if form has been modified
+    if (devaAccount.isFormModified()) {
+        if (!confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+            return;
+        }
+    }
+    
+    // Reset form to original values
+    devaAccount.resetProfileForm();
+    
+    // Close settings panel
+    toggleSettings(event);
+}
+
 function toggleSettings(event) {
     event.preventDefault();
     
@@ -435,6 +531,9 @@ function toggleSettings(event) {
             arrow.classList.remove('dashicons-arrow-up');
             arrow.classList.add('dashicons-arrow-down');
         }
+        
+        // Reset form when closing
+        devaAccount.resetProfileForm();
     } else {
         // Show settings
         settingsSection.classList.add('deva-settings-open');
@@ -442,6 +541,9 @@ function toggleSettings(event) {
             arrow.classList.remove('dashicons-arrow-down');
             arrow.classList.add('dashicons-arrow-up');
         }
+        
+        // Store original form values
+        devaAccount.storeOriginalFormValues();
         
         // Smooth scroll to settings section after animation
         setTimeout(() => {

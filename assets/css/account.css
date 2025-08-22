@@ -709,7 +709,7 @@
 .deva-settings-header {
   /* background: linear-gradient(135deg, #48733d, #5d8a51); */
   /* color: white; */
-  padding: 1.5rem 2rem;
+  /* padding: 1.5rem 0; */
   text-align: center;
 }
 
@@ -726,18 +726,26 @@
 }
 
 .deva-profile-form {
-  padding: 2rem;
+  padding: 2rem 0;
 }
 
 .deva-settings-group {
   margin-bottom: 2.5rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .deva-settings-group:last-of-type {
   border-bottom: none;
   margin-bottom: 0;
+}
+
+main#content button.deva-password-toggle,
+main#content button.deva-password-toggle:hover {
+  background: none;
+  right: 7px;
+  top: 10px;
+  transform: none;
+  padding: 0;
+  color: #111;
 }
 
 .deva-settings-group h5 {
@@ -872,7 +880,7 @@
 .deva-settings-actions {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 2rem;
   padding-top: 2rem;
 }
@@ -889,6 +897,14 @@
   cursor: pointer;
   border: none;
   font-size: 0.875rem;
+  white-space: nowrap;
+  min-width: auto;
+}
+
+.deva-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .deva-btn-primary {
@@ -896,10 +912,12 @@
   color: white;
 }
 
-.deva-btn-primary:hover {
+.deva-btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #3a5c2f, #4a7043);
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(72, 115, 61, 0.3);
+  color: white;
+  text-decoration: none;
 }
 
 .deva-btn-secondary {
@@ -908,9 +926,10 @@
   border: 1px solid #d1d5db;
 }
 
-.deva-btn-secondary:hover {
+.deva-btn-secondary:hover:not(:disabled) {
   background: #e5e7eb;
   color: #374151;
+  text-decoration: none;
 }
 
 .deva-btn .dashicons {
