@@ -1,0 +1,300 @@
+# DEVA Theme POT File - Complete
+# Copyright (C) 2025 DEVA
+# This file is distributed under the same license as the DEVA package.
+msgid ""
+msgstr ""
+"Project-Id-Version: DEVA Theme\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-01 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Product Display Strings
+msgid "Description"
+msgstr ""
+
+msgid "Benefits"
+msgstr ""
+
+msgid "Add to Cart"
+msgstr ""
+
+msgid "Buy Now"
+msgstr ""
+
+msgid "Read More"
+msgstr ""
+
+msgid "Read Less"
+msgstr ""
+
+msgid "Ingredients"
+msgstr ""
+
+msgid "How to Use"
+msgstr ""
+
+msgid "Questions"
+msgstr ""
+
+msgid "Key Ingredients"
+msgstr ""
+
+msgid "What's inside that really matters"
+msgstr ""
+
+msgid "Frequently Asked Questions"
+msgstr ""
+
+msgid "Step %d"
+msgstr ""
+
+# General Interface
+msgid "No description available."
+msgstr ""
+
+msgid "Wishlist"
+msgstr ""
+
+msgid "Shopping cart"
+msgstr ""
+
+msgid "Order history"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+# Account/User Management
+msgid "Hi %s"
+msgstr ""
+
+msgid "Your journey, Your story"
+msgstr ""
+
+msgid "This is your space! Add your health goals, track progress, and stay motivated. You can update this anytime in Settings."
+msgstr ""
+
+msgid "My Programs"
+msgstr ""
+
+msgid "No Programs"
+msgstr ""
+
+msgid "You haven't purchased any program packages yet."
+msgstr ""
+
+msgid "Your purchased Amelia program packages will appear here."
+msgstr ""
+
+msgid "Browse Programs"
+msgstr ""
+
+msgid "View your saved items"
+msgstr ""
+
+msgid "View items in your cart"
+msgstr ""
+
+msgid "Account Settings"
+msgstr ""
+
+msgid "Manage your profile information and preferences"
+msgstr ""
+
+msgid "Personal Information"
+msgstr ""
+
+msgid "First Name"
+msgstr ""
+
+msgid "Last Name"
+msgstr ""
+
+msgid "Display Name"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "Biographical Info"
+msgstr ""
+
+msgid "Share a little biographical information to fill out your profile."
+msgstr ""
+
+msgid "Account Security"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "Leave blank to keep current password"
+msgstr ""
+
+msgid "Confirm New Password"
+msgstr ""
+
+msgid "Confirm your new password"
+msgstr ""
+
+msgid "Update Profile"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Sign out"
+msgstr ""
+
+msgid "My schedule"
+msgstr ""
+
+msgid "%s Appointment"
+msgstr ""
+
+msgid "Join Session"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Page %d of %d"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "No appointments scheduled yet."
+msgstr ""
+
+msgid "Your scheduled sessions will appear here once you book them."
+msgstr ""
+
+# Cart and Checkout
+msgid "Cart"
+msgstr ""
+
+msgid "Quantity:"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Place your order →"
+msgstr ""
+
+msgid "Order Failed"
+msgstr ""
+
+msgid "Unfortunately, your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again."
+msgstr ""
+
+msgid "Order Details"
+msgstr ""
+
+msgid "Order Number:"
+msgstr ""
+
+msgid "Date:"
+msgstr ""
+
+msgid "Status:"
+msgstr ""
+
+# Form Fields
+msgid "Enter your first name"
+msgstr ""
+
+msgid "Enter your last name"
+msgstr ""
+
+msgid "Enter your email address"
+msgstr ""
+
+msgid "Enter your phone number"
+msgstr ""
+
+msgid "House number and street name"
+msgstr ""
+
+# JavaScript Strings
+msgid "Adding..."
+msgstr ""
+
+msgid "Redirecting..."
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+# Account JavaScript Strings
+msgid "Schedule your session first"
+msgstr ""
+
+msgid "Profile updated successfully!"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Error updating profile. Please try again."
+msgstr ""
+
+msgid "Network error. Please check your connection and try again."
+msgstr ""
+
+# New Additional Strings for inc folder
+msgid "No Image"
+msgstr ""
+
+msgid "Sale!"
+msgstr ""
+
+msgid "Out of Stock"
+msgstr ""
+
+msgid "Security check failed"
+msgstr ""
+
+msgid "Error loading categories:"
+msgstr ""
+
+msgid "No product categories found. Please create some categories in WooCommerce → Products → Categories."
+msgstr ""
+
+msgid "No product categories found. Please create some product categories in WooCommerce."
+msgstr ""
+
+msgid "Error:"
+msgstr ""
+
+msgid "Error adding product to cart"
+msgstr ""
+
+msgid "Added"
+msgstr ""
+
+msgid "item(s) to cart!"
+msgstr ""
+
+msgid "Error adding product to cart. Please try again."
+msgstr ""
+
+msgid "Error processing order. Please try again."
+msgstr ""
+
+# Additional Product Slider Strings
+msgid "No products found."
+msgstr ""

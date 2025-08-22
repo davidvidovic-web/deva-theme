@@ -23,7 +23,7 @@ function deva_category_display_shortcode($atts)
 
     // Check if WooCommerce is active
     if (!class_exists('WooCommerce')) {
-        return '<p>WooCommerce is not active.</p>';
+        return '<p>' . __('WooCommerce is not active.', 'hello-elementor-child') . '</p>';
     }
 
     // Get current page from URL or attributes
@@ -42,7 +42,7 @@ function deva_category_display_shortcode($atts)
     ));
 
     if (is_wp_error($categories)) {
-        return '<p>Error loading categories: ' . $categories->get_error_message() . '</p>';
+        return '<p>' . __('Error loading categories:', 'hello-elementor-child') . ' ' . $categories->get_error_message() . '</p>';
     }
 
     if (empty($categories)) {
@@ -55,7 +55,7 @@ function deva_category_display_shortcode($atts)
         ));
 
         if (empty($categories)) {
-            return '<div class="deva-category-display-section"><div class="elementor-container"><p style="text-align: center; padding: 40px; color: #666;">No product categories found. Please create some product categories in WooCommerce.</p></div></div>';
+            return '<div class="deva-category-display-section"><div class="elementor-container"><p style="text-align: center; padding: 40px; color: #666;">' . __('No product categories found. Please create some product categories in WooCommerce.', 'hello-elementor-child') . '</p></div></div>';
         }
     }
 
@@ -65,7 +65,7 @@ function deva_category_display_shortcode($atts)
 
     // Handle edge case where no categories exist
     if ($total_categories === 0) {
-        return '<div class="deva-category-display-section"><div class="elementor-container"><p style="text-align: center; padding: 40px; color: #666;">No product categories found. Please create some product categories in WooCommerce.</p></div></div>';
+        return '<div class="deva-category-display-section"><div class="elementor-container"><p style="text-align: center; padding: 40px; color: #666;">' . __('No product categories found. Please create some product categories in WooCommerce.', 'hello-elementor-child') . '</p></div></div>';
     }
 
     // Ensure current page is within valid range and get the current category

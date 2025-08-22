@@ -353,7 +353,7 @@ function deva_product_category_shortcode($atts) {
                 },
                 success: function(response) {
                     if (response.error) {
-                        alert('Error: ' + response.error);
+                        alert('<?php echo esc_js(__('Error:', 'hello-elementor-child')); ?> ' + response.error);
                         $button.removeClass('loading').text('Buy Now');
                     } else {
                         $button.removeClass('loading').text('Redirecting...');
@@ -379,7 +379,7 @@ function deva_product_category_shortcode($atts) {
                 },
                 error: function() {
                     $button.removeClass('loading').text('Buy Now');
-                    alert('Error adding product to cart');
+                    alert('<?php echo esc_js(__('Error adding product to cart', 'hello-elementor-child')); ?>');
                 }
             });
         });

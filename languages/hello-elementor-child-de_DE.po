@@ -1,0 +1,301 @@
+# DEVA Theme German Translation
+# Copyright (C) 2025 DEVA
+# This file is distributed under the same license as the DEVA package.
+msgid ""
+msgstr ""
+"Project-Id-Version: DEVA Theme\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-01 12:00+0000\n"
+"PO-Revision-Date: 2025-08-22 16:30+0000\n"
+"Last-Translator: DEVA Team\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Product Display Strings
+msgid "Description"
+msgstr "Beschreibung"
+
+# New Additional Strings for inc folder
+msgid "No Image"
+msgstr "Kein Bild"
+
+msgid "Sale!"
+msgstr "Angebot!"
+
+msgid "Out of Stock"
+msgstr "Nicht auf Lager"
+
+msgid "Security check failed"
+msgstr "Sicherheitsprüfung fehlgeschlagen"
+
+msgid "Error loading categories:"
+msgstr "Fehler beim Laden der Kategorien:"
+
+msgid "No product categories found. Please create some categories in WooCommerce → Products → Categories."
+msgstr "Keine Produktkategorien gefunden. Bitte erstellen Sie einige Kategorien unter WooCommerce → Produkte → Kategorien."
+
+msgid "No product categories found. Please create some product categories in WooCommerce."
+msgstr "Keine Produktkategorien gefunden. Bitte erstellen Sie einige Produktkategorien in WooCommerce."
+
+msgid "Error:"
+msgstr "Fehler:"
+
+msgid "Error adding product to cart"
+msgstr "Fehler beim Hinzufügen des Produkts zum Warenkorb"
+
+msgid "Added"
+msgstr "Hinzugefügt"
+
+msgid "item(s) to cart!"
+msgstr "Artikel zum Warenkorb!"
+
+msgid "Error adding product to cart. Please try again."
+msgstr "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte versuchen Sie es erneut."
+
+msgid "Error processing order. Please try again."
+msgstr "Fehler bei der Bestellungsbearbeitung. Bitte versuchen Sie es erneut."
+
+# Additional Product Slider Strings
+msgid "No products found."
+msgstr "Keine Produkte gefunden."
+
+msgid "Benefits"
+msgstr "Vorteile"
+
+msgid "Add to Cart"
+msgstr "In den Warenkorb"
+
+msgid "Buy Now"
+msgstr "Jetzt kaufen"
+
+msgid "Read More"
+msgstr "Mehr lesen"
+
+msgid "Read Less"
+msgstr "Weniger lesen"
+
+msgid "Ingredients"
+msgstr "Inhaltsstoffe"
+
+msgid "How to Use"
+msgstr "Anwendung"
+
+msgid "Questions"
+msgstr "Fragen"
+
+msgid "Key Ingredients"
+msgstr "Hauptinhaltsstoffe"
+
+msgid "What's inside that really matters"
+msgstr "Was wirklich wichtig ist"
+
+msgid "Frequently Asked Questions"
+msgstr "Häufig gestellte Fragen"
+
+msgid "Step %d"
+msgstr "Schritt %d"
+
+# General Interface
+msgid "No description available."
+msgstr "Keine Beschreibung verfügbar."
+
+msgid "Wishlist"
+msgstr "Wunschliste"
+
+msgid "Shopping cart"
+msgstr "Warenkorb"
+
+msgid "Order history"
+msgstr "Bestellhistorie"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+# Account/User Management
+msgid "Hi %s"
+msgstr "Hallo %s"
+
+msgid "Your journey, Your story"
+msgstr "Deine Reise, Deine Geschichte"
+
+msgid "This is your space! Add your health goals, track progress, and stay motivated. You can update this anytime in Settings."
+msgstr "Das ist dein Bereich! Füge deine Gesundheitsziele hinzu, verfolge Fortschritte und bleibe motiviert. Du kannst dies jederzeit in den Einstellungen aktualisieren."
+
+msgid "My Programs"
+msgstr "Meine Programme"
+
+msgid "No Programs"
+msgstr "Keine Programme"
+
+msgid "You haven't purchased any program packages yet."
+msgstr "Du hast noch keine Programmpakete gekauft."
+
+msgid "Your purchased Amelia program packages will appear here."
+msgstr "Deine gekauften Amelia-Programmpakete werden hier angezeigt."
+
+msgid "Browse Programs"
+msgstr "Programme durchsuchen"
+
+msgid "View your saved items"
+msgstr "Deine gespeicherten Artikel anzeigen"
+
+msgid "View items in your cart"
+msgstr "Artikel in deinem Warenkorb anzeigen"
+
+msgid "Account Settings"
+msgstr "Kontoeinstellungen"
+
+msgid "Manage your profile information and preferences"
+msgstr "Verwalte deine Profilinformationen und Einstellungen"
+
+msgid "Personal Information"
+msgstr "Persönliche Informationen"
+
+msgid "First Name"
+msgstr "Vorname"
+
+msgid "Last Name"
+msgstr "Nachname"
+
+msgid "Display Name"
+msgstr "Anzeigename"
+
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
+msgid "Website"
+msgstr "Webseite"
+
+msgid "Biographical Info"
+msgstr "Biografische Informationen"
+
+msgid "Share a little biographical information to fill out your profile."
+msgstr "Teile einige biografische Informationen, um dein Profil zu vervollständigen."
+
+msgid "Account Security"
+msgstr "Kontosicherheit"
+
+msgid "New Password"
+msgstr "Neues Passwort"
+
+msgid "Leave blank to keep current password"
+msgstr "Leer lassen, um das aktuelle Passwort zu behalten"
+
+msgid "Confirm New Password"
+msgstr "Neues Passwort bestätigen"
+
+msgid "Confirm your new password"
+msgstr "Bestätige dein neues Passwort"
+
+msgid "Update Profile"
+msgstr "Profil aktualisieren"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Sign out"
+msgstr "Abmelden"
+
+msgid "My schedule"
+msgstr "Mein Terminplan"
+
+msgid "%s Appointment"
+msgstr "%s Termin"
+
+msgid "Join Session"
+msgstr "An Sitzung teilnehmen"
+
+msgid "Previous"
+msgstr "Vorherige"
+
+msgid "Page %d of %d"
+msgstr "Seite %d von %d"
+
+msgid "Next"
+msgstr "Nächste"
+
+msgid "No appointments scheduled yet."
+msgstr "Noch keine Termine geplant."
+
+msgid "Your scheduled sessions will appear here once you book them."
+msgstr "Deine geplanten Sitzungen werden hier angezeigt, sobald du sie buchst."
+
+# Cart and Checkout
+msgid "Cart"
+msgstr "Warenkorb"
+
+msgid "Quantity:"
+msgstr "Menge:"
+
+msgid "Remove"
+msgstr "Entfernen"
+
+msgid "Place your order →"
+msgstr "Bestellung aufgeben →"
+
+msgid "Order Failed"
+msgstr "Bestellung fehlgeschlagen"
+
+msgid "Unfortunately, your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again."
+msgstr "Leider kann deine Bestellung nicht verarbeitet werden, da die ursprüngliche Bank/der Händler deine Transaktion abgelehnt hat. Bitte versuche deinen Kauf erneut."
+
+msgid "Order Details"
+msgstr "Bestelldetails"
+
+msgid "Order Number:"
+msgstr "Bestellnummer:"
+
+msgid "Date:"
+msgstr "Datum:"
+
+msgid "Status:"
+msgstr "Status:"
+
+# Form Fields
+msgid "Enter your first name"
+msgstr "Gib deinen Vornamen ein"
+
+msgid "Enter your last name"
+msgstr "Gib deinen Nachnamen ein"
+
+msgid "Enter your email address"
+msgstr "Gib deine E-Mail-Adresse ein"
+
+msgid "Enter your phone number"
+msgstr "Gib deine Telefonnummer ein"
+
+msgid "House number and street name"
+msgstr "Hausnummer und Straßenname"
+
+# JavaScript Strings
+msgid "Adding..."
+msgstr "Hinzufügen..."
+
+msgid "Redirecting..."
+msgstr "Weiterleitung..."
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Loading..."
+msgstr "Laden..."
+
+# Account JavaScript Strings
+msgid "Schedule your session first"
+msgstr "Plane zuerst deine Sitzung"
+
+msgid "Profile updated successfully!"
+msgstr "Profil erfolgreich aktualisiert!"
+
+msgid "Success"
+msgstr "Erfolg"
+
+msgid "Error updating profile. Please try again."
+msgstr "Fehler beim Aktualisieren des Profils. Bitte versuche es erneut."
+
+msgid "Network error. Please check your connection and try again."
+msgstr "Netzwerkfehler. Bitte überprüfe deine Verbindung und versuche es erneut."

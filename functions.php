@@ -18,6 +18,14 @@ if (!defined('ABSPATH')) {
 define('HELLO_ELEMENTOR_CHILD_VERSION', '1.0.0');
 
 /**
+ * Load theme textdomain for translations
+ */
+function hello_elementor_child_load_textdomain() {
+    load_theme_textdomain('hello-elementor-child', get_stylesheet_directory() . '/languages');
+}
+add_action('after_setup_theme', 'hello_elementor_child_load_textdomain');
+
+/**
  * Load DEVA shortcodes
  */
 require_once get_stylesheet_directory() . '/inc/shortcodes-loader.php';
@@ -50,6 +58,9 @@ add_action('wp_enqueue_scripts', 'hello_elementor_child_enqueue_styles');
  */
 function hello_elementor_child_enqueue_assets()
 {
+    // Enqueue dashicons for frontend use (normally only available in admin)
+    wp_enqueue_style('dashicons');
+    
     // Enqueue component-based CSS files - all depend on child theme style for priority
     wp_enqueue_style(
         'deva-base',
@@ -182,6 +193,17 @@ function hello_elementor_child_enqueue_assets()
             'cart_redirect_after_add' => get_option('woocommerce_cart_redirect_after_add')
         ));
     }
+
+    // Localize translations for JavaScript
+    wp_localize_script('hello-elementor-child-shop', 'devaTranslations', array(
+        'addingToCart' => __('Adding...', 'hello-elementor-child'),
+        'buyNow' => __('Buy Now', 'hello-elementor-child'),
+        'redirecting' => __('Redirecting...', 'hello-elementor-child'),
+        'readMore' => __('Read More', 'hello-elementor-child'),
+        'readLess' => __('Read Less', 'hello-elementor-child'),
+        'error' => __('Error', 'hello-elementor-child'),
+        'loading' => __('Loading...', 'hello-elementor-child'),
+    ));
 
     // Enqueue cart CSS and JS with high priority to override Elementor
     if (is_cart()) {
@@ -657,7 +679,7 @@ function deva_get_product_excerpt($product, $word_limit = 15)
     }
 
     // Final fallback
-    return 'No description available.';
+    return __('No description available.', 'hello-elementor-child');
 }
 
 /**
@@ -1267,6 +1289,16 @@ function deva_enqueue_account_assets()
             'booking_url' => '#', // Add booking page URL if available
             'is_user_logged_in' => is_user_logged_in(),
         ));
+
+        // Localize account translations
+        wp_localize_script('deva-account', 'devaAccountTranslations', array(
+            'profileSaved' => __('Profile updated successfully!', 'hello-elementor-child'),
+            'profileError' => __('Error updating profile. Please try again.', 'hello-elementor-child'),
+            'networkError' => __('Network error. Please check your connection and try again.', 'hello-elementor-child'),
+            'scheduleSessionFirst' => __('Schedule your session first', 'hello-elementor-child'),
+            'success' => __('Success', 'hello-elementor-child'),
+            'error' => __('Error', 'hello-elementor-child'),
+        ));
     }
 }
 add_action('wp_enqueue_scripts', 'deva_enqueue_account_assets');
@@ -1327,56 +1359,87 @@ function deva_enqueue_auth_scripts()
 add_action('wp_enqueue_scripts', 'deva_enqueue_auth_scripts', 20);
 
 /**
- * Get user appointments/sessions
+ * Get user appointments/sessions grouped by program
  */
 function deva_get_user_appointments($user_id)
 {
-    // This is a placeholder function. In a real implementation, you would:
-    // 1. Query a custom appointments table
-    // 2. Integrate with a booking plugin
-    // 3. Or use post meta to store appointment data
-
-    $appointments = get_user_meta($user_id, 'deva_appointments', true);
-
-    if (empty($appointments)) {
-        // Check if user has any completed orders (indicating they might have programs)
-        $customer_orders = wc_get_orders(array(
-            'customer' => $user_id,
-            'status' => array('completed'),
-            'limit' => 1,
-        ));
-
-        // If user has orders but no appointments, create sample appointments
-        if (!empty($customer_orders)) {
-            $sample_appointments = array(
-                array(
-                    'id' => 1,
-                    'time' => '1:00–1:30 (GMT+0:00)',
-                    'date' => '13th JUN',
-                    'status' => 'upcoming',
-                    'meeting_url' => '#',
-                    'created' => current_time('mysql')
-                ),
-                array(
-                    'id' => 2,
-                    'time' => '1:00–1:30 (GMT+0:00)',
-                    'date' => '20th JUN',
-                    'status' => 'scheduled',
-                    'meeting_url' => '#',
-                    'created' => current_time('mysql')
-                )
-            );
-
-            // Save sample appointments for the user
-            update_user_meta($user_id, 'deva_appointments', $sample_appointments);
-            return $sample_appointments;
-        }
-
-        // Return empty array for users with no orders
-        return array();
+    $all_appointments = [];
+    
+    // Get Amelia appointments only
+    $amelia_appointments = deva_get_user_amelia_appointments($user_id);
+    
+    // Add Amelia appointments to the list
+    foreach ($amelia_appointments as $appointment) {
+        $date_obj = new DateTime($appointment['date']);
+        $all_appointments[] = [
+            'id' => 'amelia_' . $appointment['id'],
+            'time' => $date_obj->format('H:i') . '–' . $date_obj->modify('+' . $appointment['duration'] . ' minutes')->format('H:i') . ' (GMT+0:00)',
+            'date' => $date_obj->format('jS M'),
+            'status' => $appointment['status'] === 'approved' ? 'confirmed' : $appointment['status'],
+            'meeting_url' => $appointment['meeting_url'] ?: '#',
+            'created' => $appointment['created'] ?: current_time('mysql'),
+            'service' => $appointment['serviceName'],
+            'provider' => $appointment['employeeName'],
+            'packageName' => $appointment['packageName'] ?: $appointment['serviceName'], // Fallback to service name
+            'packageId' => $appointment['packageId'],
+            'packageCustomerServiceId' => $appointment['packageCustomerServiceId'],
+            'bookingStart' => $appointment['bookingStart'],
+            'type' => 'amelia'
+        ];
     }
 
-    return $appointments;
+    // Sort appointments by date (ascending for proper numbering)
+    usort($all_appointments, function($a, $b) {
+        return strtotime($a['bookingStart']) - strtotime($b['bookingStart']);
+    });
+
+    return $all_appointments;
+}
+
+/**
+ * Get user appointments grouped by program with appointment numbering
+ */
+function deva_get_user_appointments_by_program($user_id)
+{
+    $appointments = deva_get_user_appointments($user_id);
+    $grouped_appointments = [];
+    $appointment_counters = [];
+    
+    foreach ($appointments as $appointment) {
+        $program_key = $appointment['packageId'] ? $appointment['packageId'] : 'individual_' . $appointment['service'];
+        $program_name = $appointment['packageName'] ?: $appointment['service'];
+        
+        // Initialize program group if not exists
+        if (!isset($grouped_appointments[$program_key])) {
+            $grouped_appointments[$program_key] = [
+                'program_name' => $program_name,
+                'program_id' => $appointment['packageId'],
+                'appointments' => []
+            ];
+            $appointment_counters[$program_key] = 0;
+        }
+        
+        // Increment counter and add appointment number
+        $appointment_counters[$program_key]++;
+        $appointment['appointment_number'] = $appointment_counters[$program_key];
+        
+        $grouped_appointments[$program_key]['appointments'][] = $appointment;
+    }
+    
+    return $grouped_appointments;
+}
+
+/**
+ * Convert number to ordinal (1st, 2nd, 3rd, etc.)
+ */
+function deva_number_to_ordinal($number)
+{
+    $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
+    if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+        return $number . 'th';
+    } else {
+        return $number . $ends[$number % 10];
+    }
 }
 
 /**
@@ -1852,8 +1915,610 @@ function deva_update_profile_ajax()
 }
 
 /**
- * DEVA Single Product Helper Functions
+ * DEVA-Amelia Integration Functions
  */
+
+/**
+ * Link Amelia appointments to DEVA program sections
+ */
+function deva_link_amelia_to_programs()
+{
+    // Hook into Amelia booking process
+    add_action('amelia_after_booking_added', 'deva_process_amelia_booking', 10, 1);
+    add_filter('amelia_before_booking_added_filter', 'deva_add_program_data_to_booking', 10, 1);
+    add_action('amelia_after_appointment_booking_saved', 'deva_sync_amelia_with_programs', 10, 2);
+}
+add_action('init', 'deva_link_amelia_to_programs');
+
+/**
+ * Add program information to Amelia booking data
+ */
+function deva_add_program_data_to_booking($appointment)
+{
+    // Get current user's active program
+    $user_id = get_current_user_id();
+    if ($user_id) {
+        $active_program = get_user_meta($user_id, 'deva_active_program', true);
+        $program_sessions = get_user_meta($user_id, 'deva_program_sessions', true);
+        
+        // Add program data to appointment custom fields
+        if (!empty($active_program)) {
+            $appointment['customFields'][] = [
+                'label' => 'DEVA Program',
+                'value' => $active_program,
+                'type' => 'program_link'
+            ];
+            
+            // Track session count
+            if (!empty($program_sessions)) {
+                $appointment['customFields'][] = [
+                    'label' => 'Session Number',
+                    'value' => count($program_sessions) + 1,
+                    'type' => 'session_count'
+                ];
+            }
+        }
+    }
+    
+    return $appointment;
+}
+
+/**
+ * Process Amelia booking and sync with DEVA programs
+ */
+function deva_process_amelia_booking($appointment)
+{
+    try {
+        // Extract user information
+        $customer_email = $appointment['bookings'][0]['customer']['email'] ?? '';
+        $appointment_id = $appointment['id'] ?? '';
+        $service_name = $appointment['service']['name'] ?? '';
+        $appointment_date = $appointment['bookingStart'] ?? '';
+        
+        // Find WordPress user by email
+        $user = get_user_by('email', $customer_email);
+        if (!$user) {
+            error_log('DEVA-Amelia: User not found for email: ' . $customer_email);
+            return;
+        }
+        
+        $user_id = $user->ID;
+        
+        // Get or create appointment sessions data
+        $appointments = get_user_meta($user_id, 'deva_appointments', true);
+        if (!is_array($appointments)) {
+            $appointments = [];
+        }
+        
+        // Create appointment entry
+        $appointment_entry = [
+            'id' => $appointment_id,
+            'service' => $service_name,
+            'date' => $appointment_date,
+            'status' => 'scheduled',
+            'amelia_id' => $appointment_id,
+            'type' => 'coaching_session',
+            'created' => current_time('mysql'),
+            'meeting_url' => '', // Will be populated by Amelia if Zoom integration exists
+        ];
+        
+        // Add to appointments array
+        $appointments[] = $appointment_entry;
+        update_user_meta($user_id, 'deva_appointments', $appointments);
+        
+        // Update program progress if applicable
+        deva_update_program_progress($user_id, $appointment_entry);
+        
+        error_log('DEVA-Amelia: Successfully synced appointment ' . $appointment_id . ' for user ' . $user_id);
+        
+    } catch (Exception $e) {
+        error_log('DEVA-Amelia Integration Error: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Sync Amelia appointment with DEVA program progress
+ */
+function deva_sync_amelia_with_programs($booking, $reservation)
+{
+    try {
+        $customer_email = $booking['customer']['email'] ?? '';
+        $user = get_user_by('email', $customer_email);
+        
+        if (!$user) return;
+        
+        $user_id = $user->ID;
+        $active_program = get_user_meta($user_id, 'deva_active_program', true);
+        
+        if ($active_program) {
+            // Update program session count
+            $program_sessions = get_user_meta($user_id, 'deva_program_sessions', true);
+            if (!is_array($program_sessions)) {
+                $program_sessions = [];
+            }
+            
+            $session_data = [
+                'appointment_id' => $booking['id'] ?? '',
+                'date' => $booking['utcStart'] ?? '',
+                'status' => 'scheduled',
+                'program' => $active_program
+            ];
+            
+            $program_sessions[] = $session_data;
+            update_user_meta($user_id, 'deva_program_sessions', $program_sessions);
+        }
+        
+    } catch (Exception $e) {
+        error_log('DEVA-Amelia Sync Error: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Update program progress based on appointment completion
+ */
+function deva_update_program_progress($user_id, $appointment_data)
+{
+    $active_program = get_user_meta($user_id, 'deva_active_program', true);
+    
+    if (!$active_program) return;
+    
+    // Get program details
+    $program_progress = get_user_meta($user_id, 'deva_program_progress', true);
+    if (!is_array($program_progress)) {
+        $program_progress = [
+            'current_phase' => 1,
+            'total_sessions' => 0,
+            'completed_sessions' => 0,
+            'next_session_date' => '',
+            'progress_percentage' => 0
+        ];
+    }
+    
+    // Increment session count
+    $program_progress['total_sessions']++;
+    $program_progress['next_session_date'] = $appointment_data['date'];
+    
+    // Calculate progress percentage (assuming 12 sessions per program)
+    $total_program_sessions = 12;
+    $program_progress['progress_percentage'] = min(100, ($program_progress['total_sessions'] / $total_program_sessions) * 100);
+    
+    update_user_meta($user_id, 'deva_program_progress', $program_progress);
+}
+
+/**
+ * Get Amelia appointments for current user
+ */
+function deva_get_user_amelia_appointments($user_id = null)
+{
+    if (!$user_id) {
+        $user_id = get_current_user_id();
+    }
+    
+    if (!$user_id) return [];
+    
+    global $wpdb;
+    
+    // First, get the Amelia customer ID from WordPress user ID
+    $amelia_users_table = $wpdb->prefix . 'amelia_users';
+    $amelia_customer = $wpdb->get_row($wpdb->prepare(
+        "SELECT id FROM {$amelia_users_table} WHERE externalId = %d AND type = 'customer'",
+        $user_id
+    ));
+    
+    if (!$amelia_customer) {
+        // Fallback: try to find by email
+        $user = get_userdata($user_id);
+        if (!$user) return [];
+        
+        $amelia_customer = $wpdb->get_row($wpdb->prepare(
+            "SELECT id FROM {$amelia_users_table} WHERE email = %s AND type = 'customer'",
+            $user->user_email
+        ));
+        
+        if (!$amelia_customer) {
+            return []; // No Amelia customer record found
+        }
+    }
+    
+    $customer_id = $amelia_customer->id;
+    
+    // Get appointments with details including package information
+    $appointments_table = $wpdb->prefix . 'amelia_appointments';
+    $customer_bookings_table = $wpdb->prefix . 'amelia_customer_bookings';
+    $services_table = $wpdb->prefix . 'amelia_services';
+    $users_table = $wpdb->prefix . 'amelia_users';
+    $locations_table = $wpdb->prefix . 'amelia_locations';
+    $packages_table = $wpdb->prefix . 'amelia_packages';
+    $packages_customers_table = $wpdb->prefix . 'amelia_packages_to_customers';
+    
+    $appointments = $wpdb->get_results($wpdb->prepare("
+        SELECT 
+            a.id as appointment_id,
+            a.bookingStart,
+            a.bookingEnd,
+            a.status as appointment_status,
+            a.googleMeetUrl,
+            a.microsoftTeamsUrl,
+            a.zoomMeeting,
+            cb.id as booking_id,
+            cb.status as booking_status,
+            cb.price,
+            cb.persons,
+            cb.created as booking_created,
+            cb.packageCustomerServiceId,
+            s.name as serviceName,
+            s.duration,
+            s.description as serviceDescription,
+            p.firstName as providerFirstName,
+            p.lastName as providerLastName,
+            l.name as locationName,
+            l.address as locationAddress,
+            pkg.name as packageName,
+            pkg.id as packageId
+        FROM {$customer_bookings_table} cb
+        LEFT JOIN {$appointments_table} a ON cb.appointmentId = a.id
+        LEFT JOIN {$services_table} s ON a.serviceId = s.id
+        LEFT JOIN {$users_table} p ON a.providerId = p.id
+        LEFT JOIN {$locations_table} l ON a.locationId = l.id
+        LEFT JOIN {$packages_customers_table} pc ON cb.packageCustomerServiceId = pc.id
+        LEFT JOIN {$packages_table} pkg ON pc.packageId = pkg.id
+        WHERE cb.customerId = %d
+        AND cb.status NOT IN ('canceled', 'rejected')
+        ORDER BY a.bookingStart DESC
+        LIMIT 20
+    ", $customer_id));
+    
+    $formatted_appointments = [];
+    
+    foreach ($appointments as $appointment) {
+        // Format the meeting URL
+        $meeting_url = '';
+        if ($appointment->googleMeetUrl) {
+            $meeting_url = $appointment->googleMeetUrl;
+        } elseif ($appointment->microsoftTeamsUrl) {
+            $meeting_url = $appointment->microsoftTeamsUrl;
+        } elseif ($appointment->zoomMeeting) {
+            $zoom_data = json_decode($appointment->zoomMeeting, true);
+            if ($zoom_data && isset($zoom_data['joinUrl'])) {
+                $meeting_url = $zoom_data['joinUrl'];
+            }
+        }
+        
+        $formatted_appointments[] = [
+            'id' => $appointment->booking_id,
+            'appointmentId' => $appointment->appointment_id,
+            'date' => $appointment->bookingStart,
+            'end_date' => $appointment->bookingEnd,
+            'bookingStart' => $appointment->bookingStart,
+            'bookingEnd' => $appointment->bookingEnd,
+            'status' => $appointment->booking_status ?: $appointment->appointment_status,
+            'service' => $appointment->serviceName,
+            'serviceName' => $appointment->serviceName,
+            'duration' => $appointment->duration,
+            'serviceDescription' => $appointment->serviceDescription,
+            'employeeName' => trim($appointment->providerFirstName . ' ' . $appointment->providerLastName),
+            'locationName' => $appointment->locationName,
+            'locationAddress' => $appointment->locationAddress,
+            'price' => $appointment->price,
+            'persons' => $appointment->persons,
+            'created' => $appointment->booking_created,
+            'meeting_url' => $meeting_url,
+            'googleMeetUrl' => $meeting_url,
+            'packageName' => $appointment->packageName,
+            'packageId' => $appointment->packageId,
+            'packageCustomerServiceId' => $appointment->packageCustomerServiceId,
+            'type' => 'amelia_appointment',
+            'can_reschedule' => true,
+            'can_cancel' => true
+        ];
+    }
+    
+    return $formatted_appointments;
+}
+
+// Get user's Amelia services and packages
+function deva_get_user_amelia_services_packages($user_id) {
+    global $wpdb;
+    
+    // First, get the Amelia customer ID from WordPress user ID
+    $amelia_users_table = $wpdb->prefix . 'amelia_users';
+    $amelia_customer = $wpdb->get_row($wpdb->prepare(
+        "SELECT id FROM {$amelia_users_table} WHERE externalId = %d AND type = 'customer'",
+        $user_id
+    ));
+    
+    if (!$amelia_customer) {
+        // Fallback: try to find by email
+        $user = get_userdata($user_id);
+        if (!$user) return [];
+        
+        $amelia_customer = $wpdb->get_row($wpdb->prepare(
+            "SELECT id FROM {$amelia_users_table} WHERE email = %s AND type = 'customer'",
+            $user->user_email
+        ));
+        
+        if (!$amelia_customer) {
+            return []; // No Amelia customer record found
+        }
+    }
+    
+    $customer_id = $amelia_customer->id;
+    $services_packages = [];
+    
+    // Get purchased packages
+    $packages_table = $wpdb->prefix . 'amelia_packages';
+    $packages_customers_table = $wpdb->prefix . 'amelia_packages_to_customers';
+    
+    $packages = $wpdb->get_results($wpdb->prepare("
+        SELECT 
+            p.id,
+            p.name,
+            p.description,
+            p.price as original_price,
+            p.pictureFullPath,
+            p.color,
+            p.status,
+            pc.price as paid_price,
+            pc.start,
+            pc.end,
+            pc.purchased,
+            pc.status as purchase_status,
+            pc.bookingsCount,
+            'package' as type
+        FROM {$packages_customers_table} pc
+        LEFT JOIN {$packages_table} p ON pc.packageId = p.id
+        WHERE pc.customerId = %d
+        AND pc.status IN ('approved', 'pending')
+        ORDER BY pc.purchased DESC
+    ", $customer_id));
+    
+    foreach ($packages as $package) {
+        // Clean description - remove HTML comments and empty content
+        $description = $package->description;
+        if (empty($description) || trim($description) === '<!-- Content -->') {
+            $description = 'Comprehensive package program';
+        }
+        
+        $services_packages[] = [
+            'id' => $package->id,
+            'name' => $package->name,
+            'description' => $description,
+            'price' => $package->paid_price ?: $package->original_price,
+            'original_price' => $package->original_price,
+            'image' => $package->pictureFullPath,
+            'color' => $package->color,
+            'status' => $package->purchase_status,
+            'start_date' => $package->start,
+            'end_date' => $package->end,
+            'purchased_date' => $package->purchased,
+            'bookings_count' => $package->bookingsCount,
+            'type' => 'package'
+        ];
+    }
+
+    // Get services from appointments/bookings
+    $services_table = $wpdb->prefix . 'amelia_services';
+    $appointments_table = $wpdb->prefix . 'amelia_appointments';
+    $customer_bookings_table = $wpdb->prefix . 'amelia_customer_bookings';
+    $categories_table = $wpdb->prefix . 'amelia_categories';
+    
+    $services = $wpdb->get_results($wpdb->prepare("
+        SELECT DISTINCT
+            s.id,
+            s.name,
+            s.description,
+            s.price,
+            s.pictureFullPath,
+            s.color,
+            s.status,
+            s.duration,
+            cat.name as category_name,
+            COUNT(cb.id) as booking_count,
+            'service' as type
+        FROM {$customer_bookings_table} cb
+        LEFT JOIN {$appointments_table} a ON cb.appointmentId = a.id
+        LEFT JOIN {$services_table} s ON a.serviceId = s.id
+        LEFT JOIN {$categories_table} cat ON s.categoryId = cat.id
+        WHERE cb.customerId = %d
+        AND cb.status NOT IN ('canceled', 'rejected')
+        GROUP BY s.id
+        ORDER BY booking_count DESC
+    ", $customer_id));
+    
+    foreach ($services as $service) {
+        $services_packages[] = [
+            'id' => $service->id,
+            'name' => $service->name,
+            'description' => $service->description,
+            'price' => $service->price,
+            'image' => $service->pictureFullPath,
+            'color' => $service->color,
+            'status' => $service->status,
+            'duration' => $service->duration,
+            'category' => $service->category_name,
+            'booking_count' => $service->booking_count,
+            'type' => 'service'
+        ];
+    }
+    
+    // Deduplicate and return
+    return deva_deduplicate_services_packages($services_packages);
+}
+
+/**
+ * Helper function to deduplicate services/packages array
+ */
+function deva_deduplicate_services_packages($items) {
+    $seen = [];
+    $unique_items = [];
+    
+    foreach ($items as $item) {
+        // Create a unique key based on type and ID
+        $key = $item['type'] . '_' . $item['id'];
+        
+        if (!isset($seen[$key])) {
+            $seen[$key] = true;
+            $unique_items[] = $item;
+        }
+    }
+    
+    return $unique_items;
+}
+
+/**
+ * AJAX handler to get Amelia appointments for account page
+ */
+function deva_get_amelia_appointments_ajax()
+{
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'deva_account_nonce')) {
+        wp_send_json_error(['message' => 'Security check failed.']);
+        return;
+    }
+    
+    if (!is_user_logged_in()) {
+        wp_send_json_error(['message' => 'User not logged in.']);
+        return;
+    }
+    
+    $user_id = get_current_user_id();
+    $appointments = deva_get_user_amelia_appointments($user_id);
+    
+    wp_send_json_success([
+        'appointments' => $appointments,
+        'total' => count($appointments)
+    ]);
+}
+add_action('wp_ajax_deva_get_amelia_appointments', 'deva_get_amelia_appointments_ajax');
+
+/**
+ * Add Amelia booking shortcode to account page dynamically
+ */
+function deva_add_amelia_booking_section($user_has_program = false)
+{
+    if (!$user_has_program) {
+        return '<p>Purchase a program to schedule appointments.</p>';
+    }
+    
+    // Get user's active program to determine which services to show
+    $active_program = get_user_meta(get_current_user_id(), 'deva_active_program', true);
+    
+    $shortcode_params = '';
+    
+    // Map DEVA programs to Amelia services
+    switch ($active_program) {
+        case 'weight_loss':
+            $shortcode_params = 'service=1'; // Assuming service ID 1 for weight loss coaching
+            break;
+        case 'muscle_gain':
+            $shortcode_params = 'service=2'; // Assuming service ID 2 for muscle gain coaching
+            break;
+        case 'general_fitness':
+            $shortcode_params = 'service=3'; // Assuming service ID 3 for general fitness
+            break;
+        default:
+            $shortcode_params = 'category=1'; // Default to coaching category
+    }
+    
+    // Return Amelia booking shortcode
+    return do_shortcode("[ameliastepbooking {$shortcode_params}]");
+}
+
+/**
+ * Add custom CSS for Amelia integration
+ */
+function deva_amelia_integration_styles()
+{
+    if (is_page() && has_shortcode(get_post()->post_content, 'woocommerce_my_account')) {
+        echo '<style>
+        .deva-amelia-appointments {
+            margin-top: 2rem;
+        }
+        
+        .deva-amelia-appointment {
+            background: #f8faf8;
+            border: 2px solid #ebf3e8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .deva-amelia-appointment.status-approved {
+            border-color: #48733d;
+        }
+        
+        .deva-amelia-appointment.status-pending {
+            border-color: #f59e0b;
+        }
+        
+        .deva-amelia-appointment.status-canceled {
+            border-color: #ef4444;
+        }
+        
+        .deva-appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .deva-appointment-service {
+            font-weight: 600;
+            color: #48733d;
+            font-size: 1.1rem;
+        }
+        
+        .deva-appointment-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .deva-appointment-status.approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .deva-appointment-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .deva-appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .deva-appointment-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        
+        .deva-appointment-btn.join {
+            background: #48733d;
+            color: white;
+        }
+        
+        .deva-appointment-btn.reschedule {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .deva-appointment-btn.cancel {
+            background: #ef4444;
+            color: white;
+        }
+        </style>';
+    }
+}
+add_action('wp_head', 'deva_amelia_integration_styles');
 
 /**
  * Enqueue toast notification scripts and styles

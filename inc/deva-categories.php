@@ -23,7 +23,7 @@ function deva_categories_shortcode($atts) {
 
     // Check if WooCommerce is active
     if (!class_exists('WooCommerce')) {
-        return '<div class="deva-error">WooCommerce is not active.</div>';
+        return '<div class="deva-error">' . __('WooCommerce is not active.', 'hello-elementor-child') . '</div>';
     }
 
     ob_start();
@@ -82,7 +82,7 @@ function deva_categories_shortcode($atts) {
         
         // Check if we have valid categories
         if (empty($categories) || is_wp_error($categories)) {
-            echo '<div class="deva-notice">No product categories found. Please create some categories in WooCommerce → Products → Categories.</div>';
+            echo '<div class="deva-notice">' . __('No product categories found. Please create some categories in WooCommerce → Products → Categories.', 'hello-elementor-child') . '</div>';
         } else {
             // Output the categories
             $has_fifth_card = (count($categories) >= 5);
@@ -119,7 +119,7 @@ function deva_categories_shortcode($atts) {
                             <a href="<?php echo esc_url($category_link); ?>" class="category-link">
                                 <div class="category-display-card">
                                     <div class="category-content">
-                                        <span class="category-label">Category</span>
+                                        <span class="category-label"><?php _e('Category', 'hello-elementor-child'); ?></span>
                                         <h3><?php echo esc_html($category->name); ?></h3>
                                         
                                         <?php if (!empty($products_in_cat)) : ?>
@@ -146,7 +146,7 @@ function deva_categories_shortcode($atts) {
             <?php
         }
     } catch (Exception $e) {
-        echo '<div class="deva-error">Error loading categories: ' . esc_html($e->getMessage()) . '</div>';
+        echo '<div class="deva-error">' . __('Error loading categories:', 'hello-elementor-child') . ' ' . esc_html($e->getMessage()) . '</div>';
     }
 
     return ob_get_clean();

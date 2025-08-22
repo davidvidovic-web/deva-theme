@@ -273,7 +273,7 @@ function deva_get_products_slider_html($atts)
                             <!-- Product Description -->
                             <?php
                             $product_excerpt = deva_get_product_excerpt($product, 10);
-                            if ($product_excerpt && $product_excerpt !== 'No description available.') : ?>
+                            if ($product_excerpt && $product_excerpt !== __('No description available.', 'hello-elementor-child')) : ?>
                                 <div class="deva-product-excerpt">
                                     <?php echo esc_html($product_excerpt); ?>
                                 </div>

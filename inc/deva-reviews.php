@@ -81,12 +81,12 @@ function deva_reviews_shortcode($atts) {
             <div class="reviews-content">
                 <div class="reviews-header">
                     <div class="reviews-text">
-                        <h2>What Our Customers Love About Our Products</h2>
-                        <p>Our customers appreciate the quality and purity of our natural products. Read their reviews and see how our carefully selected essentials make a difference.</p>
+                        <h2><?php _e('What Our Customers Love About Our Products', 'hello-elementor-child'); ?></h2>
+                        <p><?php _e('Our customers appreciate the quality and purity of our natural products. Read their reviews and see how our carefully selected essentials make a difference.', 'hello-elementor-child'); ?></p>
                     </div>
                     <div class="reviews-buttons">
-                        <a href="#" class="review-btn read-all-btn">Read all</a>
-                        <a href="#" class="review-btn write-review-btn">Write a Review</a>
+                        <a href="#" class="review-btn read-all-btn"><?php _e('Read all', 'hello-elementor-child'); ?></a>
+                        <a href="#" class="review-btn write-review-btn"><?php _e('Write a Review', 'hello-elementor-child'); ?></a>
                     </div>
                 </div>
                 

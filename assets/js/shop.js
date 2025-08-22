@@ -351,7 +351,7 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (!response || response.error) {
-                    $button.text('Error').css('background', '#dc3545');
+                    $button.text(devaTranslations.error || 'Error').css('background', '#dc3545');
                     setTimeout(function() {
                         $button.text(originalText).css('background', '').prop('disabled', false);
                     }, 2000);
@@ -433,17 +433,17 @@ jQuery(document).ready(function($) {
                     }, 800);
                 } else {
                     // Error state
-                    $button.find('.button-text').text('Error');
+                    $button.find('.button-text').text(devaTranslations.error || 'Error');
                     setTimeout(function() {
-                        $button.find('.button-text').text('Buy Now');
+                        $button.find('.button-text').text(devaTranslations.buyNow || 'Buy Now');
                     }, 2000);
                 }
             },
             error: function() {
                 $button.removeClass('loading');
-                $button.find('.button-text').text('Error');
+                $button.find('.button-text').text(devaTranslations.error || 'Error');
                 setTimeout(function() {
-                    $button.find('.button-text').text('Buy Now');
+                    $button.find('.button-text').text(devaTranslations.buyNow || 'Buy Now');
                 }, 2000);
             }
         });

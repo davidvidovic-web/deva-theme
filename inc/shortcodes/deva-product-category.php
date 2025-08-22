@@ -242,7 +242,7 @@ function deva_product_category_shortcode($atts) {
                                         <!-- Product Description -->
                                         <?php 
                                         $product_excerpt = deva_get_product_excerpt($product, 15);
-                                        if ($product_excerpt && $product_excerpt !== 'No description available.') : ?>
+                                        if ($product_excerpt && $product_excerpt !== __('No description available.', 'hello-elementor-child')) : ?>
                                             <div class="deva-product-excerpt">
                                                 <?php echo esc_html($product_excerpt); ?>
                                             </div>
@@ -341,7 +341,7 @@ function deva_product_category_shortcode($atts) {
             var productId = $(this).data('product-id');
             var $button = $(this);
             
-            $button.addClass('loading').text('Adding...');
+            $button.addClass('loading').text(devaTranslations.addingToCart || 'Adding...');
             
             $.ajax({
                 url: wc_add_to_cart_params.ajax_url,
@@ -355,9 +355,9 @@ function deva_product_category_shortcode($atts) {
                     if (response.error) {
                         // Error handled by default WooCommerce notifications
                         console.error('Error loading products:', response.error);
-                        $button.removeClass('loading').text('Buy Now');
+                        $button.removeClass('loading').text(devaTranslations.buyNow || 'Buy Now');
                     } else {
-                        $button.removeClass('loading').text('Redirecting...');
+                        $button.removeClass('loading').text(devaTranslations.redirecting || 'Redirecting...');
                         
                         // Get checkout URL with fallbacks
                         var checkoutUrl = '/checkout/';
@@ -379,7 +379,7 @@ function deva_product_category_shortcode($atts) {
                     }
                 },
                 error: function() {
-                    $button.removeClass('loading').text('Buy Now');
+                    $button.removeClass('loading').text(devaTranslations.buyNow || 'Buy Now');
                     // Error handled by default WooCommerce notifications
                     console.error('Error adding product to cart');
                 }

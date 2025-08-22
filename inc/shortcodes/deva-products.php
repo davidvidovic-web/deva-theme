@@ -25,7 +25,7 @@ function deva_products_shortcode($atts)
 
     // Check if WooCommerce is active
     if (!class_exists('WooCommerce')) {
-        return '<p>WooCommerce is not active.</p>';
+        return '<p>' . __('WooCommerce is not active.', 'hello-elementor-child') . '</p>';
     }
 
     // Generate unique shortcode ID for AJAX
@@ -101,7 +101,7 @@ function deva_get_products_html($atts, $paged = 1)
                         if (has_post_thumbnail($product->get_id())) {
                             echo get_the_post_thumbnail($product->get_id(), 'woocommerce_thumbnail', array('class' => 'deva-product-image'));
                         } else {
-                            echo '<div class="deva-product-placeholder">No Image</div>';
+                            echo '<div class="deva-product-placeholder">' . __('No Image', 'hello-elementor-child') . '</div>';
                         }
                         ?>
 
@@ -131,7 +131,7 @@ function deva_get_products_html($atts, $paged = 1)
 
                         <!-- Sale Badge - Bottom Left -->
                         <?php if ($product->is_on_sale()) : ?>
-                            <span class="deva-sale-badge">Sale!</span>
+                            <span class="deva-sale-badge"><?php _e('Sale!', 'hello-elementor-child'); ?></span>
                         <?php endif; ?>
                     </div>
                 </a>
@@ -161,7 +161,7 @@ function deva_get_products_html($atts, $paged = 1)
                         <!-- Product Description -->
                         <?php
                         $product_excerpt = deva_get_product_excerpt($product, 15);
-                        if ($product_excerpt && $product_excerpt !== 'No description available.') : ?>
+                        if ($product_excerpt && $product_excerpt !== __('No description available.', 'hello-elementor-child')) : ?>
                             <div class="deva-product-excerpt">
                                 <?php echo esc_html($product_excerpt); ?>
                             </div>
@@ -177,7 +177,7 @@ function deva_get_products_html($atts, $paged = 1)
                                     <span class="button-text">Buy Now</span>
                                 </button>
                             <?php else : ?>
-                                <span class="deva-out-of-stock">Out of Stock</span>
+                                <span class="deva-out-of-stock"><?php _e('Out of Stock', 'hello-elementor-child'); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -252,7 +252,7 @@ function deva_ajax_load_products()
 {
     // Verify nonce
     if (!wp_verify_nonce($_POST['nonce'], 'shop_nonce')) {
-        wp_send_json_error('Security check failed');
+        wp_send_json_error(__('Security check failed', 'hello-elementor-child'));
         return;
     }
 

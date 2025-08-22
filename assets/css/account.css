@@ -2,11 +2,15 @@
    DEVA Account Page Styles
    =================================== */
 
+.deva-account-wrapper {
+  background: #f7fdf6;
+  padding: 1em 0;
+}
+
 .deva-account-container {
   max-width: 1140px;
   margin: 0 auto;
   padding: 2rem;
-  background: #f7fdf6;
   min-height: 100vh;
 }
 
@@ -122,8 +126,8 @@
 }
 
 .deva-program-image {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: aut;
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
@@ -153,10 +157,13 @@
 }
 
 .deva-program-price {
-  font-size: 1.125rem;
+  font-size: 1em;
   font-weight: 700;
   color: #48733d;
   flex-shrink: 0;
+  width: 100%;
+  justify-content: flex-end;
+  display: flex;
 }
 
 /* No Program State */
@@ -283,7 +290,95 @@
   vertical-align: middle;
 }
 
-/* Schedule Section */
+/* Amelia Services/Packages Styling */
+.deva-program-meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-direction: column;
+}
+
+.deva-package-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deva-service-badge {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deva-amelia-price {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 18px;
+}
+
+.deva-program-duration {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.deva-package-dates {
+  color: #27ae60;
+  font-size: 14px;
+  margin-top: 8px;
+  padding: 8px;
+  background: #e8f5e8;
+  border-radius: 8px;
+  border-left: 4px solid #27ae60;
+}
+
+.deva-no-program {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 12px;
+}
+
+.deva-program-placeholder h3 {
+  color: #6c757d;
+  margin-bottom: 16px;
+}
+
+.deva-program-placeholder p {
+  color: #868e96;
+  margin-bottom: 12px;
+}
+
+.deva-browse-programs {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 16px;
+  transition: transform 0.3s ease;
+}
+
+.deva-browse-programs:hover {
+  transform: translateY(-2px);
+  color: white;
+  text-decoration: none;
+}
+
+/* Schedule Section Styles */
 .deva-schedule-section {
   margin-bottom: 3rem;
 }
@@ -429,8 +524,8 @@
   }
 
   .deva-program-image {
-    width: 80px;
-    height: 80px;
+    width: 200px;
+    height: auto;
   }
 
   .deva-schedule-grid {
@@ -473,6 +568,9 @@
 
   .deva-menu-list a {
     font-size: 0.8rem;
+  }
+  .deva-program-price {
+    justify-content: center;
   }
 }
 
@@ -1023,5 +1121,519 @@ main#content button.deva-password-toggle:hover {
 
   .deva-form-field label {
     font-size: 0.8125rem;
+  }
+}
+
+/* Amelia Appointments Integration */
+.deva-appointments-section {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.deva-appointments-section h5 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.deva-amelia-appointments {
+  margin-bottom: 20px;
+}
+
+.deva-appointment-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.deva-appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.deva-appointment-header h6 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.deva-appointment-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.deva-status-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.deva-status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.deva-status-canceled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.deva-appointment-details {
+  margin-bottom: 15px;
+}
+
+.deva-appointment-details > div {
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: #666;
+}
+
+.deva-appointment-details .dashicons {
+  font-size: 14px;
+  margin-right: 5px;
+  color: #28a745;
+}
+
+.deva-appointment-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.deva-btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deva-reschedule-btn {
+  background: #007cba;
+  color: white;
+}
+
+.deva-reschedule-btn:hover {
+  background: #005a87;
+}
+
+.deva-btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.deva-btn-danger:hover {
+  background: #c82333;
+}
+
+.deva-join-btn {
+  background: #28a745;
+  color: white;
+}
+
+.deva-join-btn:hover {
+  background: #218838;
+}
+
+.deva-schedule-section {
+  border-top: 1px solid #e9ecef;
+  padding-top: 15px;
+}
+
+.deva-schedule-new {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.deva-schedule-new:hover {
+  background: #218838;
+}
+
+.deva-schedule-new .dashicons {
+  font-size: 16px;
+}
+
+.deva-amelia-booking {
+  margin-top: 15px;
+  padding: 15px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+.deva-no-appointments,
+.deva-appointments-error {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+}
+
+.deva-loading {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+/* Responsive adjustments for Amelia integration */
+@media (max-width: 768px) {
+  .deva-appointment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .deva-appointment-actions {
+    justify-content: center;
+  }
+
+  .deva-btn-small {
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+  }
+}
+
+/* Schedule Grid Styles */
+.deva-schedule-grid {
+  margin-top: 20px;
+}
+
+.deva-schedule-program-group {
+  margin-bottom: 3rem;
+}
+
+.deva-schedule-program-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.deva-schedule-program-title .dashicons {
+  color: #48733d;
+  font-size: 1.5rem;
+}
+
+.deva-schedule-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.deva-schedule-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deva-schedule-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #48733d;
+}
+
+.deva-schedule-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: #48733d;
+}
+
+.deva-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.deva-schedule-appointment-number {
+  flex-grow: 1;
+}
+
+.deva-appointment-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #7dd3fc;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.deva-schedule-date .deva-date {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1f2937;
+  display: block;
+}
+
+.deva-schedule-status {
+  flex-shrink: 0;
+}
+
+.deva-schedule-card .deva-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.deva-schedule-body {
+  margin-top: 1rem;
+}
+
+.deva-schedule-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.deva-schedule-date .dashicons {
+  color: #48733d;
+  font-size: 16px;
+}
+
+.deva-schedule-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.deva-schedule-time .dashicons {
+  color: #48733d;
+  font-size: 16px;
+}
+
+.deva-schedule-time .deva-time {
+  font-weight: 500;
+}
+
+.deva-schedule-actions {
+  margin-top: 1rem;
+}
+
+.deva-join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #48733d;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.deva-join-btn:hover {
+  background: #3a5c2f;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.deva-join-btn .dashicons {
+  font-size: 16px;
+}
+
+.deva-status {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.deva-status-upcoming {
+  background: #d4edda;
+  color: #155724;
+}
+
+.deva-status-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.deva-status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.deva-status-completed {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.deva-status-scheduled {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.deva-join-link {
+  padding: 6px 12px;
+  background: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.deva-join-link:hover {
+  background: #218838;
+  color: white;
+}
+
+.deva-schedule-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px 0;
+  border-top: 1px solid #e9ecef;
+}
+
+.deva-page-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  color: #495057;
+  text-decoration: none;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.deva-page-btn:hover {
+  background: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.deva-page-info {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.deva-no-schedule {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.deva-no-schedule p {
+  margin: 10px 0;
+}
+
+.deva-no-schedule em {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Responsive adjustments for schedule grid */
+@media (max-width: 768px) {
+  .deva-schedule-program-group {
+    margin-bottom: 2rem;
+  }
+
+  .deva-schedule-program-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .deva-schedule-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .deva-schedule-card {
+    padding: 1rem;
+  }
+
+  .deva-schedule-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .deva-appointment-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .deva-schedule-pagination {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .deva-page-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

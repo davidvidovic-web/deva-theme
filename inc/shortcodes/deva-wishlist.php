@@ -209,7 +209,7 @@ function deva_get_wishlist_products() {
                     <!-- Product Description -->
                     <?php
                     $product_excerpt = deva_get_product_excerpt($product, 15);
-                    if ($product_excerpt && $product_excerpt !== 'No description available.') : ?>
+                    if ($product_excerpt && $product_excerpt !== __('No description available.', 'hello-elementor-child')) : ?>
                         <div class="deva-product-excerpt">
                             <?php echo esc_html($product_excerpt); ?>
                         </div>

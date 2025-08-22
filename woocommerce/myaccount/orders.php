@@ -33,8 +33,8 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
     </div>
 
     <?php if ($has_orders) : ?>
-        <!-- Orders Grid -->
-        <div class="deva-orders-grid">
+        <!-- Orders List -->
+        <div class="deva-orders-list">
             <?php
             foreach ($customer_orders->orders as $customer_order) {
                 $order = wc_get_order($customer_order);
@@ -60,48 +60,33 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
                 }
                 ?>
                 
-                <div class="deva-order-card deva-order-status-<?php echo esc_attr($status_class); ?>">
-                    <!-- Order Header -->
-                    <div class="deva-order-header">
-                        <div class="deva-order-info">
+                <div class="deva-order-row deva-order-status-<?php echo esc_attr($status_class); ?>">
+                    <!-- Order Image -->
+                    <?php if ($product_image) : ?>
+                        <div class="deva-order-image">
+                            <img src="<?php echo esc_url($product_image); ?>" alt="<?php _e('Product image', 'hello-elementor-child'); ?>" />
+                            <?php if ($item_count > 1) : ?>
+                                <span class="deva-more-items">+<?php echo ($item_count - 1); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <!-- Order Details -->
+                    <div class="deva-order-details">
+                        <div class="deva-order-main">
                             <div class="deva-order-number">
                                 <strong><?php echo esc_html('#' . $order->get_order_number()); ?></strong>
-                                <span class="deva-order-date">
-                                    <?php echo esc_html(wc_format_datetime($order->get_date_created(), 'M j, Y')); ?>
-                                </span>
                             </div>
-                            <div class="deva-order-status">
-                                <span class="deva-status-badge deva-status-<?php echo esc_attr($status_class); ?>">
-                                    <?php echo esc_html($status_name); ?>
-                                </span>
+                            <div class="deva-order-date">
+                                <?php echo esc_html(wc_format_datetime($order->get_date_created(), 'M j, Y')); ?>
                             </div>
                         </div>
-                        <div class="deva-order-total">
-                            <div class="deva-total-amount">
-                                <?php echo wp_kses_post($order->get_formatted_order_total()); ?>
-                            </div>
-                            <div class="deva-item-count">
-                                <?php printf(_n('%s item', '%s items', $item_count, 'woocommerce'), $item_count); ?>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Order Items Preview -->
-                    <div class="deva-order-items">
-                        <?php if ($product_image) : ?>
-                            <div class="deva-order-image">
-                                <img src="<?php echo esc_url($product_image); ?>" alt="<?php _e('Product image', 'hello-elementor-child'); ?>" />
-                                <?php if ($item_count > 1) : ?>
-                                    <span class="deva-more-items">+<?php echo ($item_count - 1); ?></span>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
                         
                         <div class="deva-order-products">
                             <?php
                             $displayed = 0;
                             foreach ($order_items as $item) {
-                                if ($displayed >= 3) break; // Show max 3 items
+                                if ($displayed >= 2) break; // Show max 2 items in list view
                                 $product = $item->get_product();
                                 if ($product) {
                                     echo '<div class="deva-product-name">';
@@ -113,18 +98,35 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
                                     $displayed++;
                                 }
                             }
-                            if (count($order_items) > 3) {
-                                echo '<div class="deva-more-products">+' . (count($order_items) - 3) . ' ' . __('more items', 'hello-elementor-child') . '</div>';
+                            if (count($order_items) > 2) {
+                                echo '<div class="deva-more-products">+' . (count($order_items) - 2) . ' ' . __('more items', 'hello-elementor-child') . '</div>';
                             }
                             ?>
                         </div>
                     </div>
                     
+                    <!-- Order Status -->
+                    <div class="deva-order-status">
+                        <span class="deva-status-badge deva-status-<?php echo esc_attr($status_class); ?>">
+                            <?php echo esc_html($status_name); ?>
+                        </span>
+                        <div class="deva-item-count">
+                            <?php printf(_n('%s item', '%s items', $item_count, 'woocommerce'), $item_count); ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Total -->
+                    <div class="deva-order-total">
+                        <div class="deva-total-amount">
+                            <?php echo wp_kses_post($order->get_formatted_order_total()); ?>
+                        </div>
+                    </div>
+                    
                     <!-- Order Actions -->
                     <div class="deva-order-actions">
-                        <a href="<?php echo esc_url($order->get_view_order_url()); ?>" class="deva-btn deva-btn-primary">
+                        <a href="<?php echo esc_url($order->get_view_order_url()); ?>" class="deva-btn deva-btn-primary deva-btn-small">
                             <span class="dashicons dashicons-visibility"></span>
-                            <?php _e('View Details', 'hello-elementor-child'); ?>
+                            <?php _e('View', 'hello-elementor-child'); ?>
                         </a>
                         
                         <?php
@@ -133,11 +135,11 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
                             foreach ($actions as $key => $action) {
                                 if ($key === 'view') continue; // Skip view action as we already have it
                                 
-                                $button_class = 'deva-btn deva-btn-secondary';
+                                $button_class = 'deva-btn deva-btn-small deva-btn-secondary';
                                 if ($key === 'pay') {
-                                    $button_class = 'deva-btn deva-btn-success';
+                                    $button_class = 'deva-btn deva-btn-small deva-btn-success';
                                 } elseif ($key === 'cancel') {
-                                    $button_class = 'deva-btn deva-btn-danger';
+                                    $button_class = 'deva-btn deva-btn-small deva-btn-danger';
                                 }
                                 
                                 echo '<a href="' . esc_url($action['url']) . '" class="' . esc_attr($button_class) . '">';
@@ -152,6 +154,7 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
                 <?php
             }
             ?>
+        </div>
         </div>
         
         <!-- Pagination -->

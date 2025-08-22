@@ -544,7 +544,7 @@ function deva_single_product_shortcode($atts)
                 button.style.background = '#28a745';
                 
                 // Show success message
-                showSuccessMessage(`Added ${quantity} item(s) to cart!`);
+                showSuccessMessage(`<?php echo esc_js(__('Added', 'hello-elementor-child')); ?> ${quantity} <?php echo esc_js(__('item(s) to cart!', 'hello-elementor-child')); ?>`);
                 
                 // Reset button after 2 seconds
                 setTimeout(function() {
@@ -555,7 +555,7 @@ function deva_single_product_shortcode($atts)
         
         function handleAddToCartError(button, originalText) {
             console.error('Error adding product to cart');
-            alert('Error adding product to cart. Please try again.');
+            alert('<?php echo esc_js(__('Error adding product to cart. Please try again.', 'hello-elementor-child')); ?>');
             resetButton(button, originalText);
         }
         
@@ -674,7 +674,7 @@ function deva_single_product_shortcode($atts)
         
         function handleBuyNowError(button, originalText) {
             console.error('Error processing order');
-            alert('Error processing order. Please try again.');
+            alert('<?php echo esc_js(__('Error processing order. Please try again.', 'hello-elementor-child')); ?>');
             resetButton(button, originalText);
         }
         

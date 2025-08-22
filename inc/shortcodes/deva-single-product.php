@@ -22,7 +22,7 @@ function deva_single_product_shortcode($atts)
 
     // Check if WooCommerce is active
     if (!class_exists('WooCommerce')) {
-        return '<div class="deva-error">WooCommerce is not active.</div>';
+        return '<div class="deva-error">' . __('WooCommerce is not active.', 'hello-elementor-child') . '</div>';
     }
 
     // Get product ID from current post if not provided
@@ -34,7 +34,7 @@ function deva_single_product_shortcode($atts)
     $product = wc_get_product($atts['product_id']);
 
     if (!$product) {
-        return '<div class="deva-error">Product not found.</div>';
+        return '<div class="deva-error">' . __('Product not found.', 'hello-elementor-child') . '</div>';
     }
 
     ob_start();
@@ -42,9 +42,9 @@ function deva_single_product_shortcode($atts)
     <div class="deva-single-product <?php echo esc_attr($atts['class']); ?>">
         <!-- Breadcrumbs -->
         <div class="deva-breadcrumbs">
-            <a href="<?php echo home_url(); ?>">Home</a>
+            <a href="<?php echo home_url(); ?>"><?php _e('Home', 'hello-elementor-child'); ?></a>
             <span class="separator">›</span>
-            <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>">Shop</a>
+            <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>"><?php _e('Shop', 'hello-elementor-child'); ?></a>
             <span class="separator">›</span>
             <?php
             // Get product category for breadcrumbs
@@ -162,7 +162,7 @@ function deva_single_product_shortcode($atts)
 
                 <!-- Description -->
                 <div class="product-description">
-                    <h6>Description</h6>
+                    <h6><?php _e('Description', 'hello-elementor-child'); ?></h6>
                     <?php
                     $description = $product->get_description();
                     if (!empty($description)) :
@@ -170,7 +170,7 @@ function deva_single_product_shortcode($atts)
                         <div class="description-content" id="description-content">
                             <?php echo apply_filters('the_content', $description); ?>
                         </div>
-                        <button class="read-more-btn" onclick="toggleDescription()" style="display: none;">Read More</button>
+                        <button class="read-more-btn" onclick="toggleDescription()" style="display: none;"><?php _e('Read More', 'hello-elementor-child'); ?></button>
                     <?php endif; ?>
                 </div>
 
@@ -181,11 +181,11 @@ function deva_single_product_shortcode($atts)
                     $benefits_description = deva_get_benefits_description($product->get_id());
                     if (!empty($benefits_description)) :
                     ?>
-                        <h6>Benefits</h6>
+                        <h6><?php _e('Benefits', 'hello-elementor-child'); ?></h6>
                         <div class="benefits-description-content" id="benefits-description-content">
                             <?php echo wp_kses_post($benefits_description); ?>
                         </div>
-                        <button class="read-more-btn" onclick="toggleBenefitsDescription()" style="display: none;">Read More</button>
+                        <button class="read-more-btn" onclick="toggleBenefitsDescription()" style="display: none;"><?php _e('Read More', 'hello-elementor-child'); ?></button>
                     <?php endif; ?>
                 </div>
 
@@ -196,8 +196,8 @@ function deva_single_product_shortcode($atts)
                         <input type="number" class="quantity-input" value="1" min="1" id="quantity-input">
                         <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
                     </div>
-                    <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
-                    <button class="buy-now-btn" onclick="buyNow()">Buy Now</button>
+                    <button class="add-to-cart-btn" onclick="addToCart()"><?php _e('Add to Cart', 'hello-elementor-child'); ?></button>
+                    <button class="buy-now-btn" onclick="buyNow()"><?php _e('Buy Now', 'hello-elementor-child'); ?></button>
                 </div>
             </div>
         </div>
@@ -221,13 +221,13 @@ function deva_single_product_shortcode($atts)
                 }
                 ?>
                 <?php if (!empty($ingredients)) : ?>
-                    <a href="#ingredients-section" class="nav-button <?php echo ($first_section === 'ingredients-section') ? 'active' : ''; ?>">Ingredients</a>
+                    <a href="#ingredients-section" class="nav-button <?php echo ($first_section === 'ingredients-section') ? 'active' : ''; ?>"><?php _e('Ingredients', 'hello-elementor-child'); ?></a>
                 <?php endif; ?>
                 <?php if (!empty($how_to_use)) : ?>
-                    <a href="#how-to-use-section" class="nav-button <?php echo ($first_section === 'how-to-use-section') ? 'active' : ''; ?>">How to Use</a>
+                    <a href="#how-to-use-section" class="nav-button <?php echo ($first_section === 'how-to-use-section') ? 'active' : ''; ?>"><?php _e('How to Use', 'hello-elementor-child'); ?></a>
                 <?php endif; ?>
                 <?php if (!empty($faqs)) : ?>
-                    <a href="#questions-section" class="nav-button <?php echo ($first_section === 'questions-section') ? 'active' : ''; ?>">Questions</a>
+                    <a href="#questions-section" class="nav-button <?php echo ($first_section === 'questions-section') ? 'active' : ''; ?>"><?php _e('Questions', 'hello-elementor-child'); ?></a>
                 <?php endif; ?>
             </div>
         </div>
@@ -240,8 +240,8 @@ function deva_single_product_shortcode($atts)
             if (!empty($ingredients)) :
             ?>
             <div class="product-section" id="ingredients-section">
-                <h2>Key Ingredients</h2>
-                <p>What's inside that really matters</p>
+                <h2><?php _e('Key Ingredients', 'hello-elementor-child'); ?></h2>
+                <p><?php _e('What\'s inside that really matters', 'hello-elementor-child'); ?></p>
                 <div class="ingredients-grid">
                     <?php foreach ($ingredients as $ingredient) : ?>
                         <div class="ingredient-item">
@@ -264,7 +264,7 @@ function deva_single_product_shortcode($atts)
             if (!empty($how_to_use)) :
             ?>
             <div class="product-section" id="how-to-use-section">
-                <h2>How to Use</h2>
+                <h2><?php _e('How to Use', 'hello-elementor-child'); ?></h2>
                 <div class="how-to-use-steps">
                     <?php foreach ($how_to_use as $index => $step) :
                         $step_number = $index + 1;
@@ -277,22 +277,22 @@ function deva_single_product_shortcode($atts)
                                     <!-- Odd steps: image, Step (x), text -->
                                     <?php if (!empty($step['step_image'])) : ?>
                                         <div class="step-image">
-                                            <img src="<?php echo esc_url($step['step_image']); ?>" alt="Step <?php echo $step_number; ?>">
+                                            <img src="<?php echo esc_url($step['step_image']); ?>" alt="<?php printf(__('Step %d', 'hello-elementor-child'), $step_number); ?>">
                                         </div>
                                     <?php endif; ?>
                                     <div class="step-text">
-                                        <h4>Step <?php echo $step_number; ?></h4>
+                                        <h4><?php printf(__('Step %d', 'hello-elementor-child'), $step_number); ?></h4>
                                         <p><?php echo wp_kses_post($step['step_description']); ?></p>
                                     </div>
                                 <?php else : ?>
                                     <!-- Even steps: Step (x), text, image -->
                                     <div class="step-text">
-                                        <h4>Step <?php echo $step_number; ?></h4>
+                                        <h4><?php printf(__('Step %d', 'hello-elementor-child'), $step_number); ?></h4>
                                         <p><?php echo wp_kses_post($step['step_description']); ?></p>
                                     </div>
                                     <?php if (!empty($step['step_image'])) : ?>
                                         <div class="step-image">
-                                            <img src="<?php echo esc_url($step['step_image']); ?>" alt="Step <?php echo $step_number; ?>">
+                                            <img src="<?php echo esc_url($step['step_image']); ?>" alt="<?php printf(__('Step %d', 'hello-elementor-child'), $step_number); ?>">
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -309,10 +309,10 @@ function deva_single_product_shortcode($atts)
             if (!empty($faqs)) :
             ?>
             <div class="product-section" id="questions-section">
-                <h2>Frequently Asked Questions</h2>
+                <h2><?php _e('Frequently Asked Questions', 'hello-elementor-child'); ?></h2>
                 <?php foreach ($faqs as $faq) : ?>
-                    <p><strong>Q: <?php echo esc_html($faq['question']); ?></strong></p>
-                    <p>A: <?php echo wp_kses_post($faq['answer']); ?></p>
+                    <p><strong><?php printf(__('Q: %s', 'hello-elementor-child'), esc_html($faq['question'])); ?></strong></p>
+                    <p><?php printf(__('A: %s', 'hello-elementor-child'), wp_kses_post($faq['answer'])); ?></p>
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>

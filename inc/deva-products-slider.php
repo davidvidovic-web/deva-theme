@@ -29,7 +29,7 @@ function deva_products_slider_shortcode($atts)
 
     // Check if WooCommerce is active
     if (!class_exists('WooCommerce')) {
-        return '<p>WooCommerce is not active.</p>';
+        return '<p>' . __('WooCommerce is not active.', 'hello-elementor-child') . '</p>';
     }
 
     // Generate unique slider ID
@@ -243,7 +243,7 @@ function deva_get_products_slider_html($atts)
 
                             <!-- Sale Badge - Bottom Left -->
                             <?php if ($product->is_on_sale()) : ?>
-                                <span class="deva-sale-badge">Sale!</span>
+                                <span class="deva-sale-badge"><?php _e('Sale!', 'hello-elementor-child'); ?></span>
                             <?php endif; ?>
                         </div>
                     </a>
@@ -283,10 +283,10 @@ function deva_get_products_slider_html($atts)
                             <div class="deva-product-actions">
                                 <?php if ($product->is_purchasable() && $product->is_in_stock()) : ?>
                                     <button class="deva-add-to-cart-btn" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
-                                        Buy Now
+                                        <?php _e('Buy Now', 'hello-elementor-child'); ?>
                                     </button>
                                 <?php else : ?>
-                                    <span class="deva-out-of-stock">Out of Stock</span>
+                                    <span class="deva-out-of-stock"><?php _e('Out of Stock', 'hello-elementor-child'); ?></span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -300,7 +300,7 @@ function deva_get_products_slider_html($atts)
         // More informative fallback message
         echo '<div class="swiper-slide">';
         echo '<div class="no-products-message" style="text-align: center; padding: 40px 20px; color: #666;">';
-        echo '<p><strong>No products found.</strong></p>';
+        echo '<p><strong>' . __('No products found.', 'hello-elementor-child') . '</strong></p>';
         echo '<p style="font-size: 14px; margin-top: 10px;">Query details:</p>';
         echo '<ul style="font-size: 12px; text-align: left; display: inline-block;">';
         echo '<li>Post type: product</li>';
